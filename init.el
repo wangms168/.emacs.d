@@ -1,5 +1,5 @@
 ;;; init.el --- Initialize configurations.	-*- lexical-binding: t -*-
-;; 一次git修改测试。
+
 ;; https://github.com/honmaple/dotfiles/tree/master/emacs.d/lisp
 
 ;; Copyright (C) 2015-2018 lin.jiang

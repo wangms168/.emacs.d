@@ -1,8 +1,8 @@
 /*
-!/.gitignore
-!/init.el
+!.gitignore
+!init.el
 # !/lisp/* 似乎这样写lisp下文件add不进去
-!/lisp/
-!/site-lisp/
+!lisp/
+!site-lisp/
 !README.md
 !images/

@@ -743,52 +743,41 @@ been modified since its last check-in."
 	      	   (:eval (custom-modeline-region-info))
 		   ))
 	 (rhs '("%e"
-		"wms"
-		"%*"
-		(:eval (:propertize (:eval (custom-modeline-flycheck-status)) 'face `(:background ,background :foreground ,foreground)))
-		;; (:eval (propertize (format " %s " (custom-modeline-flycheck-status)) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
-       		;;      											 :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
+	 	(:eval (my-mode-line-vc-info))
+	 	(:eval (propertize (format " %s " (custom-modeline-flycheck-status)) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
+       	      												 :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
+	 	(:eval (format " %s" (custom-modeline-package-updates)))
+	 	;; (:eval (propertize (let ((buf-coding (format "%s" buffer-file-coding-system)))
+       	 	;; 		     (if (string-match "\\(dos\\|unix\\|mac\\)" buf-coding)
+       	 	;; 			 (format " %s " (match-string 1 buf-coding))
+       	 	;; 		       (format " %s " buf-coding))) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
+       	 	;; 		     :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6")) 'display '(raise +0.0)))
+	 	(:eval (propertize (format "%s" (replace-buffer-encoding)) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
+       	      										       :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
+	 	(:eval (custom-modeline-time))
+	 	;; (:eval (propertize  (custom-modeline-time) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
+	 	;; 								       :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
+	 	" "
+	 	;; (:eval (propertize (format-mode-line " %l:%c ") 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")              ;; :inherit nil与:inherit不用哦
+       	 	;;   								    :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
+	 	(:eval (propertize (format-mode-line " %l:") 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")              ;; :inherit nil与:inherit不用哦
+       	      	  								 :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
+	 	(:eval (propertize "%c" 'face
+	 			   (if (>= (current-column) 80)
+	 			       'mode-line-80col-face
+	 			     `(:background ,(roife/ml/selected-window-p "#787879" "#373b41") 
+       	      	  				   :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6")))))
+	 	(:eval (propertize (format "|%s" (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p")))) 'face
+	      			   `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
+       	      	  				 :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
 
-		;; `(:propertize ,background) 
-		" "
-		;; `("wangms-" ,background)
-		;; (:propertize (:eval (custom-modeline-flycheck-status)) 'face `(:background ,background :foreground ,foreground))
-		;; (:eval (propertize (format " %s " (custom-modeline-flycheck-status)) 'face `(:background ,background :foreground ,foreground)))
-		))
-	 ;; (rhs '("%e"
-	 ;; 	(:eval (my-mode-line-vc-info))
-	 ;; 	(:eval (propertize (format " %s " (custom-modeline-flycheck-status)) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
-       	 ;;      												 :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
-	 ;; 	(:eval (format " %s" (custom-modeline-package-updates)))
-	 ;; 	;; (:eval (propertize (let ((buf-coding (format "%s" buffer-file-coding-system)))
-       	 ;; 	;; 		     (if (string-match "\\(dos\\|unix\\|mac\\)" buf-coding)
-       	 ;; 	;; 			 (format " %s " (match-string 1 buf-coding))
-       	 ;; 	;; 		       (format " %s " buf-coding))) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
-       	 ;; 	;; 		     :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6")) 'display '(raise +0.0)))
-	 ;; 	(:eval (propertize (format "%s" (replace-buffer-encoding)) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
-       	 ;;      										       :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
-	 ;; 	(:eval (custom-modeline-time))
-	 ;; 	;; (:eval (propertize  (custom-modeline-time) 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
-	 ;; 	;; 								       :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
-	 ;; 	" "
-	 ;; 	;; (:eval (propertize (format-mode-line " %l:%c ") 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")              ;; :inherit nil与:inherit不用哦
-       	 ;; 	;;   								    :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
-	 ;; 	(:eval (propertize (format-mode-line " %l:") 'face `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")              ;; :inherit nil与:inherit不用哦
-       	 ;;      	  								 :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
-	 ;; 	(:eval (propertize "%c" 'face
-	 ;; 			   (if (>= (current-column) 80)
-	 ;; 			       'mode-line-80col-face
-	 ;; 			     `(:background ,(roife/ml/selected-window-p "#787879" "#373b41") 
-       	 ;;      	  				   :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6")))))
-	 ;; 	(:eval (propertize (format "|%s" (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p")))) 'face
-	 ;;      			   `(:background ,(roife/ml/selected-window-p "#787879" "#373b41")
-       	 ;;      	  				 :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6"))))
-	 ;; 	;; mode-line-position     ;; 模式行位置:此变量指示缓冲区中的位置。其默认值显示缓冲区百分比，以及可选的缓冲区大小，行号和列号。显示形如：'xx% (xx,xx)'
-	 ;; 	;; (:eval (propertize (format "  %s" (format-mode-line mode-line-position)) 'face `(:height 1.0 :background ,(roife/ml/selected-window-p "#787879" "#373b41")
-	 ;; 	;; 											     :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6")) ))     
-	 ;; 	mode-line-end-spaces              ;; 模式行结束空间:该变量显示在模式行的末尾。
-	 ;; 	)
-	 ;;      )
+		"      "
+		;; mode-line-position     ;; 模式行位置:此变量指示缓冲区中的位置。其默认值显示缓冲区百分比，以及可选的缓冲区大小，行号和列号。显示形如：'xx% (xx,xx)'
+	 	;; (:eval (propertize (format "  %s" (format-mode-line mode-line-position)) 'face `(:height 1.0 :background ,(roife/ml/selected-window-p "#787879" "#373b41")
+	 	;; 											     :foreground ,(roife/ml/selected-window-p "#1d1f21" "#c5c8c6")) ))     
+	 	mode-line-end-spaces              ;; 模式行结束空间:该变量显示在模式行的末尾。
+	 	)
+	      )
 	 
 	 ;; (rhs '(   ;;"%e"
 	 ;;       (:eval (my-mode-line-vc-info))
@@ -999,8 +988,8 @@ can be used to add a number of spaces to the front and back of the string."
 
 
 ;; ========================================================================================================================
-(setq-default mode-line-format '(:eval (customize-mode-line-format-1)))
-;; (setq-default mode-line-format '(:eval (customize-mode-line-format-2)))
+;; (setq-default mode-line-format '(:eval (customize-mode-line-format-1)))
+(setq-default mode-line-format '(:eval (customize-mode-line-format-2)))
 
 
 ;; (setq column-number-mode t)           ;; 模式栏显示列号

@@ -4,3 +4,4 @@
 # !/lisp/* 似乎这样写lisp下文件add不进去
 !/lisp/
 !/site-lisp/
+!README.md

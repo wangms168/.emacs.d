@@ -31,7 +31,7 @@
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :height 80 :width 'normal :box '(:line-width 1 :color "white" :style none) :foreground "white" :background "#2A2A2A")
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :width 'normal :box '(:line-width 1 :color "white" :style none) :foreground "white" :background "#2A2A2A")
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :width 'normal :box nil :foreground "white" :background "#2A2A2A")
-(set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :height 95 :width 'normal :box nil :foreground "white" :background "#2A2A2A")
+(set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :height 88 :width 'normal :box nil :foreground "white" :background "#2A2A2A")
 
      ;; 要将注释设置为绿色和粗体：
      ;; (set-face-attribute 'font-lock-comment-face nil

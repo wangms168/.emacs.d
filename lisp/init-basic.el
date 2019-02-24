@@ -56,11 +56,37 @@
     (setq exec-path-from-shell-variables '("PATH" "MANPATH" "PYTHONPATH" "GOPATH"))
     (setq exec-path-from-shell-arguments '("-l"))
     (exec-path-from-shell-initialize)))
+;; grep matches with background yellow and foreground black
+(setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
 
 ;; Start server
 ;; (use-package server
 ;;  :ensure nil
 ;;  :hook (after-init . server-mode))
+
+;;----------------------------------------------------------------------------
+;; Allow access from emacsclient
+;;----------------------------------------------------------------------------
+;; (require 'server)
+;; (add-hook 'after-init-hook (lambda ()
+;;                              (unless (or (daemonp) (server-running-p))
+;;                                (server-start)
+;;                                (setq server-raise-frame t))))
+
+;;----------------------------------------------------------------------------
+;; emacs-backup-config
+;;----------------------------------------------------------------------------
+(setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
+      backup-by-copying t
+      version-control t
+      kept-old-versions 2
+      kept-new-versions 100
+      delete-old-versions t)
+(setq tramp-backup-directory-alist backup-directory-alist)
+;; Disable backup files  注意，如有下面变量为nil，将使上面的emacs_backup失去作用！
+;; (setq make-backup-files nil) ; stop creating backup~ filess
+;; (setq auto-save-default nil) ; stop creating #autosave# files
+
 
 ;; History
 (use-package saveplace

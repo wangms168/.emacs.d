@@ -97,39 +97,6 @@
 (require 'init-editor) ;;自动补全括号等
 
 
-;; grep matches with background yellow and foreground black
-;; (setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
-;;----------------------------------------------------------------------------
-;; emacs-backup-config
-;;----------------------------------------------------------------------------
-(setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
-      backup-by-copying t
-      version-control t
-      kept-old-versions 2
-      kept-new-versions 100
-      delete-old-versions t)
-(setq tramp-backup-directory-alist backup-directory-alist)
-
-;; Disable backup files  注意，如有下面变量为nil，将使上面的emacs_backup失去作用！
-;; (setq make-backup-files nil) ; stop creating backup~ filess
-;; (setq auto-save-default nil) ; stop creating #autosave# files
-
-;; ;;----------------------------------------------------------------------------
-;; ;; Variables configured via the interactive 'customize' interface
-;; ;;----------------------------------------------------------------------------
-;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-;; (when (file-exists-p custom-file)
-;;  (load custom-file))
-
-;;----------------------------------------------------------------------------
-;; Allow access from emacsclient
-;;----------------------------------------------------------------------------
-;; (require 'server)
-;; (add-hook 'after-init-hook (lambda ()
-;;                              (unless (or (daemonp) (server-running-p))
-;;                                (server-start)
-;;                                (setq server-raise-frame t))))
-
 (defun my-fontset-menu ()
   (interactive)
   (x-popup-menu

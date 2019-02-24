@@ -8,3 +8,4 @@
 !site-lisp/
 !README.md
 !images/
+!custom-template.el

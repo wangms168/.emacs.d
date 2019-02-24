@@ -4,7 +4,7 @@
 
 (use-package all-the-icons)
 
-(use-package all-the-icons-diredk
+(use-package all-the-icons-dired
   ;; :config
   ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
   :hook (dired-mode . all-the-icons-dired-mode)

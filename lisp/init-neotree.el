@@ -1,6 +1,5 @@
 ;; NeoTree
 (use-package neotree
-  :ensure t
   :config
   (progn
     (defun sanityinc/window-system-frame-setup()

@@ -40,8 +40,7 @@
 ;;  (define-key (cdr ido-minor-mode-map-entry) [remap write-file] nil))
 
 ;; Ivy, Counsel, Swiper Setup
-;;
-(require-package 'counsel)     ;; 依赖ivy、swiper
+(use-package counsel)              ;; 依赖ivy、swiper
 (ivy-mode 1) ;; Turn on ivy by default
 (setq ivy-initial-inputs-alist nil)      ;; 默认情况下ivy启用过滤器^
 (setq ivy-use-virtual-buffers t)  ;; no idea, but recommended by project maintainer
@@ -118,7 +117,6 @@
 
 
 (use-package ivy-rich
-  :ensure t
   :init
     (ivy-rich-mode 1)
     )

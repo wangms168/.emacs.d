@@ -1,7 +1,6 @@
 ;;; init-visual.el --- Initialize editor configurations.	-*- lexical-binding: t -*-
 
 (use-package page-break-lines
-   :ensure t
    :config
    (global-page-break-lines-mode)
  )

@@ -39,7 +39,6 @@
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; 窗口编号图标显示
 (use-package  winum
-  :ensure t
   :init
   (winum-mode)
   :config
@@ -67,7 +66,6 @@
     ))
 
 ;; (use-package  window-numbering
-;;   :ensure t
 ;;   :config
 ;;   (window-numbering-mode)
 ;;   )
@@ -296,7 +294,6 @@ been modified since its last check-in."
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; flycheck状态图标显示
 (use-package  flycheck
-  :ensure t
   :init
   (global-flycheck-mode)
   :config
@@ -392,7 +389,6 @@ been modified since its last check-in."
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; yahoo-weather雅虎天气modeline显示
 (use-package  yahoo-weather
-  :ensure t
   :init
   (yahoo-weather-mode)
   ;; (setq yahoo-weather-guess-location-function #'yahoo-weather-ipinfo)

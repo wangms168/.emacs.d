@@ -15,6 +15,7 @@
 ;; paren
 ;;----------------------------------------------------------------------------
 (use-package paren
+  :ensure nil
   :config
   (progn
     (show-paren-mode 1)                     ;; 高亮显示成对括号，但不来回弹跳
@@ -72,6 +73,7 @@
 ;; (global-set-key [remap comment-or-uncomment-region] 'my-comment-or-uncomment-region)
 
 (use-package newcomment
+  :ensure nil
   :config
   (progn
     ;; Change the behavior of `M-;' by commenting line.
@@ -123,17 +125,14 @@
 ;; 二次选择高亮
 ;;----------------------------------------------------------------------------
 (use-package volatile-highlights
-  :ensure t
   :config
   (volatile-highlights-mode))
 
 (use-package beacon     ;; 每当窗口滚动时，光线就会照亮光标顶部;你知道它在哪里。
-  :ensure t
   :config
   (beacon-mode 1))
 
 (use-package pos-tip  
-  :ensure t
   :config
 )
 
@@ -145,7 +144,6 @@
                  (lambda ()
                    (not (eq (get-text-property (point) 'face)
                             'font-lock-comment-face))))))
-
 
 (provide 'init-editor)
 ;;; init-editor.el ends here

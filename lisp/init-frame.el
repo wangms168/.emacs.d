@@ -1,12 +1,13 @@
 ;; (defun sanityinc/window-system-frame-setup ()
 (use-package frame
+	:ensure nil
   :config
   (progn
     (defvar tv-default-font (if (string= (invocation-name) "remacs")
                                 "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
                               ;; Use .Xdefaults config
                               ;; (assoc-default 'font (frame-parameters))
-			      "-*-DejaVu Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"    ;; 文泉驿等宽微米黑
+			      "-*-Source Code Pro-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"    ;; 文泉驿等宽微米黑
 			      ;; "DejaVu Sans Mono-8"    ;; 文泉驿等宽微米黑
 			      ))
     ;; (setq-default frame-background-mode 'dark)
@@ -38,7 +39,7 @@
                                 (cursor-color . "red")
                                 (fullscreen . nil)
     				))
-    (add-to-list 'initial-frame-alist `(font . ,tv-default-font))
+    ;; (add-to-list 'initial-frame-alist `(font . ,tv-default-font))
     (setq default-frame-alist initial-frame-alist)      ;;http://ergoemacs.org/emacs/emacs_playing_with_color_theme.html
     ;; (setq frame-title-format " %f")       ;; 标题栏显示 %f 缓冲区完整路径 %p 页面百分数 %l 行号
 

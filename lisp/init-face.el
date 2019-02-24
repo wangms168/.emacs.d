@@ -1,10 +1,7 @@
 ;; (custom-set-faces
 ;;  '(default ((t (:family "文泉驿等宽微米黑" :foundry "WQYF" :slant normal :weight normal :height 83 :width normal)))))
- 
 ;; (set-face-attribute 'default nil :family "文泉驿等宽微米黑" :foundry "WQYF" :slant 'normal :weight 'normal :height 83 :width 'normal)
-
 ;; (setq default-frame-alist '((font . "-*-文泉驿等宽微米黑-normal-normal-normal-*-11-*-*-*-m-0-iso10646-1")))
-
 ;; (eval-after-load (load-theme 'afternoon t)             ;;color-theme\ 'zenburn  
   ;; '(progn
      ;; (set-face-attribute 'font-lock-comment-face nil :foreground "#3f7f5f")
@@ -31,7 +28,7 @@
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :height 80 :width 'normal :box '(:line-width 1 :color "white" :style none) :foreground "white" :background "#2A2A2A")
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :width 'normal :box '(:line-width 1 :color "white" :style none) :foreground "white" :background "#2A2A2A")
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :width 'normal :box nil :foreground "white" :background "#2A2A2A")
-(set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :height 93 :width 'normal :box nil :foreground "white" :background "#2A2A2A")
+;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :height 93 :width 'normal :box nil :foreground "white" :background "#2A2A2A")
 
      ;; 要将注释设置为绿色和粗体：
      ;; (set-face-attribute 'font-lock-comment-face nil

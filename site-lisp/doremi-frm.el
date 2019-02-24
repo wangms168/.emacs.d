@@ -1418,7 +1418,7 @@ See `doremi-fg+'.  Prefix arg is the INCREMENT to change."
 ;;;###autoload
 (defun doremi-fg-hue-stepping-saturation+ (&optional increment frame pickup-p
                                            interactive-p)
-  "Increment frame foreground hue, stepping saturation down after each cycle.
+  "Increment frame foreground hue,stepping saturation down after each cycle.
 See `doremi-bg-hue-stepping-saturation+'.
 `doremi-fg-hue-stepping-saturation+' is the same, with \"foreground\"
 substituted for \"background\"."

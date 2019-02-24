@@ -1,4 +1,7 @@
 ;;; init-modeline.el --- modeline configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;; 修改测试
 (require 'all-the-icons)
 

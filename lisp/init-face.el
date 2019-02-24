@@ -1,8 +1,12 @@
+;;; init-face.el --- modeline configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;; (custom-set-faces
 ;;  '(default ((t (:family "文泉驿等宽微米黑" :foundry "WQYF" :slant normal :weight normal :height 83 :width normal)))))
 ;; (set-face-attribute 'default nil :family "文泉驿等宽微米黑" :foundry "WQYF" :slant 'normal :weight 'normal :height 83 :width 'normal)
 ;; (setq default-frame-alist '((font . "-*-文泉驿等宽微米黑-normal-normal-normal-*-11-*-*-*-m-0-iso10646-1")))
-;; (eval-after-load (load-theme 'afternoon t)             ;;color-theme\ 'zenburn  
+;; (eval-after-load (load-theme 'afternoon t)             ;;color-theme\ 'zenburn
   ;; '(progn
      ;; (set-face-attribute 'font-lock-comment-face nil :foreground "#3f7f5f")
      ;; (set-face-attribute 'font-lock-string-face nil :foreground "#4f004f")

@@ -1,7 +1,10 @@
-;; -*- coding: utf-8 -*-
+;;; init-icons.el ---    -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 (use-package all-the-icons)
 
-(use-package all-the-icons-dired
+(use-package all-the-icons-diredk
   ;; :config
   ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
   :hook (dired-mode . all-the-icons-dired-mode)
@@ -11,5 +14,7 @@
   :config
   (all-the-icons-ivy-setup))
 
+
 (provide 'init-icons)
-;;; init-modeline.el ends here
+
+;;; init-icons.el ends here

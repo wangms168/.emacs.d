@@ -1,3 +1,7 @@
+;;; init-theme.el --- modeline configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 (load-theme 'misterioso  t)   ;;  wheatgrass \ manoj-dark \ sanityinc-tomorrow-bright \ misterioso
 
 ;; (use-package color-theme
@@ -7,8 +11,8 @@
 ;;        (color-theme-initialize)
 ;;        ;; (color-theme-hober)
 ;;        ;; (color-theme-clarity-and-beauty)
-;;        (color-theme-charcoal-black)    ;hober\Calm Forest \Charcoal Black 
-;;        ;; (color-theme-calm-forest) 		      
+;;        (color-theme-charcoal-black)    ;hober\Calm Forest \Charcoal Black
+;;        ;; (color-theme-calm-forest)
 ;;        )))
 ;; 用M-x color-theme-select来选择你喜欢的颜色主题了
 

@@ -1,3 +1,7 @@
+;;; init-frame.el ---  -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;; (defun sanityinc/window-system-frame-setup ()
 (use-package frame
 	:ensure nil

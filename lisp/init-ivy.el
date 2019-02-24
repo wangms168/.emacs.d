@@ -1,4 +1,6 @@
 ;;; init-ivy.el --- Initialize ivy configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
 ;; ------------------------------------------------------------------------------------------------------------------------------
 ;;; Minibuffer Input Completion
@@ -47,7 +49,7 @@
 (setq enable-recursive-minibuffers t) ;; no idea, but recommended by project maintainer
 (setq ivy-count-format "(%d/%d) ")  ;; changes the format of the number of results
 (global-set-key (kbd "C-s") 'swiper)  ;; replaces i-search with swiper
-(global-set-key (kbd "C-c C-r") 'ivy-resume) 
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)                      ;; execute-extended-command
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)            ;; find-file
 (global-set-key (kbd "C-x C-l") 'counsel-find-library)         ;; find-library
@@ -79,7 +81,7 @@
 ;; (global-set-key (kbd "C-h v") 'counsel-describe-variable)    ;; describe-variable
 ;; (global-set-key (kbd "C-h S") 'counsel-info-lookup-symbol)  ;; info-lookup-symbol
 
-(global-set-key (kbd "C-c u") 'counsel-unicode-char)  
+(global-set-key (kbd "C-c u") 'counsel-unicode-char)
 (global-set-key (kbd "C-c g") 'counsel-git)
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
 (global-set-key (kbd "C-c k") 'counsel-ag) ;; add counsel/ivy features to ag package
@@ -112,7 +114,7 @@
  '(("j" switch-to-buffer-other-frame "other frame")
    ("k" kill-buffer "kill")
    ("r" ivy--rename-buffer-action "rename")))
-;;
+
 ;; End Ivy, Swiper, Counsel
 
 

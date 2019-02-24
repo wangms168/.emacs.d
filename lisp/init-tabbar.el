@@ -1,3 +1,7 @@
+;;; init-tabbar.el --- Initialize ivy configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 ;; tabbar
 (use-package tabbar
   :ensure t
@@ -21,7 +25,7 @@
      'tabbar-button nil
      :box nil)
     (set-face-attribute
-     'tabbar-unselected nil  
+     'tabbar-unselected nil
      :foreground "black"
      :box '(:line-width 1 :color "white" :style sunken))
     (set-face-attribute
@@ -38,4 +42,5 @@
 
 
 (provide 'init-tabbar)
+
 ;;; init-tabbar.el ends here

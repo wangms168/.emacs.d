@@ -2,6 +2,10 @@
 
 ;; URL: https://github.com/seagle0128/.emacs.d
 
+;;; Commentary:
+;;
+;;
+
 ;;; Code:
 
 ;; (let ((table (make-display-table)))  (aset table ?\^L [?📄])  (setq buffer-display-table table))
@@ -32,17 +36,6 @@
 ;;----------------------------------------------------------------------------
 ;; load-path
 ;;----------------------------------------------------------------------------
-;; (defmacro maple/require (pkg)
-;;   "Load PKG."
-;;   `(load (file-truename (format "%s/lisp/%s" (expand-file-name user-emacs-directory) ,pkg))  t t))
-
-;; (defmacro maple/require (pkg)
-;;   "Load PKG."
-;;   `(require ,pkg (file-truename (format "%s/lisp/%s" (expand-file-name user-emacs-directory) ,pkg))))
-
-;; (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory) t)         ;; 参数t是Add all at end of `load-path'
-;; (add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory) t)
-
 ;; (dolist (i '("lisp"
 ;; 	     "site-lisp"
 ;; 	     ))
@@ -53,7 +46,7 @@
 ;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
 (defun update-load-path (&rest _)
   "Update `load-path'."
-  (push (expand-file-name "site-lisp" user-emacs-directory) load-path)
+  (push (expand-file-name "site-lisp" user-emacs-directory) load-path)      ;; push是加到`load-path'的前面。
   (push (expand-file-name "lisp" user-emacs-directory) load-path))
 
 (defun add-subdirs-to-load-path (&rest _)
@@ -144,7 +137,7 @@
 (defun my-fontset-menu ()
   (interactive)
   (x-popup-menu
-   `((0 0) ,(selected-frame)) 
+   `((0 0) ,(selected-frame))
    (append x-fixed-font-alist
            (list (generate-fontset-menu)))))
 
@@ -153,4 +146,4 @@
 
 ;;; init.el ends here
 ;; (put 'narrow-to-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
+;; (put 'upcase-region 'disabled nil)

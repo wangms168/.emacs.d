@@ -1,3 +1,7 @@
+;;; init-key.el --- Initialize ivy configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
 (use-package helm-descbinds
   :init
   (define-key help-map (kbd "b") 'helm-descbinds)              ;; describe-bindings
@@ -16,6 +20,6 @@
 ;;   (guide-key-mode 1)  ; Enable guide-key-mode
 ;;   )
 
-
 (provide 'init-key)
-;;; init-modeline.el ends here
+
+;;; init-key.el ends here

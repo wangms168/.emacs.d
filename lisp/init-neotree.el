@@ -1,3 +1,8 @@
+;;; init-naotree.el --- Initialize ivy configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
+
 ;; NeoTree
 (use-package neotree
   :config
@@ -9,4 +14,5 @@
 
 
 (provide 'init-neotree)
+
 ;;; init-neotree.el ends here

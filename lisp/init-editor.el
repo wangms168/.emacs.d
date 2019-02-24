@@ -1,4 +1,6 @@
 ;;; init-editor.el --- Initialize editor configurations.	-*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
 ;; (menu-bar-mode -1)                        ;;never have a retarded menu-bar at top
 ;; (tool-bar-mode -1)                        ;;never have a retarded tool-bar at top
@@ -27,7 +29,7 @@
 ;;ref: http://docs.huihoo.com/homepage/shredderyin/emacs_elisp.html
 ;;ref: emacs FAQ info doc "Matching parentheses"
 (defun match-paren (arg)
-  "Go to the matching paren if on a paren; otherwise insert %."
+  "Go to the matching paren if on a paren;otherwise insert %."
   (interactive "p")
   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
@@ -63,13 +65,13 @@
 ;; comment
 ;;----------------------------------------------------------------------------
 ;; (global-set-key [?\M-;] 'comment-or-uncomment-region)    ;; 批量注释
-;; (defun my-comment-or-uncomment-region (beg end &optional arg)  
-;;   (interactive (if (use-region-p)  
-;;                    (list (region-beginning) (region-end) nil)  
-;;                  (list (line-beginning-position)  
-;;                        (line-beginning-position 2))))  
-;;   (comment-or-uncomment-region beg end arg) 
-;; )  
+;; (defun my-comment-or-uncomment-region (beg end &optional arg)
+;;   (interactive (if (use-region-p)
+;;                    (list (region-beginning) (region-end) nil)
+;;                  (list (line-beginning-position)
+;;                        (line-beginning-position 2))))
+;;   (comment-or-uncomment-region beg end arg)
+;; )
 ;; (global-set-key [remap comment-or-uncomment-region] 'my-comment-or-uncomment-region)
 
 (use-package newcomment
@@ -132,7 +134,7 @@
   :config
   (beacon-mode 1))
 
-(use-package pos-tip  
+(use-package pos-tip
   :config
 )
 
@@ -146,4 +148,5 @@
                             'font-lock-comment-face))))))
 
 (provide 'init-editor)
+
 ;;; init-editor.el ends here

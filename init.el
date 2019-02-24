@@ -1,11 +1,7 @@
 ;;; init.el --- Initialize configurations.	-*- lexical-binding: t no-byte-compile: t; -*-
 
 ;; URL: https://github.com/seagle0128/.emacs.d
-
 ;;; Commentary:
-;;
-;;
-
 ;;; Code:
 
 ;; (let ((table (make-display-table)))  (aset table ?\^L [?📄])  (setq buffer-display-table table))
@@ -102,7 +98,7 @@
 
 
 ;; grep matches with background yellow and foreground black
-(setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
+;; (setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
 ;;----------------------------------------------------------------------------
 ;; emacs-backup-config
 ;;----------------------------------------------------------------------------

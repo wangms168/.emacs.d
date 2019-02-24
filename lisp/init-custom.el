@@ -89,5 +89,4 @@ If Non-nil, use dashboard, otherwise will restore previous session."
 
 (provide 'init-custom)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-custom.el ends here

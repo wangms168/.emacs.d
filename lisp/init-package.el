@@ -1,4 +1,4 @@
-;;; init-package.el --- Initialize package configurations.	-*- lexical-binding: t -*-
+;;; init-package.el --- Initialize package configurations.	-*- coding: utf-8 lexical-binding: t -*-
 
 ;; Copyright (C) 2019 Vincent Zhang
 

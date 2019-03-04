@@ -350,13 +350,14 @@ been modified since its last check-in."
 (advice-add 'package-menu-execute :after 'spaceline--count-upgrades)
 (defun custom-modeline-package-updates ()
   ;; ati-package-updates "An `all-the-icons' spaceline segment to indicate number of package updates needed"
-  (let ((num (or spaceline--upgrades (spaceline--count-upgrades))))
+  (let* ((num (or spaceline--upgrades (spaceline--count-upgrades))))
     (propertize
      (concat
       (propertize (format "%s" (all-the-icons-octicon "package"))
                   'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
                   'display '(raise 0.0))
-      (propertize (format " %d updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
+      ;; (propertize (format " %d updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
+      (propertize (format " %s updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
      'help-echo "Open Packages Menu"
      'mouse-face '(:box 1)
      'local-map (make-mode-line-mouse-map

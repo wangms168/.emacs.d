@@ -5,7 +5,7 @@
 ;;; Code:
 
 ;; (let ((table (make-display-table)))  (aset table ?\^L [?📄])  (setq buffer-display-table table))
-;; 
+
 
 (when (version< emacs-version "25.1")
   (error "This requires Emacs 25.1 and above!"))
@@ -13,6 +13,8 @@
 ;;----------------------------------------------------------------------------
 ;; Speed up startup
 ;;----------------------------------------------------------------------------
+(defconst emacs-start-time (current-time))
+
 (defvar default-file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 (setq gc-cons-threshold 80000000)
@@ -27,7 +29,6 @@
                                 (unless (frame-focus-state)
                                   (garbage-collect))))
               (add-hook 'focus-out-hook 'garbage-collect))))
-
 
 ;;----------------------------------------------------------------------------
 ;; load-path
@@ -65,6 +66,9 @@
 (require 'init-package)
 (require 'init-basic)
 (require 'init-funcs)
+(require 'init-edit)
+(require 'init-edit-visual)
+;; (require 'init-dashboard)
 
 (require 'init-frame-hooks)
 (require 'init-frame)
@@ -94,8 +98,7 @@
 ;; (require 'init-awesome-pair)
 ;; (require 'init-undo-tree)
 
-(require 'init-editor) ;;自动补全括号等
-
+;; (require 'init-editor) ;;自动补全括号等
 
 (defun my-fontset-menu ()
   (interactive)
@@ -103,6 +106,10 @@
    `((0 0) ,(selected-frame))
    (append x-fixed-font-alist
            (list (generate-fontset-menu)))))
+
+(add-hook 'after-init-hook (lambda () (message (format "time-subtract = %s" (float-time (time-subtract (current-time) emacs-start-time))))))
+(add-hook 'after-init-hook (lambda () (message (format "after/before-init-time = %s" (float-time (time-subtract after-init-time before-init-time))))))
+(add-hook 'after-init-hook (lambda () (message  (format "emacs-init-time = %s" (emacs-init-time)))))
 
 
 (provide 'init)

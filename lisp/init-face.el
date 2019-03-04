@@ -26,8 +26,9 @@
      ;; (set-face-background 'region "blue")
      ;; (set-face-foreground 'secondary-selection "skyblue")
      ;; (set-face-background 'secondary-selection "#000000")
-     (set-face-attribute 'secondary-selection nil :background "#2A2A2A" :foreground nil)    ;"#100a14"\#6B6A6C
+;; (set-face-attribute 'secondary-selection nil :background "#2A2A2A" :foreground nil)    ;"#100a14"\#6B6A6C
      ;; (custom-set-faces '(secondary-selection ((t (:background "#000000" :foreground "grey70")))))  ;;这种方式设置不起作用
+(custom-set-faces '(secondary-selection ((t (:background "#2A2A2A" :foreground nil)))))  ;;这种方式设置不起作用
 
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :height 80 :width 'normal :box '(:line-width 1 :color "white" :style none) :foreground "white" :background "#2A2A2A")
 ;; (set-face-attribute 'mode-line nil :family "DejaVu Sans Mono" :width 'normal :box '(:line-width 1 :color "white" :style none) :foreground "white" :background "#2A2A2A")

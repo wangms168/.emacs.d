@@ -5,7 +5,7 @@
 ;;
 
 ;;; Code:
-
+;;
 (eval-when-compile
   (require 'init-const))
 
@@ -76,7 +76,9 @@ If Non-nil, use dashboard, otherwise will restore previous session."
       (copy-file custom-template-file custom-file)))
 
 (if (file-exists-p custom-file)
-    (load custom-file))
+    ;; (load custom-file))
+    (load-file custom-file))
+
 
 ;; Load `custom-post.el'
 ;; Put personal configurations to override defaults here.

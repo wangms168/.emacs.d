@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 ;;  https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/init.el
-
 (use-package frame
   :ensure nil
   :config
@@ -11,7 +10,8 @@
                                 "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
                               ;; Use .Xdefaults config
                               ;; (assoc-default 'font (frame-parameters))
-			      "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"    ;; 文泉驿等宽微米黑
+			      "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
+			      ;; "-*-DejaVu Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"    ;; 文泉驿等宽微米黑
                               ))
     (setq-default frame-background-mode 'dark)
     (setq initial-frame-alist '((fullscreen . maximized)))
@@ -30,8 +30,7 @@ With a prefix arg decrease transparency."
           (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
           (message "Alpha[%s]" mod-alpha))))
     
-    (setq initial-frame-alist '(
- 				(vertical-scroll-bars . nil)
+    (setq initial-frame-alist '((vertical-scroll-bars . nil)
                                 (tool-bar-lines . 0)
                                 (menu-bar-lines . 0)
                                 ;; (title . ,(format "%s-%s"
@@ -136,6 +135,9 @@ With a prefix arg decrease transparency."
 ;;   (mwheel-install))
 ;; (add-hook 'after-make-console-frame-hooks 'sanityinc/console-frame-setup)
 
+;;(add-hook 'before-save-hook 'whitespace-cleanup nil (not global)))
+;;    (`trailing
+;;     (add-hook 'before-save-hook 'delete-trailing-whitespace nil (not global)))
 
 (provide 'init-frame)
 

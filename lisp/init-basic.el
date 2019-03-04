@@ -27,7 +27,7 @@
 ;;
 ;; Basic configuration.
 ;;
-
+
 ;;; Code:
 
 (eval-when-compile
@@ -63,6 +63,7 @@
 ;; (use-package server
 ;;  :ensure nil
 ;;  :hook (after-init . server-mode))
+
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient

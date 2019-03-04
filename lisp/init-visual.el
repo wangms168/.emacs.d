@@ -1,15 +1,14 @@
 ;;; init-visual.el --- Initialize editor configurations.	-*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
-
+
 
 (use-package page-break-lines
-   :config
-   (global-page-break-lines-mode)
- )
+  :hook (after-init . global-page-break-lines-mode)
+  ;; :config
+  ;; (add-hook 'after-init-hook 'global-page-break-lines-mode)
+  )
 
-;;(require 'page-break-lines)
-;;(page-break-lines-mode)
 
 
 (provide 'init-visual)

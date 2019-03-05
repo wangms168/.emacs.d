@@ -34,8 +34,19 @@
 ;; from emacs (especially on Microsoft Windows)
 ;; (prefer-coding-system 'utf-8)
 
-
-;;http://emacslife.com/how-to-read-emacs-lisp.html收集的
+;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+;; (setq savehist-file "~/.emacs.d/default/tmp/savehist")
+;; (tooltip-mode -1)
+;; (tool-bar-mode -1)
+;; (menu-bar-mode -1)
+;; (scroll-bar-mode -1)
+;; (prefer-coding-system 'utf-8)
+(setq visible-bell t)                        ;;将Emacs配置为闪存而不是响铃
+(setq-default indicate-empty-lines t)        ;; 在缓冲区结束后可视地指示空行
+(setq-default show-trailing-whitespace t)    ;; 突出显示尾随空格
+(defalias 'yes-or-no-p 'y-or-n-p)            ;; 用'y'和'n'来代替频繁地输入'yes’和'no'
+;; (fset 'yes-or-no-p 'y-or-n-p)
+;; (setq-default cursor-type 'bar)           ;; 设置光标为小长条形状.设置这个，智能改变光标形状不起作用。
 
 ;; Miscs
 (setq inhibit-startup-message t)          ;; 禁用启动画面
@@ -45,12 +56,12 @@
 (setq adaptive-fill-regexp "[ t]+|[ t]*([0-9]+.|*+)[ t]*")
 (setq adaptive-fill-first-line-regexp "^* *$")
 (setq delete-by-moving-to-trash t)         ; Deleting files go to OS's trash folder
-(setq make-backup-files nil)               ; Forbide to make backup files
-(setq auto-save-default nil)               ; Disable auto save
+;; (setq make-backup-files nil)               ; Forbide to make backup files
+;; (setq auto-save-default nil)               ; Disable auto save
 (setq set-mark-command-repeat-pop t)       ; Repeating C-SPC after popping mark pops it again
 (setq-default kill-whole-line t)           ; Kill line including '\n'
 
-(global-hl-line-mode)             ;;高亮当前行
+(global-hl-line-mode)                     ;;高亮当前行
 (with-eval-after-load 'hl-line (set-face-background hl-line-face "#212121" ) )
 ;;----------------------------------------------------------------------------
 ;; paren
@@ -64,7 +75,7 @@
     (setq show-paren-style 'parentheses)
     ;; (set-face-attribute 'show-paren-match nil :background nil :underline "#13F811")
     ;;'(show-paren-match ((t (:background "steelblue3" :underline "lawn green")))))
-    (custom-set-faces '(show-paren-match ((t (:background nil :foreground "yellow" :underline "yellow")))))
+    (custom-set-faces '(show-paren-match ((t (:background "steelblue3" :foreground "yellow" :underline "yellow")))))
     ))
 
 ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode) ;;显示当前函数的参数列表,似乎已默认开启。
@@ -399,11 +410,13 @@
 ;;----------------------------------------------------------------------------
 ;; line-numbers
 ;;----------------------------------------------------------------------------
-;;(add-hook 'find-file-hook 'linum-mode)
-;;(setq linum-format "%d| ")               ;;set format
-;; (setq display-line-numbers-type 'visual)
+(add-hook 'find-file-hook 'linum-mode)
+(setq linum-format "%d| ")               ;;set format
+;; (setq linum-format "%4d \u2502 ")           ;; "\u2502"="|"
+;; ;; (setq display-line-numbers-type 'visual)
 ;; (add-hook 'find-file-hook 'display-line-numbers-mode)
-
+;; (global-linum-mode t)
+;; (setq linum-format "%4d\u2502 ")
 ;;----------------------------------------------------------------------------
 ;; title
 ;;----------------------------------------------------------------------------
@@ -411,19 +424,26 @@
 ;; (setq column-number-mode t)           ;; 模式栏显示列号
 ;; (setq line-number-mode t)             ;; 模式栏显示行号
 
-;;----------------------------------------------------------------------------
-;; line-numbers
-;;----------------------------------------------------------------------------
-;;(add-hook 'find-file-hook 'linum-mode)
-;;(setq linum-format "%d| ")               ;;set format
-;; (setq display-line-numbers-type 'visual)
-;; (add-hook 'find-file-hook 'display-line-numbers-mode)
-
-
 ;; (setq undo-tree-auto-save-history t)     ;;可以撤销关闭重启前的修改
 ;; (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
 ;;测试撤销重启前的修改,经测试，上述的设置不管用。
 
+(use-package beacon     ;; 每当窗口滚动时，光线就会照亮光标顶部;你知道它在哪里。
+  :config
+  (beacon-mode 1))
+
+(use-package pos-tip
+  :config
+  )
+
+;; 要在ProgrammingModes中自动填充注释而不是代码.
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (auto-fill-mode 1)
+            (set (make-local-variable 'fill-nobreak-predicate)
+                 (lambda ()
+                   (not (eq (get-text-property (point) 'face)
+                            'font-lock-comment-face))))))
 
 (defun what-face (pos)
   (interactive "d")

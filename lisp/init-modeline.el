@@ -717,7 +717,7 @@ been modified since its last check-in."
 		 (:eval (propertize (format-mode-line "%I") 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
 		 ;; 
 		 "|" 
-		 mode-line-mule-info ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。一般显示为‘U:’，C-\快捷键触发后显示‘拼符U:’。
+		 mode-line-mule-info ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
        		 mode-line-client    ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
        		 mode-line-modified  ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。其默认值显示'**'如果缓冲区被修改，'--'如果没有修改缓冲区，'%%'如果缓冲区是只读的，'％*'如果缓冲区是只读和修改的。
        		 mode-line-remote    ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。
@@ -917,7 +917,7 @@ can be used to add a number of spaces to the front and back of the string."
 	       (propertize (format-mode-line "%I") 'face `(:height 1.0 :inherit) 'display '(raise 0.0))
 	       ;; 
 	       "|" 
-	       (format-mode-line mode-line-mule-info)    ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。一般显示为‘U:’，C-\快捷键触发后显示‘拼符U:’。
+	       (format-mode-line mode-line-mule-info)    ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
        	       (format-mode-line mode-line-client)       ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
        	       (format-mode-line mode-line-modified)     ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。其默认值显示'**'如果缓冲区被修改，'--'如果没有修改缓冲区，'%%'如果缓冲区是只读的，'％*'如果缓冲区是只读和修改的。
        	       (format-mode-line mode-line-remote)       ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。
@@ -1030,7 +1030,7 @@ can be used to add a number of spaces to the front and back of the string."
 ;; (setq-default mode-line-format                   ;; Original value of mode-line-format
 ;; 	      '("%e"                             ;; %e 当Emacs对于Lisp对象几乎没有内存时，会发出一条简短的消息。否则，这是空的。
 ;; 		mode-line-front-space            ;; 模式行前置空间:该变量显示在模式行的前面。默认情况下，此构造显示在模式行的开头，但如果存在满内存消息，则首先显示该构造。
-;; 		mode-line-mule-info              ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。utf-8显示为‘U:’、prefer-utf-8显示为"-:"，C-\快捷键触发后显示‘拼符U:’。
+;; 		mode-line-mule-info              ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。utf-8显示为‘U:’、prefer-utf-8显示为"-:"，C-\(toggle-input-method)显示‘拼符U:’。
 ;; 		mode-line-client                 ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
 ;; 		mode-line-modified               ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。其默认值显示'**'如果缓冲区被修改，'--'如果没有修改缓冲区，'%%'如果缓冲区是只读的，'％*'如果缓冲区是只读和修改的。
 ;; 		mode-line-remote                 ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。

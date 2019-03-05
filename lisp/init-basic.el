@@ -77,17 +77,33 @@
 ;;----------------------------------------------------------------------------
 ;; emacs-backup-config
 ;;----------------------------------------------------------------------------
-(setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
-      backup-by-copying t
-      version-control t
-      kept-old-versions 2
-      kept-new-versions 100
-      delete-old-versions t)
-(setq tramp-backup-directory-alist backup-directory-alist)
+(setq version-control t     ;; Use version numbers for backups.
+      kept-new-versions 10  ;; Number of newest versions to keep.
+      kept-old-versions 0   ;; Number of oldest versions to keep.
+      delete-old-versions t ;; Don't ask to delete excess backup versions.
+      backup-by-copying t)  ;; Copy all files, don't rename them.
+
+(setq vc-make-backup-files t)
+;; Default and per-save backups go here:
+(setq backup-directory-alist '(("" . "~/.emacs.d/default/backup/per-save")))
+
+(defun force-backup-of-buffer ()
+  ;; Make a special "per session" backup at the first save of each
+  ;; emacs session.
+  (when (not buffer-backed-up)
+    ;; Override the default parameters for per-session backups.
+    (let ((backup-directory-alist '(("" . "~/.emacs.d/default/backup/per-session")))
+          (kept-new-versions 3))
+      (backup-buffer)))
+  ;; Make a "per save" backup on each save.  The first save results in
+  ;; both a per-session and a per-save backup, to keep the numbering
+  ;; of per-save backups consistent.
+  (let ((buffer-backed-up nil))
+    (backup-buffer)))
+(add-hook 'before-save-hook  'force-backup-of-buffer)
 ;; Disable backup files  注意，如有下面变量为nil，将使上面的emacs_backup失去作用！
 ;; (setq make-backup-files nil) ; stop creating backup~ filess
 ;; (setq auto-save-default nil) ; stop creating #autosave# files
-
 
 ;; History
 (use-package saveplace

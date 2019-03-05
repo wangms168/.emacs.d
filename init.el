@@ -6,6 +6,8 @@
 
 ;; (let ((table (make-display-table)))  (aset table ?\^L [?📄])  (setq buffer-display-table table))
 
+(setq debug-on-erron t)
+(setq debug-on-quit t)
 
 (when (version< emacs-version "25.1")
   (error "This requires Emacs 25.1 and above!"))
@@ -98,8 +100,6 @@
 ;; (require 'init-awesome-pair)
 ;; (require 'init-undo-tree)
 
-;; (require 'init-editor) ;;自动补全括号等
-
 (defun my-fontset-menu ()
   (interactive)
   (x-popup-menu
@@ -110,6 +110,30 @@
 (add-hook 'after-init-hook (lambda () (message (format "time-subtract = %s" (float-time (time-subtract (current-time) emacs-start-time))))))
 (add-hook 'after-init-hook (lambda () (message (format "after/before-init-time = %s" (float-time (time-subtract after-init-time before-init-time))))))
 (add-hook 'after-init-hook (lambda () (message  (format "emacs-init-time = %s" (emacs-init-time)))))
+
+;; https://oremacs.com/2015/03/05/testing-init-sanity/
+(defun my-test-emacs ()
+  (interactive)
+  (require 'async)
+  (async-start
+   (lambda () (shell-command-to-string
+               "emacs --batch --eval \"
+(condition-case e
+    (progn
+      (load \\\"~/.emacs\\\")
+      (message \\\"-OK-\\\"))
+  (error
+   (message \\\"ERROR!\\\")
+   (signal (car e) (cdr e))))\""))
+   `(lambda (output)
+      (if (string-match "-OK-" output)
+          (when ,(called-interactively-p 'any)
+            (message "All is well"))
+        (switch-to-buffer-other-window "*startup error*")
+        (delete-region (point-min) (point-max))
+        (insert output)
+        (search-backward "ERROR!")))))
+;;(add-hook 'after-save-hook 'my-test-emacs)
 
 
 (provide 'init)

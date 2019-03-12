@@ -40,6 +40,15 @@
     (tabbar-mode)
     ))
 
+;; (use-package awesome-tab
+;;   :load-path "~/home/wangms/.emacs.d/default/site-lisp/awesome-tab/"
+;;   ;; :straight (awesome-tab
+;;   ;; 	     :type git
+;;   ;; 	     :host github
+;;   ;; 	     :repo "manateelazycat/awesome-tab")
+;;   :config
+;;   (setq awesome-tab-style 'alternate)
+;;   (awesome-tab-mode t))
 
 (provide 'init-tabbar)
 

@@ -133,8 +133,12 @@
         (delete-region (point-min) (point-max))
         (insert output)
         (search-backward "ERROR!")))))
-;;(add-hook 'after-save-hook 'my-test-emacs)
+(add-hook 'after-save-hook 'my-test-emacs)
 
+(setq-default
+ show-menu-bar? t
+ maximize-frame-at-start? t
+ )
 
 (provide 'init)
 

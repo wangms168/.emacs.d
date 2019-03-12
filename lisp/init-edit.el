@@ -41,7 +41,7 @@
 ;; (menu-bar-mode -1)
 ;; (scroll-bar-mode -1)
 ;; (prefer-coding-system 'utf-8)
-(setq visible-bell t)                        ;;将Emacs配置为闪存而不是响铃
+;; (setq visible-bell t)                        ;;将Emacs配置为闪存而不是响铃
 (setq-default indicate-empty-lines t)        ;; 在缓冲区结束后可视地指示空行
 (setq-default show-trailing-whitespace t)    ;; 突出显示尾随空格
 (defalias 'yes-or-no-p 'y-or-n-p)            ;; 用'y'和'n'来代替频繁地输入'yes’和'no'
@@ -411,7 +411,7 @@
 ;; line-numbers
 ;;----------------------------------------------------------------------------
 (add-hook 'find-file-hook 'linum-mode)
-(setq linum-format "%d| ")               ;;set format
+(setq linum-format "%4d|")               ;;set format
 ;; (setq linum-format "%4d \u2502 ")           ;; "\u2502"="|"
 ;; ;; (setq display-line-numbers-type 'visual)
 ;; (add-hook 'find-file-hook 'display-line-numbers-mode)

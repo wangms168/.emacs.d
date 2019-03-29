@@ -41,12 +41,15 @@
 ;; (menu-bar-mode -1)
 ;; (scroll-bar-mode -1)
 ;; (prefer-coding-system 'utf-8)
-;; (setq visible-bell t)                        ;;将Emacs配置为闪存而不是响铃
+;; (setq visible-bell t)                     ;; 将Emacs配置为闪存而不是响铃
 (setq-default indicate-empty-lines t)        ;; 在缓冲区结束后可视地指示空行
 (setq-default show-trailing-whitespace t)    ;; 突出显示尾随空格
 (defalias 'yes-or-no-p 'y-or-n-p)            ;; 用'y'和'n'来代替频繁地输入'yes’和'no'
 ;; (fset 'yes-or-no-p 'y-or-n-p)
 ;; (setq-default cursor-type 'bar)           ;; 设置光标为小长条形状.设置这个，智能改变光标形状不起作用。
+
+(setq split-width-threshold nil)             ;; 窗口垂直分割
+(setq split-height-threshold 0)
 
 ;; Miscs
 (setq inhibit-startup-message t)          ;; 禁用启动画面
@@ -60,6 +63,8 @@
 ;; (setq auto-save-default nil)               ; Disable auto save
 (setq set-mark-command-repeat-pop t)       ; Repeating C-SPC after popping mark pops it again
 (setq-default kill-whole-line t)           ; Kill line including '\n'
+
+(add-to-list 'auto-mode-alist '("\\.nanorc\\'" . sh-mode))   ;;conf-unix-mode  ;;.nanorc的语法高亮
 
 (global-hl-line-mode)                     ;;高亮当前行
 (with-eval-after-load 'hl-line (set-face-background hl-line-face "#212121" ) )

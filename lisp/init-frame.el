@@ -10,8 +10,8 @@
                                 "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
                               ;; Use .Xdefaults config
                               ;; (assoc-default 'font (frame-parameters))
-			      "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
-			      ;; "-*-DejaVu Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"    ;; 文泉驿等宽微米黑
+			      ;; "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
+			      "-*-DejaVu Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"    ;; 文泉驿等宽微米黑
                               ))
     (setq-default frame-background-mode 'dark)
     (setq initial-frame-alist '((fullscreen . maximized)))
@@ -81,7 +81,8 @@ With a prefix arg decrease transparency."
     ;; Special buffer display.
     (add-hook 'window-setup-hook
               (lambda ()
-                (setq special-display-regexps `(("\\*Help"
+                (setq special-display-regexps `(
+						("\\*Help"
                                                  (minibuffer . nil)
                                                  (width . 80)
                                                  (height . 24)

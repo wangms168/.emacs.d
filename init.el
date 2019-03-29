@@ -70,7 +70,6 @@
 (require 'init-funcs)
 (require 'init-edit)
 (require 'init-edit-visual)
-;; (require 'init-dashboard)
 
 (require 'init-frame-hooks)
 (require 'init-frame)
@@ -92,6 +91,7 @@
 (progn (require 'cursor-change) (cursor-change-mode 1)) ;;智能光标形状
 
 (require 'init-ivy)
+(require 'init-projectile)
 (require 'init-key)
 (require 'init-complete)
 (require 'init-neotree)
@@ -135,10 +135,6 @@
         (search-backward "ERROR!")))))
 (add-hook 'after-save-hook 'my-test-emacs)
 
-(setq-default
- show-menu-bar? t
- maximize-frame-at-start? t
- )
 
 (provide 'init)
 

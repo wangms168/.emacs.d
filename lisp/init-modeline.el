@@ -90,7 +90,7 @@
 (defun custom-modeline-mode-icon ()
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon) ;; This implies it's the major mode
-      (propertize icon
+       (propertize icon
                   'help-echo (format "Major-mode: `%s`" major-mode)
                   'display '(raise 0.0)
                   ;; 'face `(:height 1.0 :family ,(all-the-icons-icon-family-for-buffer) :inherit)))))
@@ -933,10 +933,12 @@ can be used to add a number of spaces to the front and back of the string."
 	       "|" 
 	       ;; (propertize (shorten-directory default-directory 30) face font-lock-string-face)
        	       ;; (format-mode-line mode-line-buffer-identification)   ;; 模式行缓冲区识别:此变量标识窗口中显示的缓冲区。其默认值显示缓冲区名称，用空格填充至少12列。
-	       (custom-buffer-id-icon)
+
+	       ;; (custom-buffer-id-icon)     ;;含有projectile，会使modeline高度变化
+	       (propertize (format-mode-line "%b") )
 	       (custom-modeline-mode-icon)
 	       (custom-process-icon)
-	       (custom-projectile-icon)	
+	       ;; (custom-projectile-icon)    ;;含有projectile，会使modeline高度变化
 	       ))
 	 (center (concat
 		  (format-mode-line mode-line-modes)  ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。其中含有：mode-name、mode-line-process、minor-mode-alist。

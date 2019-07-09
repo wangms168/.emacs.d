@@ -7,7 +7,7 @@
   :config
   (progn
     (defvar tv-default-font (if (string= (invocation-name) "remacs")
-                                "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
+                                "-*-DejaVu Sans Mono-bold-normal-normal-*-13-*-*-*-m-0-iso10646-1"
                               ;; Use .Xdefaults config
                               ;; (assoc-default 'font (frame-parameters))
 			      ;; "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
@@ -41,9 +41,9 @@ With a prefix arg decrease transparency."
 				(width . 108)
 				(height . 28)
                                 (cursor-color . "red")
-     				(foreground-color . "Wheat")
-                                (background-color . "black")   ;; #181A26
-                                (alpha . 90)
+     				;; (foreground-color . "Wheat")
+                                ;; (background-color . "black")   ;; #181A26
+                                ;; (alpha . 90)
                                 ;; (font . ,tv-default-font)
                                 (fullscreen . nil)
     				))

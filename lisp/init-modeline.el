@@ -963,8 +963,7 @@ can be used to add a number of spaces to the front and back of the string."
 				  (if (>= (current-column) 80)
 				      'mode-line-80col-face
 				    `(:background ,background :foreground ,foreground)))
-	       (propertize (format "|%s" (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p")))) 'face `(:background ,background :foreground ,foreground))
-	       "   "
+	       (propertize (format "|%s  " (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p")))) 'face `(:background ,background :foreground ,foreground))
 	       ;; mode-line-position     ;; 模式行位置:此变量指示缓冲区中的位置。其默认值显示缓冲区百分比，以及可选的缓冲区大小，行号和列号。显示形如：'xx% (xx,xx)'
 	       ;; (propertize (format "  %s" (format-mode-line mode-line-position)) 'face `(:height 1.0 :background ,background :foreground ,foreground)) 
 	       (format-mode-line mode-line-end-spaces)              ;; 模式行结束空间:该变量显示在模式行的末尾。

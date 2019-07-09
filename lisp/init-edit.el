@@ -83,6 +83,14 @@
     (custom-set-faces '(show-paren-match ((t (:background "steelblue3" :foreground "yellow" :underline "yellow")))))
     ))
 
+;; 光标在括号内时就高亮包含内容的两个括号
+(define-advice show-paren-function (:around (fn) fix-show-paren-function)
+  "Highlight enclosing parens."
+  (cond ((looking-at-p "\\s(") (funcall fn))
+        (t (save-excursion
+             (ignore-errors (backward-up-list))
+             (funcall fn)))))
+
 ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode) ;;显示当前函数的参数列表,似乎已默认开启。
 
 ;; (setq-default major-mode 'text-mode)
@@ -377,33 +385,34 @@
 ;;----------------------------------------------------------------------------
 ;; comment
 ;;----------------------------------------------------------------------------
-;; (global-set-key [?\M-;] 'comment-or-uncomment-region)    ;; 批量注释
-;; (defun my-comment-or-uncomment-region (beg end &optional arg)
-;;   (interactive (if (use-region-p)
-;;                    (list (region-beginning) (region-end) nil)
-;;                  (list (line-beginning-position)
-;;                        (line-beginning-position 2))))
-;;   (comment-or-uncomment-region beg end arg)
-;; )
-;; (global-set-key [remap comment-or-uncomment-region] 'my-comment-or-uncomment-region)
+;; (global-set-key [?\M-;] 'comment-or-uncomment-region)
+(global-set-key [?\M-;] 'comment-or-uncomment-region)		 ;; 批量注释
+(defun my-comment-or-uncomment-region (beg end &optional arg)
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end) nil)
+                 (list (line-beginning-position)
+                       (line-beginning-position 2))))
+  (comment-or-uncomment-region beg end arg)
+)
+(global-set-key [remap comment-or-uncomment-region] 'my-comment-or-uncomment-region)
 
-(use-package newcomment
-  :ensure nil
-  :config
-  (progn
-    ;; Change the behavior of `M-;' by commenting line.
-    ;; Much simpler than emacs-25 `comment-line'.
-    (defun comment--advice-dwim (old--fn &rest args)
-      (if (region-active-p)
-          (apply old--fn args)
-        (save-excursion
-          (goto-char (point-at-bol))
-          (push-mark (point-at-eol) t t)
-          (apply old--fn args))
-        (indent-region (point-at-bol) (point-at-eol))
-        (forward-line 1)
-        (back-to-indentation)))
-    (advice-add 'comment-dwim :around 'comment--advice-dwim)))
+;; (use-package newcomment
+;;   :ensure nil
+;;   :config
+;;   (progn
+;;     ;; Change the behavior of `M-;' by commenting line.
+;;     ;; Much simpler than emacs-25 `comment-line'.
+;;     (defun comment--advice-dwim (old--fn &rest args)
+;;       (if (region-active-p)
+;;           (apply old--fn args)
+;;         (save-excursion
+;;           (goto-char (point-at-bol))
+;;           (push-mark (point-at-eol) t t)
+;;           (apply old--fn args))
+;;         (indent-region (point-at-bol) (point-at-eol))
+;;         (forward-line 1)
+;;         (back-to-indentation)))
+;;     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
 ;;----------------------------------------------------------------------------
 ;; 二次选择高亮
@@ -497,6 +506,67 @@
   (interactive)
   ;; (occur "[^[:ascii:]]"))
   (highlight-regexp "[^[:ascii:]]"))
+
+;; https://rejeep.github.io/emacs/elisp/2010/03/11/duplicate-current-line-or-region-in-emacs.html
+(defun duplicate-current-line-or-region (arg)
+  "Duplicates the current line or region ARG times.
+If there's no region, the current line will be duplicated. However, if
+there's a region, all lines that region covers will be duplicated."
+  (interactive "p")
+  (let (beg end (origin (point)))
+    (if (and mark-active (> (point) (mark)))
+        (exchange-point-and-mark))
+    (setq beg (line-beginning-position))
+    (if mark-active
+        (exchange-point-and-mark))
+    (setq end (line-end-position))
+    (let ((region (buffer-substring-no-properties beg end)))
+      (dotimes (i arg)
+        (goto-char end)
+        (newline)
+        (insert region)
+        (setq end (point)))
+      (goto-char (+ origin (* (length region) arg) arg)))))
+(global-set-key (kbd "C-c <down>") 'duplicate-current-line-or-region)
+
+;; https://www.emacswiki.org/emacs/CopyingWholeLines
+(defun duplicate-line-or-region (&optional n)
+  "Duplicate current line, or region if active.
+    With argument N, make N copies.
+    With negative N, comment out original line and use the absolute value."
+  (interactive "*p")
+  (let ((use-region (use-region-p)))
+    (save-excursion
+      (let ((text (if use-region        ;Get region if active, otherwise line
+		      (buffer-substring (region-beginning) (region-end))
+		    (prog1 (thing-at-point 'line)
+		      (end-of-line)
+		      (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
+			  (newline))))))
+	(dotimes (i (abs (or n 1)))     ;Insert N times, or once if not specified
+	  (insert text))))
+    (if use-region nil                  ;Only if we're working with a line (not a region)
+      (let ((pos (- (point) (line-beginning-position)))) ;Save column
+	(if (> 0 n)                             ;Comment out original with negative arg
+	    (comment-region (line-beginning-position) (line-end-position)))
+	(forward-line 1)
+	(forward-char pos)))))
+(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
+
+;; 删除匹配的括号
+;; https://zhuanlan.zhihu.com/p/24309937
+(defun c-delete-pair ()
+  (interactive)
+  (let ((re "[([{<'\"]"))
+    (when (or (looking-at-p re) (re-search-backward re nil t))
+      (save-excursion (forward-sexp) (delete-char -1))
+      (delete-char 1))))
+
+(defun get-mode-name ()
+  "显示`major-mode'及`mode-name'"
+  (interactive)
+  (message "major-mode为%s, mode-name为%s" major-mode mode-name))
+(global-set-key (kbd "C-x m") 'get-mode-name)
 
 
 (provide 'init-edit)

@@ -4,8 +4,8 @@
 
 (use-package auto-highlight-symbol
   :init
+  (add-hook 'prog-mode-hook 'global-auto-highlight-symbol-mode)
   :config
-  (global-auto-highlight-symbol-mode t)
   )
 
 (use-package rainbow-mode
@@ -47,6 +47,25 @@
 ;;   :config
 ;;   (add-hook 'prog-mode-hook 'indent-guide-global-mode)
 ;;   )
+
+
+(use-package page-break-lines
+  :hook (after-init . global-page-break-lines-mode)
+  ;; :config
+  ;; (add-hook 'after-init-hook 'global-page-break-lines-mode)
+  )
+
+(use-package flymd)            ;;预览md文件，M-x flymd-flyit。
+(use-package impatient-mode)   ;;实时预览html文件。依赖simple-httpd与htmlize
+
+(use-package skewer-mode       ;;html\css\js交互。依赖simple-httpd与js2-mode
+  :ensure t
+  :config
+  (require 'simple-httpd)
+  ;; set root folder for httpd server
+  (setq httpd-root "/home/wangms/Documents/javascript")
+  (add-hook 'html-mode-hook 'skewer-html-mode)
+ )
 
 
 

@@ -2,7 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
-(load-theme 'misterioso  t)   ;;  wheatgrass \ manoj-dark \ sanityinc-tomorrow-bright \ misterioso
+;; (load-theme 'misterioso  t)   ;;  wheatgrass \ manoj-dark \ sanityinc-tomorrow-bright \ misterioso
+
+;; (use-package atom-one-dark-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'atom-one-dark t)
+;;   )
 
 ;; (use-package color-theme
 ;;   :config
@@ -16,10 +22,13 @@
 ;;        )))
 ;; 用M-x color-theme-select来选择你喜欢的颜色主题了
 
-
-;; (use-package monokai-theme
-;;   :hook (emacs-startup . (lambda () (load-theme 'monokai t) ))
+;; (use-package color-theme-sanityinc-tomorrow
+;;   :hook (emacs-startup . (lambda () (color-theme-sanityinc-tomorrow-night) ))
 ;;   )
+
+(use-package monokai-theme
+  :hook (emacs-startup . (lambda () (load-theme 'monokai t) ))
+  )
 
 ;; (use-package color-theme-sanityinc-tomorrow
 ;;   :hook (emacs-startup . (lambda ()  (color-theme-sanityinc-tomorrow--define-theme bright)))

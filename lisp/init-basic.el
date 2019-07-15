@@ -62,7 +62,7 @@
       delete-old-versions t ;; Don't ask to delete excess backup versions.
       backup-by-copying t)  ;; Copy all files, don't rename them.
 ;; Default and per-save backups go here:
-(setq backup-directory-alist '(("" . "~/.emacs.d/default/backup/per-save")))
+(setq backup-directory-alist '(("" . "~/.emacs.d/backup/per-save")))
 (defun force-backup-of-buffer ()
   ;; Make a special "per session" backup at the first save of each
   ;; emacs session.

@@ -149,7 +149,7 @@ That buffer should be current already."
 ;; (require 'maple-modeline)
 ;; (require 'init-tv-powerline)
 (require 'init-theme)  ;;主题
-(require 'init-face)
+;; (require 'init-face)
 
 (require 'doremi-frm)	;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
 (progn (require 'cursor-change) (cursor-change-mode 1)) ;;智能光标形状

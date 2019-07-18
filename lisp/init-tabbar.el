@@ -3,191 +3,177 @@
 ;;; Code:
 
 ;; tabbar
-(use-package tabbar
-  :ensure t
-  :bind
-  ("<C-S-iso-lefttab>" . tabbar-backward)
-  ("<C-tab>" . tabbar-forward)
-  :config
-  (setq tabbar-background-color "#333333")
-  (setq tabbar-separator '(0.3))
 
-  (set-face-attribute
-   'mode-line-inactive nil
-   :box nil)
-
-  (set-face-attribute
-   'tabbar-separator nil
-   :background "#333333"
-   :box nil)
-
-  (set-face-attribute
-   'tabbar-default nil
-   :height 1.0)
-
-  (set-face-attribute
-   'tabbar-button nil
-   :box nil)
-
-  (set-face-attribute
-   'tabbar-highlight nil
-   :foreground "black"
-   :background "orange"
-   :underline nil
-   :box nil)
-
-  (set-face-attribute
-   'tabbar-unselected nil
-   ;; :foreground "black"
-   :background nil
-   :box '(:line-width 1 :color "white" :style sunken)
-   )
-
-  (set-face-attribute
-   'tabbar-selected nil
-   ;; :foreground "block"
-   :background "#BFBFBF"
-   :box '(:line-width 1 :color "white" :style sunken)  ;;sunken
-   )
-
-  ;; (set-face-attribute
-  ;;  'tabbar-modified nil
-  ;;  :foreground "orange red"
-  ;;  :background "gray25"
-  ;;  :box '(:line-width 1 :color "gray19"))
-
-  ;; (set-face-attribute
-  ;;  'tabbar-selected-modified nil
-  ;;  :foreground "orange red"
-  ;;  :background "gray19"
-  ;;  :box '(:line-width 1 :color "gray19")
-
-  :init
-  (tabbar-mode 1)
+(defun tabbar-ruler-seting ()
+  (use-package tabbar-ruler
+    :ensure t
+    :init
+    (setq tabbar-buffer-groups-function 'tabbar-buffer-groups) ;; this is the problem line
+    (setq tabbar-ruler-global-tabbar t)    ; get tabbar
+    ;; (setq tabbar-ruler-global-ruler t)     ; get global ruler
+    (setq tabbar-ruler-popup-menu t)       ; get popup menu.
+    (setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
+    (setq tabbar-ruler-popup-scrollbar t)  ; show scroll-bar on mouse-move
+    ;; (global-set-key (kbd "C-c t") 'tabbar-ruler-move)
+    (global-set-key (kbd "C-<left>") 'tabbar-ruler-backward)
+    (global-set-key (kbd "C-<right>") 'tabbar-ruler-forward)
+    (custom-set-faces
+     '(tabbar-key-binding ((t (:background "gray12" :foreground "gainsboro" ))))
+     '(tabbar-default ((t (:background "gray12" :foreground "gainsboro" :height 1.0 :weight bold))))  ;;:weight bold
+     '(tabbar-button ((t (:inherit tabbar-default :foreground "white" :style released-button))))
+     '(tabbar-button-highlight ((t (:inherit tabbar-default))))
+     '(tabbar-highlight ((t (:underline t))))
+     '(tabbar-separator ((t (:inherit tabbar-default :background "#95CA59" :weight bold :line-width 7 :height 25))))
+     '(tabbar-selected ((t (:inherit tabbar-default :background "black" :foreground "orange"))))
+     '(tabbar-unselected ((t (:inherit tabbar-default))))
+     )
+    )
   )
 
-;; https://emacs.stackexchange.com/questions/984/what-is-the-right-way-to-install-tab-bar
-;; (use-package tabbar
-;;   :ensure t
-;;   :bind
-;;   ("<C-S-iso-lefttab>" . tabbar-backward)
-;;   ("<C-tab>" . tabbar-forward)
+(defun tabbar-seting ()
+  (use-package tabbar
+    :ensure t
+    :config
+    (global-set-key (kbd "C-<left>") 'tabbar-backward)
+    (global-set-key (kbd "C-<right>") 'tabbar-forward)
+    ;; 设置tabbar底色。
+    ;; tabbar的box边框是mode-line-inactive的face继承mode-line的face中的box得来的
+    ;; 将mode-line-inactive的face的:box设为nil即可取消tanbar的边框box。
+    (setq tabbar-background-color "#333333")
+    (set-face-attribute
+     'mode-line-inactive nil
+     :box nil)
 
-;;   :config
-;;   (setq tabbar-background-color "#333333")
-;;   (setq tabbar-separator '(0.2))
+    ;; 使分隔底色同tabbar底色
+    (setq tabbar-separator '(0.2))
+    (set-face-attribute
+     'tabbar-separator nil
+     :background "#333333"
+     :box nil)
 
-;;   (set-face-attribute
-;;    'mode-line-inactive nil
-;;    :box nil)
-;;   (set-face-attribute
-;;    'tabbar-default nil
-;;    :height 1.0)
-  
-;;   (set-face-attribute
-;;    'tabbar-button nil
-;;    :box '(:line-width 1 :color "gray19"))
+    ;; 使字体粗园
+    (set-face-attribute
+     'tabbar-default nil
+     :height 1.0)
 
-;;   (set-face-attribute
-;;    'tabbar-selected nil
-;;    :foreground "orange"
-;;    :background "gray19"
-;;    :box '(:line-width 1 :color "gray19"))
+    (set-face-attribute
+     'tabbar-button nil
+     :box nil)
 
-;;   (set-face-attribute
-;;    'tabbar-unselected nil
-;;    :foreground "gray75"
-;;    :background "gray25"
-;;    :box '(:line-width 1 :color "gray19"))
+    (set-face-attribute
+     'tabbar-highlight nil
+     :foreground "black"
+     :background "orange"
+     :underline nil
+     :box nil)
 
-;;   (set-face-attribute
-;;    'tabbar-highlight nil
-;;    :foreground "black"
-;;    :background "orange"
-;;    :underline nil
-;;    :box '(:line-width 1 :color "gray19" :style nil))
+    (set-face-attribute
+     'tabbar-unselected nil
+     :foreground "black"
+     :background nil
+     :box '(:line-width 1 :color "white" :style sunken)
+     )
 
-;;   (set-face-attribute
-;;    'tabbar-modified nil
-;;    :foreground "orange red"
-;;    :background "gray25"
-;;    :box '(:line-width 1 :color "gray19"))
+    (set-face-attribute
+     'tabbar-selected nil
+     ;; :foreground "block"
+     :background "#BFBFBF"
+     :box '(:line-width 1 :color "white" :style sunken)
+     )
 
-;;   (set-face-attribute
-;;    'tabbar-selected-modified nil
-;;    :foreground "orange red"
-;;    :background "gray19"
-;;    :box '(:line-width 1 :color "gray19"))
+    (set-face-attribute
+     'tabbar-modified nil
+     :foreground "orange red"
+     :background "gray25"
+     :box '(:line-width 1 :color "gray19"))
 
-;;   ;; Change padding of the tabs
-;;   ;; we also need to set separator to avoid overlapping tabs by highlighted tabs
-;;   ;; (custom-set-variables
-;;   ;;  '(tabbar-separator (quote (1.0))))
-;;   (defun tabbar-buffer-tab-label (tab)
-;;     "Return a label for TAB.
-;;   That is, a string used to represent it on the tab bar."
-;;     (let ((label  (if tabbar--buffer-show-groups
-;;                       (format " [%s] " (tabbar-tab-tabset tab))
-;;                     (format " %s " (tabbar-tab-value tab)))))
-;;       ;; Unless the tab bar auto scrolls to keep the selected tab
-;;       ;; visible, shorten the tab label to keep as many tabs as possible
-;;       ;; in the visible area of the tab bar.
-;;       (if tabbar-auto-scroll-flag
-;;           label
-;;         (tabbar-shorten
-;;          label (max 1 (/ (window-width)
-;;                          (length (tabbar-view
-;;                                   (tabbar-current-tabset)))))))))
+    (set-face-attribute
+     'tabbar-selected-modified nil
+     :foreground "orange red"
+     :background "gray19"
+     :box '(:line-width 1 :color "gray19"))
 
-;;   (defun px-tabbar-buffer-select-tab (event tab)
-;;     "On mouse EVENT, select TAB."
-;;     (let ((mouse-button (event-basic-type event))
-;;           (buffer (tabbar-tab-value tab)))
-;;       (cond
-;;        ((eq mouse-button 'mouse-2) (with-current-buffer buffer (kill-buffer)))
-;;        ((eq mouse-button 'mouse-3) (pop-to-buffer buffer t))
-;;        (t (switch-to-buffer buffer)))
-;;       (tabbar-buffer-show-groups nil)))
+    :init
+    (tabbar-mode 1)
+    ))
 
-;;   (defun px-tabbar-buffer-help-on-tab (tab)
-;;     "Return the help string shown when mouse is onto TAB."
-;;     (if tabbar--buffer-show-groups
-;;         (let* ((tabset (tabbar-tab-tabset tab))
-;;                (tab (tabbar-selected-tab tabset)))
-;;           (format "mouse-1: switch to buffer %S in group [%s]"
-;;                   (buffer-name (tabbar-tab-value tab)) tabset))
-;;       (format "\
-;; mouse-1: switch to %S\n\
-;; mouse-2: kill %S\n\
-;; mouse-3: Open %S in another window"
-;;               (buffer-name (tabbar-tab-value tab))
-;;               (buffer-name (tabbar-tab-value tab))
-;;               (buffer-name (tabbar-tab-value tab)))))
+(defun tabbar-graphic-p ()
+  (if (display-graphic-p)
+      (progn
+	(message "--> tabbar-graphic")
+	(tabbar-ruler-seting)
+	)
+    (progn
+      (message "--> tabbar-terminal")
+      (tabbar-seting)
+      )
+    ))
 
-;;   (defun px-tabbar-buffer-groups ()
-;;     "Sort tab groups."
-;;     (list (cond ((or
-;;                   (eq major-mode 'dired-mode)
-;;                   (string-equal "*" (substring (buffer-name) 0 1))) "emacs")
-;;                 (t "user"))))
-;;   (setq tabbar-help-on-tab-function 'px-tabbar-buffer-help-on-tab
-;;         tabbar-select-tab-function 'px-tabbar-buffer-select-tab
-;;         tabbar-buffer-groups-function 'px-tabbar-buffer-groups)
+;; https://emacs-china.org/t/topic/5387/15
+;; https://www.cnblogs.com/darwin/archive/2011/05/26/2059282.html
+(if (and (fboundp 'daemonp) (daemonp))
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (with-selected-frame (or frame (selected-frame))
+		  (message "--> tabbar-daemon")
+                  (tabbar-graphic-p)
+		  )))
+  (message "--> tabbar-no-daemon")
+  (tabbar-graphic-p)
+  )
 
-;;   :init
-;;   (tabbar-mode 1))
+;; (demacro daemon-p (&rest body)
+;;   (if (and (fboundp 'daemonp) (daemonp))
+;;       (add-hook 'after-make-frame-functions
+;; 		`(lambda (frame)
+;; 		   (with-selected-frame (or frame (selected-frame))
+;; 		     (message "-->tabbar-daemon")
+;; 		     ',body
+;; 		     )))
+;;     (progn
+;;       (message "--> tabbar-no-daemon")
+;;       body
+;;       )
+;;     ))
+;; (daemon-p (tabbar-graphic-p))
+
+;; https://emacs.stackexchange.com/questions/16464/emacs-server-init-when-called-without-file
+;; https://emacs.stackexchange.com/questions/46541/running-emacs-as-a-daemon-does-not-load-custom-set-faces
+;; (defun my-frame-tweaks (&optional frame)
+;;   "Make frame- and/or terminal-local changes."
+;;   (with-selected-frame (or frame (selected-frame))
+;;     (my-display-graphic-p)
+;;     ))
+;; ;; For the case that the init file runs after the frame has been created
+;; ;; Call of emacs without --daemon option.
+;; (my-frame-tweaks)
+;; ;; For the case that the init file runs before the frame is created.
+;; ;; Call of emacs with --daemon option.
+;; (add-hook 'after-make-frame-functions 'my-frame-tweaks t)
 
 
-;; (use-package awesome-tab
-;;   :load-path "~/home/wangms/.emacs.d/default/site-lisp/awesome-tab/"
-;;   ;; :straight (awesome-tab
-;;   ;; 	     :type git
-;;   ;; 	     :host github
-;;   ;; 	     :repo "manateelazycat/awesome-tab")
-;;   :config
-;;   (setq awesome-tab-style 'alternate)
-;;   (awesome-tab-mode t))
+;; (defun tabbar/console-frame-setup ()
+;;   (message "wangms-terminal")
+;;   (tabbar-seting))
+;; (add-hook 'after-make-console-frame-hooks 'tabbar/console-frame-setup)
 
+;; (defun tabbar/window-system-frame-setup ()
+;;   (message "wangms-graphic")
+;;   (tabbar-ruler-seting))
+;; (add-hook 'after-make-window-system-frame-hooks 'tabbar/window-system-frame-setup)
+
+;; http://tigersoldier.is-programmer.com/2010/2/5/tips-on-emacs-daemon.15404.html
+(setq window-system-default-frame-alist
+      '(
+        ;; if frame created on x display
+        (x
+	 (message "x display")
+	 )
+        ;; if on term
+        (nil
+	 (message "terminal")
+	 )
+	))
 
 (provide 'init-tabbar)
 

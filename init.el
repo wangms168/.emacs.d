@@ -160,6 +160,7 @@ That buffer should be current already."
 (require 'init-complete)
 (require 'init-neotree)
 (require 'init-tabbar)
+(require 'init-parinfer)
 
 ;; (require 'init-awesome-pair)
 ;; (require 'init-undo-tree)

@@ -51,6 +51,11 @@
 (setq split-width-threshold nil)             ;; 窗口垂直分割
 (setq split-height-threshold 0)
 
+;; 在消息缓冲区中打印sexp时删除恼人的省略号
+;; remove annoying ellipsis when printing sexp in message buffer
+(setq eval-expression-print-length nil
+      eval-expression-print-level nil)
+
 ;; Miscs
 (setq inhibit-startup-message t)          ;; 禁用启动画面
 (blink-cursor-mode -1)                    ;; 取消光标闪烁

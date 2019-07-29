@@ -2,7 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package all-the-icons)
+(use-package all-the-icons
+  :ensure t )
 
 (use-package all-the-icons-dired
   ;; :config
@@ -13,6 +14,7 @@
 (use-package all-the-icons-ivy
   :config
   (all-the-icons-ivy-setup))
+
 
 
 (provide 'init-icons)

@@ -41,6 +41,12 @@
 ;;   ;; Add all at end of `load-path' to avoid conflicts.
 ;;   (add-to-list 'load-path (expand-file-name i user-emacs-directory) t)) ;; 参数t是Add all at end of `load-path'
 
+;; (eval-and-compile
+;;   (mapc
+;;    #'(lambda (path)
+;;        (push (expand-file-name path zwb-private-emacs-config-path) load-path))
+;;    '("lib""theme" "")))     ;;lambda函数的实参写法
+
 ;; Load path
 ;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
 (defun update-load-path (&rest _)
@@ -160,45 +166,89 @@ That buffer should be current already."
 (require 'init-complete)
 (require 'init-neotree)
 (require 'init-tabbar)
-(require 'init-parinfer)
+(require 'init-slime)
+
 
 ;; (require 'init-awesome-pair)
 ;; (require 'init-undo-tree)
 
-(defun my-fontset-menu ()
-  (interactive)
-  (x-popup-menu
-   `((0 0) ,(selected-frame))
-   (append x-fixed-font-alist
-           (list (generate-fontset-menu)))))
+;; (defun my-fontset-menu ()
+;;   (interactive)
+;;   (x-popup-menu
+;;    `((0 0) ,(selected-frame))
+;;    (append x-fixed-font-alist
+;;            (list (generate-fontset-menu)))))
 
-(add-hook 'after-init-hook (lambda () (message (format "time-subtract = %s" (float-time (time-subtract (current-time) emacs-start-time))))))
-(add-hook 'after-init-hook (lambda () (message (format "after/before-init-time = %s" (float-time (time-subtract after-init-time before-init-time))))))
-(add-hook 'after-init-hook (lambda () (message  (format "emacs-init-time = %s" (emacs-init-time)))))
+;; (add-hook 'after-init-hook (lambda () (message (format "time-subtract = %s" (float-time (time-subtract (current-time) emacs-start-time))))))
+;; (add-hook 'after-init-hook (lambda () (message (format "after/before-init-time = %s" (float-time (time-subtract after-init-time before-init-time))))))
+;; (add-hook 'after-init-hook (lambda () (message  (format "emacs-init-time = %s" (emacs-init-time)))))
 
-;; https://oremacs.com/2015/03/05/testing-init-sanity/
-(defun my-test-emacs ()
-  (interactive)
-  (require 'async)
-  (async-start
-   (lambda () (shell-command-to-string
-               "emacs --batch --eval \"
-(condition-case e
-    (progn
-      (load \\\"~/.emacs\\\")
-      (message \\\"-OK-\\\"))
-  (error
-   (message \\\"ERROR!\\\")
-   (signal (car e) (cdr e))))\""))
-   `(lambda (output)
-      (if (string-match "-OK-" output)
-          (when ,(called-interactively-p 'any)
-            (message "All is well"))
-        (switch-to-buffer-other-window "*startup error*")
-        (delete-region (point-min) (point-max))
-        (insert output)
-        (search-backward "ERROR!")))))
-;; (add-hook 'after-save-hook 'my-test-emacs)
+;; ;; https://oremacs.com/2015/03/05/testing-init-sanity/
+;; (defun my-test-emacs ()
+;;   (interactive)
+;;   (require 'async)
+;;   (async-start
+;;    (lambda () (shell-command-to-string
+;;                "emacs --batch --eval \"
+;; (condition-case e
+;;     (progn
+;;       (load \\\"~/.emacs\\\")
+;;       (message \\\"-OK-\\\"))
+;;   (error
+;;    (message \\\"ERROR!\\\")
+;;    (signal (car e) (cdr e))))\""))
+;;    `(lambda (output)
+;;       (if (string-match "-OK-" output)
+;;           (when ,(called-interactively-p 'any)
+;;             (message "All is well"))
+;;         (switch-to-buffer-other-window "*startup error*")
+;;         (delete-region (point-min) (point-max))
+;;         (insert output)
+;;         (search-backward "ERROR!")))))
+;; ;; (add-hook 'after-save-hook 'my-test-emacs)
+
+;; (defmacro inc (var)
+;;   (list 'setq var (list '1+ var)))
+
+;; (require 'apropos)
+;; (let ((macros nil))
+;;   (mapatoms (lambda (s)
+;;               (when (macrop s)
+;;                 (setq macros (cons s macros)))))
+;;   (nreverse macros))
+
+;; ;; (autoload 'macrop "apropos"
+;; ;;   "Return t if SYMBOL is a Lisp macro.
+
+;; ;; \(fn symbol)")
+
+;; (defun describe-macro (macro)
+;;   "Display documentation for MACRO."
+;;   (interactive
+;;    (list
+;;     (intern
+;;      (completing-read "Macro: " obarray
+;;                       'macrop
+;;                       'require-match))))
+;;   (describe-function macro))
+
+
+;; (setq animals '(gazelle giraffe lion tiger))
+
+;; (defun print-elements-of-list (list)
+;;   "Print each element of LIST on a line of its own."
+;;   (interactive "vList: ")
+;;   (while list
+;;     (print (car list))
+;;     (setq list (cdr list))))
+
+;; (print-elements-of-list load-path)
+
+;; ;; (defun describe-variable-short (var)
+;; ;;   (interactive "vVariable: ")
+;; ;;   (message (format "%s: %s" (symbol-name var) (symbol-value var))) )
+;; ;; (global-set-key "\C-hV" 'describe-variable-short)
+
 
 
 (provide 'init)
@@ -206,4 +256,3 @@ That buffer should be current already."
 ;;; init.el ends here
 ;; (put 'narrow-to-region 'disabled nil)
 ;; (put 'upcase-region 'disabled nil)
-

@@ -41,7 +41,6 @@
 ;;  :ensure nil
 ;;  :hook (after-init . server-mode))
 
-
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
@@ -55,6 +54,7 @@
 ;; emacs-backup-config
 ;;----------------------------------------------------------------------------
 ;; https://www.emacswiki.org/emacs/ForceBackups
+;; Make backups of files, even when they're in version control
 (setq vc-make-backup-files t)
 (setq version-control t     ;; Use version numbers for backups.
       kept-new-versions 10  ;; Number of newest versions to keep.
@@ -62,13 +62,15 @@
       delete-old-versions t ;; Don't ask to delete excess backup versions.
       backup-by-copying t)  ;; Copy all files, don't rename them.
 ;; Default and per-save backups go here:
-(setq backup-directory-alist '(("" . "~/.emacs.d/backup/per-save")))
+;; Write backup files to own directory
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name (concat user-emacs-directory "backup/per-save")))))
 (defun force-backup-of-buffer ()
   ;; Make a special "per session" backup at the first save of each
   ;; emacs session.
   (when (not buffer-backed-up)
     ;; Override the default parameters for per-session backups.
-    (let ((backup-directory-alist '(("" . "~/.emacs.d/default/backup/per-session")))
+    (let ((backup-directory-alist `(("." . ,(expand-file-name (concat user-emacs-directory "backup/per-session")))))
           (kept-new-versions 3))
       (backup-buffer)))
   ;; Make a "per save" backup on each save.  The first save results in

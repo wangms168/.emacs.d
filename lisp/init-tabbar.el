@@ -3,6 +3,24 @@
 ;;; Code:
 
 ;; tabbar
+(defun awesome-tab-config ()
+  (use-package awesome-tab
+    :ensure nil
+    :load-path (lambda () (expand-file-name (concat  user-emacs-directory "site-lisp/awesome-tab")))
+    ;; :load-path (expand-file-name "site-lisp/awesome-tab" user-emacs-directory))
+    ;; :load-path (expand-file-name (concat user-emacs-directory "site-lisp/awexome-tab"))
+    ;; :load-path (file-truename (expand-file-name (concat user-emacs-directory "site-lisp/awexome-tab")))  ;;file-truename能将~转化为实际路径
+    :init
+    ;; (setq awesome-tab-display-icon t)
+    (setq awesome-tab-style "alternate")
+    ;; (when (not (display-graphic-p))
+    ;;   (setq frame-background-mode 'dark))
+    (global-set-key (kbd "C-<left>") 'awesome-tab-backward-tab)
+    (global-set-key (kbd "C-<right>") 'awesome-tab-forward-tab)
+    :config
+    (awesome-tab-mode t)
+    ))
+
 (defun tabbar-ruler-config ()
   (use-package tabbar-ruler
     :ensure t
@@ -25,8 +43,6 @@
      '(tabbar-selected ((t (:background "#242424" :box nil))))
      '(tabbar-unselected ((t (:background "#444444" :box nil))))
      '(tabbar-separator ((t (:background "white" :box nil)))))))
-
-;; (face-differs-from-default-p 'tabbar-selected)
 
 
 (defun tabbar-config ()
@@ -96,9 +112,6 @@
     :init
     (tabbar-mode 1)))
 
-;; (tabbar-config)
-;; (tabbar-ruler-config)
-
 (defun tabbar-graphic-p ()
   (if (display-graphic-p)
       (progn
@@ -111,19 +124,23 @@
 
 ;; https://emacs-china.org/t/topic/5387/15
 ;; https://www.cnblogs.com/darwin/archive/2011/05/26/2059282.html
-(if (and (fboundp 'daemonp) (daemonp))
-    (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                (with-selected-frame  (or frame (selected-frame))
-		  (message "--> tabbar-daemon")
-		  ;; (tabbar-graphic-p)
-		  (tabbar-ruler-config)
-		  )))
-  (progn
-    (message "--> tabbar-no-daemon")
-    ;; (tabbar-graphic-p)
-    (tabbar-ruler-config)
-    ))
+;; (if (and (fboundp 'daemonp) (daemonp))
+;;     (add-hook 'after-make-frame-functions
+;;               (lambda (frame)
+;;                 (with-selected-frame  (or frame (selected-frame))
+;;   		  (message "--> tabbar-daemon")
+;;   		  ;; (tabbar-graphic-p)
+;;   		  (tabbar-ruler-config)
+;;   		  )))
+;;   (progn
+;;     (message "--> tabbar-no-daemon")
+;;     ;; (tabbar-graphic-p)
+;;     (tabbar-ruler-config)
+;;     ))
+
+;; (tabbar-config)
+;; (tabbar-ruler-config)
+(awesome-tab-config)
 
 ;; (defun tabbar/console-frame-setup ()
 ;;   (message "--> tabbar-terminal")

@@ -130,6 +130,20 @@ With a prefix arg decrease transparency."
                                                 )))))
   :bind ("C-8" . tv-transparency-modify))
 
+;;set transparent effect
+(global-set-key [(f9)] 'loop-alpha)
+(setq alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))
+(defun loop-alpha ()
+  (interactive)
+  (let ((h (car alpha-list)))                ;; head value will set to
+    ((lambda (a ab)
+       (set-frame-parameter (selected-frame) 'alpha (list a ab))
+       (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
+       ) (car h) (car (cdr h)))
+    (setq alpha-list (cdr (append alpha-list (list h))))
+    )
+  )
+
 ;; 应用实例https://github.com/purcell/emacs.d/blob/master/lisp/init-xterm.el
 ;; (defun sanityinc/console-frame-setup ()
 ;;   (xterm-mouse-mode 1) ; Mouse in a terminal (Use shift to paste with middle button)

@@ -805,7 +805,6 @@ been modified since its last check-in."
 	 ;;       ;; mode-line-end-spaces              ;; 模式行结束空间:该变量显示在模式行的末尾。
 	 ;;       )
 	 ;;      )
-	 
 
          (width (string-width (format-mode-line (list lhs center rhs))))
 	 )
@@ -900,7 +899,6 @@ can be used to add a number of spaces to the front and back of the string."
 	 (lhs (concat
 	       (format-mode-line mode-line-front-space)                        ;; 模式行前置空间:该变量显示在模式行的前面。默认情况下，此构造显示在模式行的开头，但如果存在满内存消息，则首先显示该构造。
 	       ;; winum
-	       " "
 	       (propertize (mapleline--unicode-number (winum-get-number-string)) 'face `(:height 1.0) 'display '(raise -0.0))     ;; for winum
 	       ;; '(:eval (propertize (mapleline--unicode-number (int-to-string (window-numbering-get-number)))))                          ;; for window-numbering         
 	       ;; '(:eval  (propertize (custom-modeline-window-number) 'face `(:height 1.0) 'display '(raise -0.0)))
@@ -944,7 +942,7 @@ can be used to add a number of spaces to the front and back of the string."
 		  (format-mode-line mode-line-modes)  ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。其中含有：mode-name、mode-line-process、minor-mode-alist。
 		  (custom-modeline-region-info)
 		  ))
-	 
+
 	 (rhs (concat
 	       (my-mode-line-vc-info)
 	       (propertize (format " %s " (custom-modeline-flycheck-status)) 'face `(:background ,background :foreground ,foreground))
@@ -969,7 +967,7 @@ can be used to add a number of spaces to the front and back of the string."
 	       (format-mode-line mode-line-end-spaces)              ;; 模式行结束空间:该变量显示在模式行的末尾。
 	       )
 	      )
-	 
+
          (left (if lpad (concat (make-string lpad ?\s) lhs) lhs))
 	 (right (if rpad (concat rhs (make-string rpad ?\s)) rhs))
 	 (width (apply '+ (window-width) (let ((m (window-margins))) (list (or (car m) 0) (or (cdr m) 0)))))

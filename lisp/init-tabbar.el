@@ -142,15 +142,17 @@
 ;; (tabbar-ruler-config)
 (awesome-tab-config)
 
-;; (defun tabbar/console-frame-setup ()
-;;   (message "--> tabbar-terminal")
-;;   (tabbar-config))
-;; (add-hook 'after-make-console-frame-hooks 'tabbar/console-frame-setup)
+(defun tabbar/console-frame-setup ()
+  (message "--> tabbar-terminal")
+  ;; (tabbar-config)
+  )
+(add-hook 'after-make-console-frame-hooks 'tabbar/console-frame-setup)
 
-;; (defun tabbar/window-system-frame-setup ()
-;;   (message "--> tabbar-graphic")
-;;   (tabbar-ruler-config))
-;; (add-hook 'after-make-window-system-frame-hooks 'tabbar/window-system-frame-setup)
+(defun tabbar/window-system-frame-setup ()
+  (message "--> tabbar-graphic")
+  ;; (tabbar-ruler-config)
+  )
+(add-hook 'after-make-window-system-frame-hooks 'tabbar/window-system-frame-setup)
 
 
 ;; https://emacs.stackexchange.com/questions/16464/emacs-server-init-when-called-without-file

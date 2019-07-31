@@ -56,9 +56,17 @@
 (setq eval-expression-print-length nil
       eval-expression-print-level nil)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil)                  ;; 取消光标闪烁
+ '(font-use-system-font t)
+ '(show-paren-mode t))                     ;;光标位于括号之后显示匹配的括号
+
 ;; Miscs
 (setq inhibit-startup-message t)          ;; 禁用启动画面
-(blink-cursor-mode -1)                    ;; 取消光标闪烁
 (setq-default indicate-empty-lines t)     ;; show (in left margin) marker for empty lines
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets) ; Show path if names are same
 (setq adaptive-fill-regexp "[ t]+|[ t]*([0-9]+.|*+)[ t]*")
@@ -68,6 +76,7 @@
 ;; (setq auto-save-default nil)               ; Disable auto save
 (setq set-mark-command-repeat-pop t)       ; Repeating C-SPC after popping mark pops it again
 (setq-default kill-whole-line t)           ; Kill line including '\n'
+(setq inhibit-compacting-font-caches t)    ;; Don’t compact font caches during GC.据说可以解决windows下所有字体的卡顿问题。
 
 (add-to-list 'auto-mode-alist '("\\.nanorc\\'" . sh-mode))   ;;conf-unix-mode  ;;.nanorc的语法高亮
 
@@ -80,7 +89,6 @@
   :ensure nil
   :config
   (progn
-    (show-paren-mode)                     ;;光标位于括号之后显示匹配的括号
     (setq show-paren-ring-bell-on-mismatch t)
     (setq show-paren-style 'parentheses)
     ;; (set-face-attribute 'show-paren-match nil :background nil :underline "#13F811")
@@ -124,7 +132,7 @@
 ;; (delete-selection-mode 1)              ;; 粘贴或键入的文本即可替换活动区域，该替换动作隐含一个Backspace键（‘DEL’）删除所选文本的动作。
 
 (dolist (command '(yank yank-pop))      ;;粘贴时自打格式化
-(eval
+  (eval
    `(defadvice ,command (after indent-region activate)
       (and (not current-prefix-arg)
            (member major-mode
@@ -392,189 +400,189 @@
 ;;----------------------------------------------------------------------------
 ;; (global-set-key [?\M-;] 'comment-or-uncomment-region)
 (global-set-key [?\M-;] 'comment-or-uncomment-region)		 ;; 批量注释
-(defun my-comment-or-uncomment-region (beg end &optional arg)
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end) nil)
-                 (list (line-beginning-position)
-                       (line-beginning-position 2))))
-  (comment-or-uncomment-region beg end arg)
-)
-(global-set-key [remap comment-or-uncomment-region] 'my-comment-or-uncomment-region)
+		 (defun my-comment-or-uncomment-region (beg end &optional arg)
+		   (interactive (if (use-region-p)
+				    (list (region-beginning) (region-end) nil)
+				  (list (line-beginning-position)
+					(line-beginning-position 2))))
+		   (comment-or-uncomment-region beg end arg)
+		   )
+		 (global-set-key [remap comment-or-uncomment-region] 'my-comment-or-uncomment-region)
 
-;; (use-package newcomment
-;;   :ensure nil
-;;   :config
-;;   (progn
-;;     ;; Change the behavior of `M-;' by commenting line.
-;;     ;; Much simpler than emacs-25 `comment-line'.
-;;     (defun comment--advice-dwim (old--fn &rest args)
-;;       (if (region-active-p)
-;;           (apply old--fn args)
-;;         (save-excursion
-;;           (goto-char (point-at-bol))
-;;           (push-mark (point-at-eol) t t)
-;;           (apply old--fn args))
-;;         (indent-region (point-at-bol) (point-at-eol))
-;;         (forward-line 1)
-;;         (back-to-indentation)))
-;;     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
+		 ;; (use-package newcomment
+		 ;;   :ensure nil
+		 ;;   :config
+		 ;;   (progn
+		 ;;     ;; Change the behavior of `M-;' by commenting line.
+		 ;;     ;; Much simpler than emacs-25 `comment-line'.
+		 ;;     (defun comment--advice-dwim (old--fn &rest args)
+		 ;;       (if (region-active-p)
+		 ;;           (apply old--fn args)
+		 ;;         (save-excursion
+		 ;;           (goto-char (point-at-bol))
+		 ;;           (push-mark (point-at-eol) t t)
+		 ;;           (apply old--fn args))
+		 ;;         (indent-region (point-at-bol) (point-at-eol))
+		 ;;         (forward-line 1)
+		 ;;         (back-to-indentation)))
+		 ;;     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
-;;----------------------------------------------------------------------------
-;; 二次选择高亮
-;;----------------------------------------------------------------------------
-(use-package volatile-highlights
-  :config
-  (volatile-highlights-mode))
+		 ;;----------------------------------------------------------------------------
+		 ;; 二次选择高亮
+		 ;;----------------------------------------------------------------------------
+		 (use-package volatile-highlights
+		   :config
+		   (volatile-highlights-mode))
 
-;;----------------------------------------------------------------------------
-;; line-numbers
-;;----------------------------------------------------------------------------
-(add-hook 'find-file-hook 'linum-mode)
-(setq linum-format "%4d|")               ;;set format
-;; (setq linum-format "%4d \u2502 ")           ;; "\u2502"="|"
-;; ;; (setq display-line-numbers-type 'visual)
-;; (add-hook 'find-file-hook 'display-line-numbers-mode)
-;; (global-linum-mode t)
-;; (setq linum-format "%4d\u2502 ")
-;;----------------------------------------------------------------------------
-;; title
-;;----------------------------------------------------------------------------
-(setq frame-title-format " %f")       ;; 标题栏显示 %f 缓冲区完整路径 %p 页面百分数 %l 行号
-;; (setq column-number-mode t)           ;; 模式栏显示列号
-;; (setq line-number-mode t)             ;; 模式栏显示行号
+		 ;;----------------------------------------------------------------------------
+		 ;; line-numbers
+		 ;;----------------------------------------------------------------------------
+		 (add-hook 'find-file-hook 'linum-mode)
+		 (setq linum-format "%4d|")               ;;set format
+		 ;; (setq linum-format "%4d \u2502 ")           ;; "\u2502"="|"
+		 ;; ;; (setq display-line-numbers-type 'visual)
+		 ;; (add-hook 'find-file-hook 'display-line-numbers-mode)
+		 ;; (global-linum-mode t)
+		 ;; (setq linum-format "%4d\u2502 ")
+		 ;;----------------------------------------------------------------------------
+		 ;; title
+		 ;;----------------------------------------------------------------------------
+		 (setq frame-title-format " %f")       ;; 标题栏显示 %f 缓冲区完整路径 %p 页面百分数 %l 行号
+		 ;; (setq column-number-mode t)           ;; 模式栏显示列号
+		 ;; (setq line-number-mode t)             ;; 模式栏显示行号
 
-;; (setq undo-tree-auto-save-history t)     ;;可以撤销关闭重启前的修改
-;; (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
-;;测试撤销重启前的修改,经测试，上述的设置不管用。
+		 ;; (setq undo-tree-auto-save-history t)     ;;可以撤销关闭重启前的修改
+		 ;; (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo"))))
+		 ;;测试撤销重启前的修改,经测试，上述的设置不管用。
 
-(use-package beacon     ;; 每当窗口滚动时，光线就会照亮光标顶部;你知道它在哪里。
-  :config
-  (beacon-mode 1))
+		 (use-package beacon     ;; 每当窗口滚动时，光线就会照亮光标顶部;你知道它在哪里。
+		   :config
+		   (beacon-mode 1))
 
-(use-package pos-tip
-  :config
-  )
+		 (use-package pos-tip
+		   :config
+		   )
 
-;; 要在ProgrammingModes中自动填充注释而不是代码.
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (auto-fill-mode 1)
-            (set (make-local-variable 'fill-nobreak-predicate)
-                 (lambda ()
-                   (not (eq (get-text-property (point) 'face)
-                            'font-lock-comment-face))))))
+		 ;; 要在ProgrammingModes中自动填充注释而不是代码.
+		 (add-hook 'c-mode-common-hook
+			   (lambda ()
+			     (auto-fill-mode 1)
+			     (set (make-local-variable 'fill-nobreak-predicate)
+				  (lambda ()
+				    (not (eq (get-text-property (point) 'face)
+					     'font-lock-comment-face))))))
 
-(defun what-face (pos)
-  (interactive "d")
-  (let ((face (or (get-char-property (point) 'read-face-name)
-		  (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+		 (defun what-face (pos)
+		   (interactive "d")
+		   (let ((face (or (get-char-property (point) 'read-face-name)
+				   (get-char-property (point) 'face))))
+		     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-;;突出显示匹配的双引号
-(defun show-paren--match-quotes ()
-  (let ((ppss (syntax-ppss)))
-    ;; In order to distinguish which quote is opening and which is starting,
-    ;; check that that point is not within a string (or comment, for that
-    ;; matter).  Also ignore escaped quotes.
-    (unless (or (nth 8 ppss) (nth 5 ppss))
-      (or
-       (and (not (bobp))
-            (eq 7 (car-safe (syntax-after (1- (point)))))
-            (save-excursion
-              (let ((end (point))
-                    (ppss (syntax-ppss (1- (point)))))
-                (when (nth 3 ppss)
-                  (let ((beg (nth 8 ppss)))
-                    (list beg
-                          (1+ beg)
-                          (1- end)
-                          end))))))
-       (and (not (eobp))
-            (eq 7 (car-safe (syntax-after (point))))
-            (save-excursion
-              (let ((beg (point)))
-                (condition-case nil
-                    (progn
-                      (forward-sexp 1)
-                      (list beg
-                            (1+ beg)
-                            (1- (point))
-                            (point)))))))))))
+		 ;;突出显示匹配的双引号
+		 (defun show-paren--match-quotes ()
+		   (let ((ppss (syntax-ppss)))
+		     ;; In order to distinguish which quote is opening and which is starting,
+		     ;; check that that point is not within a string (or comment, for that
+		     ;; matter).  Also ignore escaped quotes.
+		     (unless (or (nth 8 ppss) (nth 5 ppss))
+		       (or
+			(and (not (bobp))
+			     (eq 7 (car-safe (syntax-after (1- (point)))))
+			     (save-excursion
+			       (let ((end (point))
+				     (ppss (syntax-ppss (1- (point)))))
+				 (when (nth 3 ppss)
+				   (let ((beg (nth 8 ppss)))
+				     (list beg
+					   (1+ beg)
+					   (1- end)
+					   end))))))
+			(and (not (eobp))
+			     (eq 7 (car-safe (syntax-after (point))))
+			     (save-excursion
+			       (let ((beg (point)))
+				 (condition-case nil
+				     (progn
+				       (forward-sexp 1)
+				       (list beg
+					     (1+ beg)
+					     (1- (point))
+					     (point)))))))))))
 
-(advice-add 'show-paren--default :after-until #'show-paren--match-quotes)
+		 (advice-add 'show-paren--default :after-until #'show-paren--match-quotes)
 
-;; 高亮非ASCII字符
-;; 高亮非ASCII字符   M-x highlight-regexp (C-x w h) RET [^[:ascii:]] RET
-;; 取消高亮          M-x unhighlight-regexp (C-x w h)RET [^[:ascii:]] RET
-(defun occur-non-ascii ()
-  "Find any non-ascii characters in the current buffer."
-  (interactive)
-  ;; (occur "[^[:ascii:]]"))
-  (highlight-regexp "[^[:ascii:]]"))
+		 ;; 高亮非ASCII字符
+		 ;; 高亮非ASCII字符   M-x highlight-regexp (C-x w h) RET [^[:ascii:]] RET
+		 ;; 取消高亮          M-x unhighlight-regexp (C-x w h)RET [^[:ascii:]] RET
+		 (defun occur-non-ascii ()
+		   "Find any non-ascii characters in the current buffer."
+		   (interactive)
+		   ;; (occur "[^[:ascii:]]"))
+		   (highlight-regexp "[^[:ascii:]]"))
 
-;; https://rejeep.github.io/emacs/elisp/2010/03/11/duplicate-current-line-or-region-in-emacs.html
-(defun duplicate-current-line-or-region (arg)
-  "Duplicates the current line or region ARG times.
+		 ;; https://rejeep.github.io/emacs/elisp/2010/03/11/duplicate-current-line-or-region-in-emacs.html
+		 (defun duplicate-current-line-or-region (arg)
+		   "Duplicates the current line or region ARG times.
 If there's no region, the current line will be duplicated. However, if
 there's a region, all lines that region covers will be duplicated."
-  (interactive "p")
-  (let (beg end (origin (point)))
-    (if (and mark-active (> (point) (mark)))
-        (exchange-point-and-mark))
-    (setq beg (line-beginning-position))
-    (if mark-active
-        (exchange-point-and-mark))
-    (setq end (line-end-position))
-    (let ((region (buffer-substring-no-properties beg end)))
-      (dotimes (i arg)
-        (goto-char end)
-        (newline)
-        (insert region)
-        (setq end (point)))
-      (goto-char (+ origin (* (length region) arg) arg)))))
-(global-set-key (kbd "C-c <down>") 'duplicate-current-line-or-region)
+		   (interactive "p")
+		   (let (beg end (origin (point)))
+		     (if (and mark-active (> (point) (mark)))
+			 (exchange-point-and-mark))
+		     (setq beg (line-beginning-position))
+		     (if mark-active
+			 (exchange-point-and-mark))
+		     (setq end (line-end-position))
+		     (let ((region (buffer-substring-no-properties beg end)))
+		       (dotimes (i arg)
+			 (goto-char end)
+			 (newline)
+			 (insert region)
+			 (setq end (point)))
+		       (goto-char (+ origin (* (length region) arg) arg)))))
+		 (global-set-key (kbd "C-c <down>") 'duplicate-current-line-or-region)
 
-;; https://www.emacswiki.org/emacs/CopyingWholeLines
-(defun duplicate-line-or-region (&optional n)
-  "Duplicate current line, or region if active.
+		 ;; https://www.emacswiki.org/emacs/CopyingWholeLines
+		 (defun duplicate-line-or-region (&optional n)
+		   "Duplicate current line, or region if active.
     With argument N, make N copies.
     With negative N, comment out original line and use the absolute value."
-  (interactive "*p")
-  (let ((use-region (use-region-p)))
-    (save-excursion
-      (let ((text (if use-region        ;Get region if active, otherwise line
-		      (buffer-substring (region-beginning) (region-end))
-		    (prog1 (thing-at-point 'line)
-		      (end-of-line)
-		      (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
-			  (newline))))))
-	(dotimes (i (abs (or n 1)))     ;Insert N times, or once if not specified
-	  (insert text))))
-    (if use-region nil                  ;Only if we're working with a line (not a region)
-      (let ((pos (- (point) (line-beginning-position)))) ;Save column
-	(if (> 0 n)                             ;Comment out original with negative arg
-	    (comment-region (line-beginning-position) (line-end-position)))
-	(forward-line 1)
-	(forward-char pos)))))
-(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
+		   (interactive "*p")
+		   (let ((use-region (use-region-p)))
+		     (save-excursion
+		       (let ((text (if use-region        ;Get region if active, otherwise line
+				       (buffer-substring (region-beginning) (region-end))
+				     (prog1 (thing-at-point 'line)
+				       (end-of-line)
+				       (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
+					   (newline))))))
+			 (dotimes (i (abs (or n 1)))     ;Insert N times, or once if not specified
+			   (insert text))))
+		     (if use-region nil                  ;Only if we're working with a line (not a region)
+		       (let ((pos (- (point) (line-beginning-position)))) ;Save column
+			 (if (> 0 n)                             ;Comment out original with negative arg
+			     (comment-region (line-beginning-position) (line-end-position)))
+			 (forward-line 1)
+			 (forward-char pos)))))
+		 (global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
 
-;; 删除匹配的括号
-;; https://zhuanlan.zhihu.com/p/24309937
-(defun c-delete-pair ()
-  (interactive)
-  (let ((re "[([{<'\"]"))
-    (when (or (looking-at-p re) (re-search-backward re nil t))
-      (save-excursion (forward-sexp) (delete-char -1))
-      (delete-char 1))))
+		 ;; 删除匹配的括号
+		 ;; https://zhuanlan.zhihu.com/p/24309937
+		 (defun c-delete-pair ()
+		   (interactive)
+		   (let ((re "[([{<'\"]"))
+		     (when (or (looking-at-p re) (re-search-backward re nil t))
+		       (save-excursion (forward-sexp) (delete-char -1))
+		       (delete-char 1))))
 
-(defun get-mode-name ()
-  "显示`major-mode'及`mode-name'"
-  (interactive)
-  (message "major-mode为%s, mode-name为%s" major-mode mode-name))
-(global-set-key (kbd "C-x m") 'get-mode-name)
+		 (defun get-mode-name ()
+		   "显示`major-mode'及`mode-name'"
+		   (interactive)
+		   (message "major-mode为%s, mode-name为%s" major-mode mode-name))
+		 (global-set-key (kbd "C-x m") 'get-mode-name)
 
 
-(provide 'init-edit)
+		 (provide 'init-edit)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-edit.el ends here

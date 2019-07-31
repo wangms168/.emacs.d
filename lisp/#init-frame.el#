@@ -89,6 +89,7 @@ With a prefix arg decrease transparency."
       )
     (add-hook 'after-make-window-system-frame-hooks 'frame/window-system-frame-setup)
 
+    (setq default-frame-alist `((title . "title")))
     ;;标题栏
     (setq frame-title-format
     	  '("%b" (:eval (when (and (buffer-file-name) (buffer-modified-p)) " **"))

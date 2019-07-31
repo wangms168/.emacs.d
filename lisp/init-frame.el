@@ -45,31 +45,18 @@ With a prefix arg decrease transparency."
 	)
       )
 
-    ;;标题栏
+    ;;标题栏 https://www.emacswiki.org/emacs/FrameTitle
     (setq frame-title-format
     	  '("%b"
-	    (:eval (when (and (buffer-file-name) (buffer-modified-p)) " **") )
-	    (:eval (if (buffer-file-name)
-		       (concat " {"
-			       (directory-file-name
-				(file-name-directory
-				 (abbreviate-file-name
-				  (buffer-file-name))))"}") )
-		   )
-	    " - Emacs"))
-
-    (defvar my-frame-title-format
-      (format "%s"
-	      (concat
-	       (buffer-file-name)
-	       (when (and (buffer-file-name) (buffer-modified-p)) " **")
-	       (if (buffer-file-name)
-		   (concat " {"
-			   (directory-file-name
-			    (file-name-directory
-			     (abbreviate-file-name
-			      (buffer-file-name))))"}") )
-	       " - Emacs") ) )
+    	    (:eval (when (and (buffer-file-name) (buffer-modified-p)) " **") )
+    	    (:eval (if (buffer-file-name)
+    		       (concat " {"
+    			       (directory-file-name
+    				(file-name-directory
+    				 (abbreviate-file-name
+    				  (buffer-file-name))))"}") )
+    		   )
+    	    " - Emacs"))
 
     (setq initial-frame-alist `(
 				;; (foreground-color . "Wheat")
@@ -79,7 +66,9 @@ With a prefix arg decrease transparency."
 				(alpha . 90)
 				;; New frames go in right corner.
 				(vertical-scroll-bars . nil)
-				;; (title . ,my-frame-title-format)
+                                ;; (title . ,(format "%s-%s"
+				;; 		  (capitalize (invocation-name))
+				;; 		  emacs-version))
 				(tool-bar-lines . 0)
 				(menu-bar-lines . 0)
 				(font . ,tv-default-font)

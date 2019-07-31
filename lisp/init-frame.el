@@ -45,60 +45,50 @@ With a prefix arg decrease transparency."
 	)
       )
 
-    ;; (setq initial-frame-alist '((vertical-scroll-bars . nil)
-    ;;                             ;; (tool-bar-lines . 0)
-    ;;                             ;; (menu-bar-lines . 0)
-    ;;                             ;; (title . ,(format "%s-%s"
-    ;;                             ;;                   (capitalize (invocation-name))
-    ;;                             ;;                   emacs-version))
-    ;;  				(top . 0)
-    ;; 				(left . 300)
-    ;; 				(width . 108)
-    ;; 				(height . 28)
-    ;;                             (cursor-color . "red")
-    ;;  				;; (foreground-color . "Wheat")
-    ;;                             ;; (background-color . "black")   ;; #181A26
-    ;;                             (alpha . 90)
-    ;;                             ;; (font . ,tv-default-font)
-    ;;                             (fullscreen . nil)
-    ;; 				))
-    ;; (add-to-list 'initial-frame-alist `(font . ,tv-default-font))
-    ;; (setq default-frame-alist initial-frame-alist)      ;;http://ergoemacs.org/emacs/emacs_playing_with_color_theme.html
-
-    ;; (defun frame/console-frame-setup ()
-    ;;   (message "--> frame-terminal")
-    ;;   (setq default-frame-alist nil)
-    ;;   )
-    ;; (add-hook 'after-make-console-frame-hooks 'frame/console-frame-setup)
-
-    (defun frame/window-system-frame-setup ()
-      (message "--> frame-graphic")
-      (setq default-frame-alist `(
-    				  ;; (left . ,(- (* (window-width) 8) 300)) ; Chars are 8 bits long.
-				  ;; (width . 108)
-    				  (alpha . 90)
-    				  ;; New frames go in right corner.
-    				  (vertical-scroll-bars . nil)
-    				  ;; (title . ,my-frame-title-format)
-    				  (tool-bar-lines . 0)
-    				  (menu-bar-lines . 0)
-    				  (font . ,tv-default-font)
-    				  (cursor-color . "red")
-    				  (fullscreen .  maximized)
-    				  ))
-      )
-    (add-hook 'after-make-window-system-frame-hooks 'frame/window-system-frame-setup)
-
     ;;标题栏
     (setq frame-title-format
-    	  '("%b" (:eval (when (and (buffer-file-name) (buffer-modified-p)) " **"))
-	    (:eval
-	     (if (buffer-file-name)
-		 (concat " {"
-			 (directory-file-name
-			  (file-name-directory
-			   (abbreviate-file-name
-			    (buffer-file-name))))"}")""))" - Emacs"))
+    	  '("%b"
+	    (:eval (when (and (buffer-file-name) (buffer-modified-p)) " **") )
+	    (:eval (if (buffer-file-name)
+		       (concat " {"
+			       (directory-file-name
+				(file-name-directory
+				 (abbreviate-file-name
+				  (buffer-file-name))))"}") )
+		   )
+	    " - Emacs"))
+
+    (defvar my-frame-title-format
+      (format "%s"
+	      (concat
+	       (buffer-file-name)
+	       (when (and (buffer-file-name) (buffer-modified-p)) " **")
+	       (if (buffer-file-name)
+		   (concat " {"
+			   (directory-file-name
+			    (file-name-directory
+			     (abbreviate-file-name
+			      (buffer-file-name))))"}") )
+	       " - Emacs") ) )
+
+    (setq initial-frame-alist `(
+				;; (foreground-color . "Wheat")
+				;; (background-color . "black")   ;; #181A26
+				;; (left . ,(- (* (window-width) 8) 300)) ; Chars are 8 bits long.
+				;; (width . 108)
+				(alpha . 90)
+				;; New frames go in right corner.
+				(vertical-scroll-bars . nil)
+				;; (title . ,my-frame-title-format)
+				(tool-bar-lines . 0)
+				(menu-bar-lines . 0)
+				(font . ,tv-default-font)
+				(cursor-color . "red")
+				(fullscreen .  maximized)
+				))
+
+    ;; (add-to-list 'initial-frame-alist `(font . ,tv-default-font))
+    (setq default-frame-alist initial-frame-alist)      ;;http://ergoemacs.org/emacs/emacs_playing_with_color_theme.html
 
     ;; Special buffer display.
     (add-hook 'window-setup-hook

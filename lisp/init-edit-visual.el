@@ -49,11 +49,11 @@
 ;;   )
 
 
-;; (use-package page-break-lines
-;;   :hook (after-init . global-page-break-lines-mode)
-;;   ;; :config
-;;   ;; (add-hook 'after-init-hook 'global-page-break-lines-mode)
-;;   )
+(use-package page-break-lines
+  :hook (after-init . global-page-break-lines-mode)
+  ;; :config
+  ;; (add-hook 'after-init-hook 'global-page-break-lines-mode)
+  )
 
 (use-package flymd)            ;;预览md文件，M-x flymd-flyit。
 (use-package impatient-mode)   ;;实时预览html文件。依赖simple-httpd与htmlize

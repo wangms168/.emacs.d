@@ -4,9 +4,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; (setq inhibit-startup-echo-area-message "wangms-emacs")
-
-;; (let ((table (make-display-table)))  (aset table ?\^L [?📄])  (setq buffer-display-table table))
 
 ;; (setq debug-on-erron t)
 ;; (setq debug-on-quit t)

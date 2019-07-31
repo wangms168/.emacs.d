@@ -45,7 +45,7 @@ With a prefix arg decrease transparency."
 	)
       )
 
-    ;;标题栏 https://www.emacswiki.org/emacs/FrameTitle
+    ;; ;;标题栏 https://www.emacswiki.org/emacs/FrameTitle
     (setq frame-title-format
     	  '("%b"
     	    (:eval (when (and (buffer-file-name) (buffer-modified-p)) " **") )

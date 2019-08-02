@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; 修改测试
 (require 'all-the-icons)
 
 ;; ========================================================================================================================
@@ -417,7 +416,7 @@ been modified since its last check-in."
       ;; :when (and active (boundp 'yahoo-weather-info) yahoo-weather-mode)
       ;; :enabled nil
       ;; :tight t
-      )    
+      )
     )
   )
 
@@ -831,8 +830,7 @@ been modified since its last check-in."
      '(:eval (mode-line-fill-center 'mode-line
                                     (reserve-left/middle)))
      center
-     '(:eval
-       (mode-line-fill-right 'mode-line
+     '(:eval (mode-line-fill-right 'mode-line
                              (reserve-middle/right)))
      rhs
      )
@@ -948,7 +946,7 @@ can be used to add a number of spaces to the front and back of the string."
 	       (propertize (format " %s " (custom-modeline-flycheck-status)) 'face `(:background ,background :foreground ,foreground))
 	       (format " %s" (custom-modeline-package-updates))
 	       ;; (propertize (let ((buf-coding (format "%s" buffer-file-coding-system)))
-       	       ;; 		     (if (string-match "\\(dos\\|unix\\|mac\\)" buf-coding)
+      	       ;; 		     (if (string-match "\\(dos\\|unix\\|mac\\)" buf-coding)
        	       ;; 			 (format " %s " (match-string 1 buf-coding))
        	       ;; 		       (format " %s " buf-coding))) 'face `(:background ,background :foreground ,foreground) 'display '(raise +0.0))
 	       (propertize (format "%s" (replace-buffer-encoding)) 'face `(:background ,background :foreground ,foreground))
@@ -965,6 +963,10 @@ can be used to add a number of spaces to the front and back of the string."
 	       ;; mode-line-position     ;; 模式行位置:此变量指示缓冲区中的位置。其默认值显示缓冲区百分比，以及可选的缓冲区大小，行号和列号。显示形如：'xx% (xx,xx)'
 	       ;; (propertize (format "  %s" (format-mode-line mode-line-position)) 'face `(:height 1.0 :background ,background :foreground ,foreground)) 
 	       (format-mode-line mode-line-end-spaces)              ;; 模式行结束空间:该变量显示在模式行的末尾。
+
+	       ;; (global-mode-string global-mode-string)
+	       ;; (:eval (propertize (format-mode-line minor-mode-alist)
+	       ;; 			  'face 'mode-line-minor-mode-face))
 	       )
 	      )
 
@@ -988,7 +990,25 @@ can be used to add a number of spaces to the front and back of the string."
 
 ;; ========================================================================================================================
 ;; (setq-default mode-line-format '(:eval (customize-mode-line-format-1)))
-(setq-default mode-line-format '(:eval (customize-mode-line-format-2)))
+;; (setq-default mode-line-format '(:eval (customize-mode-line-format-2)))
+
+
+;;https://emacs.stackexchange.com/questions/5529/how-to-right-align-some-items-in-the-modeline
+(defun simple-mode-line-render (left right)
+  "Return a string of `window-total-width' length containing LEFT, and RIGHT aligned respectively."
+  (let* ((available-width (- (window-total-width) (+ (length (format-mode-line left)) (length (format-mode-line right))))))
+    (append left (list (format (format "%%%ds" available-width) "")) right)
+    ))
+
+(setq-default mode-line-format
+	      '(:eval
+		(simple-mode-line-render
+		 ;; left
+		 '("%e " mode-line-buffer-identification " %l : %c" evil-mode-line-tag "[%*]")
+		 ;; right
+		 '("%p " mode-line-frame-identification mode-line-modes mode-line-misc-info)
+		 )))
+
 
 
 ;; (setq column-number-mode t)           ;; 模式栏显示列号

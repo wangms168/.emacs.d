@@ -31,15 +31,11 @@
 
 ;;; Code:
 
-;; (use-package powerline
-;;   :ensure t
-;;   :config
-;;   )
-
-;; (require 'cl-lib)
+(require 'cl-lib)
 (require 'all-the-icons)
 
 ;;;; face
+
 (defgroup powerline nil
   "Powerline, a prettier mode line."
   :group 'mode-line)
@@ -82,13 +78,8 @@
 		    :foreground "black"
 		    :background "#eab700")
 
+;; 
 
-;; 删除了75-120行
-
-
-;; 删除了163-168行
-
-;;
 ;; the frame-local powerline cache causes problems if included in a saved desktop,
 ;; so delete it before the desktop is saved.
 ;;
@@ -111,9 +102,9 @@
 
 (add-hook 'desktop-save-hook 'powerline-desktop-save-delete-cache)
 
+;; item 处理
 
 ;; 删除了192-331行
-
 ;;;###autoload
 (defun powerline-mouse (click-group click-type string)
   "Return mouse handler for CLICK-GROUP given CLICK-TYPE and STRING."
@@ -180,17 +171,8 @@
           (pl/add-text-property padded-str 'face face)
         padded-str))))
 
+;; 左中右布局
 
-;; (defcustom powerline-text-scale-factor nil
-;;   "Scale of mode-line font size to default text size.
-
-;; Smaller mode-line fonts will be a float value less that 1.
-;; Larger mode-line fonts require a float value greater than 1.
-
-;; This is needed to make sure that text is properly aligned."
-;;   :group 'powerline
-;;   :type '(choice float integer (const nil)))
-
 ;;;###autoload
 (defun powerline-fill (face reserve)
   "Return empty space using FACE and leaving RESERVE space on the right."
@@ -214,6 +196,8 @@
               'display `((space :align-to (- (+ center (.5 . right-margin)) ,reserve
                                              (.5 . left-margin))))
               'face face))
+
+;; item 定义一
 
 ;;;###autoload (autoload 'powerline-major-mode "powerline")
 (defpowerline powerline-major-mode
@@ -339,6 +323,7 @@
    ((listp mode-line-process) (format-mode-line mode-line-process))
    (t mode-line-process)))
 
+;; item 定义二
 
 ;; modeline各显示项目自定义
 ;; https://github.com/domtronn/all-the-icons.el/wiki/Spaceline
@@ -933,70 +918,17 @@ been modified since its last check-in."
 		   (t (upcase (symbol-name (plist-get sys :name))))))
 	   " ")))
 
+;; selected-window
 
-
-;; (defvar pl/default-mode-line mode-line-format)
-
-;; (defvar pl/minibuffer-selected-window-list '())
-
-;; (defun pl/minibuffer-selected-window ()
-;;   "Return the selected window when entereing the minibuffer."
-;;   (when pl/minibuffer-selected-window-list
-;;     (car pl/minibuffer-selected-window-list)))
-
-;; (defun pl/minibuffer-setup ()
-;;   "Save the `minibuffer-selected-window' to `pl/minibuffer-selected-window'."
-;;   (push (minibuffer-selected-window) pl/minibuffer-selected-window-list))
-
-;; (add-hook 'minibuffer-setup-hook 'pl/minibuffer-setup)
-
-;; (defun pl/minibuffer-exit ()
-;;   "Set `pl/minibuffer-selected-window' to nil."
-;;   (pop pl/minibuffer-selected-window-list))
-
-;; (add-hook 'minibuffer-exit-hook 'pl/minibuffer-exit)
-
 (defvar powerline-selected-window (frame-selected-window)
   "Selected window.")
-
-;; (defun powerline-set-selected-window ()
-;;   "Set the variable `powerline-selected-window' appropriately."
-;;   (when (not (minibuffer-window-active-p (frame-selected-window)))
-;;     (setq powerline-selected-window (frame-selected-window))
-;;     (force-mode-line-update)))
-
-;; (defun powerline-unset-selected-window ()
-;;   "Unset the variable `powerline-selected-window' and update the mode line."
-;;   (setq powerline-selected-window nil)
-;;   (force-mode-line-update))
-
-;; (add-hook 'window-configuration-change-hook 'powerline-set-selected-window)
-
-;; ;; focus-in-hook was introduced in emacs v24.4.
-;; ;; Gets evaluated in the last frame's environment.
-;; (add-hook 'focus-in-hook 'powerline-set-selected-window)
-
-;; ;; focus-out-hook was introduced in emacs v24.4.
-;; (add-hook 'focus-out-hook 'powerline-unset-selected-window)
-
-;; ;; Executes after the window manager requests that the user's events
-;; ;; be directed to a different frame.
-;; (defadvice handle-switch-frame (after powerline-handle-switch-frame activate)
-;;   "Call `powerline-set-selected-window'."
-;;   (powerline-set-selected-window))
-
-;; (add-hook 'buffer-list-update-hook #'powerline-set-selected-window)
 
 ;;;###autoload (autoload 'powerline-selected-window-active "powerline")
 (defun powerline-selected-window-active ()
   "Return whether the current window is active."
   (eq powerline-selected-window (selected-window)))
 
-;; (defun powerline-revert ()
-;;   "Revert to the default Emacs mode-line."
-;;   (interactive)
-;;   (setq-default mode-line-format pl/default-mode-line))
-
+;; 布局处理
 
 (defun pl/render (item)
   "Render a powerline ITEM."
@@ -1022,6 +954,7 @@ been modified since its last check-in."
            (powerline-width (cdr values))))
     0))
 
+;; 自定义状态栏
 
 ;; (setq column-number-mode t)           ;; 模式栏显示列号
 ;; (setq line-number-mode t)             ;; 模式栏显示行号

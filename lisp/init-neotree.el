@@ -2,8 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
-
-;; NeoTree
+;; neotree设置
+;; 注意，打开calendar日历，要在neotr关闭开启状态下进行，否则日历会显示在上部分。
 (use-package neotree
   :config
   (progn

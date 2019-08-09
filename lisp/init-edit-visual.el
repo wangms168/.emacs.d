@@ -15,7 +15,7 @@
   )
 
 ;; ------------------------------------------------------------------------------------
-(use-package rainbow-delimiters
+(use-package rainbow-delimiters           ;; 高亮缩进
   :init
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)

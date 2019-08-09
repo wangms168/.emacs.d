@@ -45,17 +45,17 @@ With a prefix arg decrease transparency."
 	)
       )
 
-    ;; ;;标题栏 https://www.emacswiki.org/emacs/FrameTitle
+    ;;标题栏 https://www.emacswiki.org/emacs/FrameTitle
     (setq frame-title-format
     	  '("%b"
     	    (:eval (when (and (buffer-file-name) (buffer-modified-p)) " **") )
     	    (:eval (if (buffer-file-name)
-    		       (concat " {"
-    			       (directory-file-name
-    				(file-name-directory
-    				 (abbreviate-file-name
-    				  (buffer-file-name))))"}") )
-    		   )
+    	    	       (concat " {"
+    	    		       (directory-file-name
+    	    			(file-name-directory
+    	    			 (abbreviate-file-name
+    	    			  (buffer-file-name))))"}") )
+    	    	   )
     	    " - Emacs"))
 
     (setq initial-frame-alist `(
@@ -63,7 +63,7 @@ With a prefix arg decrease transparency."
 				;; (background-color . "black")   ;; #181A26
 				;; (left . ,(- (* (window-width) 8) 300)) ; Chars are 8 bits long.
 				;; (width . 108)
-				(alpha . 90)
+				(alpha . 100)
 				;; New frames go in right corner.
 				(vertical-scroll-bars . nil)
                                 ;; (title . ,(format "%s-%s"
@@ -73,7 +73,7 @@ With a prefix arg decrease transparency."
 				(menu-bar-lines . 0)
 				(font . ,tv-default-font)
 				(cursor-color . "red")
-				(fullscreen .  maximized)
+				(fullscreen . fullscreen)     ;;fullscreen 全屏\maximized 最大化
 				))
 
     ;; (add-to-list 'initial-frame-alist `(font . ,tv-default-font))

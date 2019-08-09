@@ -32,7 +32,7 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'all-the-icons)
+;; (require 'all-the-icons)
 
 ;;;; face
 
@@ -250,6 +250,7 @@
                 'local-map (make-mode-line-mouse-map
                             'mouse-1 'mode-line-widen))))
 
+;; vc版本控制-----------------------------------------------------------------------------------
 (defcustom powerline-gui-use-vcs-glyph nil
   "Display a unicode character to represent a version control system. Not always supported in GUI."
   :group 'powerline
@@ -276,6 +277,72 @@
 ;; 	   (propertize (format " %s " branch)))))
 ;;        (t (format "%s" vc-mode)))))))
 
+(defun spaceline---github-vc ()
+  "Function to return the Spaceline formatted GIT Version Control text."
+  (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
+    (concat
+     (propertize (all-the-icons-alltheicon "git") 'face '(:height 1.1 :inherit) 'display '(raise 0.1))
+     (propertize " · ")
+     (propertize (format "%s" (all-the-icons-octicon "git-branch"))
+                 'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
+                 'display '(raise 0.2))
+     (propertize (format " %s" branch) 'face `(:height 0.9 :inherit) 'display '(raise 0.2)))))
+
+(defun spaceline---svn-vc ()
+  "Function to return the Spaceline formatted SVN Version Control text."
+  (let ((revision (cadr (split-string vc-mode "-"))))
+    (concat
+     (propertize (format " %s" (all-the-icons-faicon "cloud")) 'face `(:height 1.2) 'display '(raise -0.1))
+     (propertize (format " · %s" revision) 'face `(:height 0.9)))))
+
+(defun custom-modeline-vc-icons ()
+  ;;ati-vc-icon "An `all-the-icons' segment for the current Version Control icon"
+  ;; (when vc-mode
+  (cond ((string-match "Git[:-]" vc-mode) (spaceline---github-vc))
+        ((string-match "SVN-" vc-mode) (spaceline---svn-vc))
+        (t (propertize (format "%s" vc-mode))))
+  ;; )
+  ;; :when active
+  )
+
+;; https://github.com/RenChunhui/.emacs.d
+(defun modeline-git-vc ()
+  "自定义 git 状态."
+  (when vc-mode
+    (cond
+     ((string-match "Git[:-]" vc-mode)
+      (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
+	(concat
+	 (propertize "\xf418")
+	 (propertize (format " %s" branch) 'face `(:height 0.9)))))
+     (t (format "%s" vc-mode)))))
+
+
+;; 版本控制图标    此代码段显示有关当前缓冲区版本控制系统的信息。目前，它仅支持SVN和Git包含图标。
+;; (defun -custom-modeline-github-vc ()
+;;   (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
+;;     (concat
+;;      (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
+;;      " · "
+;;      (propertize (format "%s" (all-the-icons-octicon "git-branch"))
+;;                  'face `(:height 1.3 :family ,(all-the-icons-octicon-family))
+;;                  'display '(raise -0.1))
+;;      (propertize (format " %s" branch) 'face `(:height 0.9)))))
+
+;; (defun -custom-modeline-svn-vc ()
+;;   (let ((revision (cadr (split-string vc-mode "-"))))
+;;     (concat
+;;      (propertize (format " %s" (all-the-icons-faicon "cloud")) 'face `(:height 1.2) 'display '(raise -0.1))
+;;      (propertize (format " · %s" revision) 'face `(:height 0.9)))))
+
+;; (defun custom-modeline-icon-vc ()
+;;   (when vc-mode
+;;     (cond
+;;      ((string-match "Git[:-]" vc-mode) (-custom-modeline-github-vc))
+;;      ((string-match "SVN-" vc-mode) (-custom-modeline-svn-vc))
+;;      (t (format "%s" vc-mode)))))
+
+;; encoding -------------------------------------------------------------------------------
 ;;;###autoload (autoload 'powerline-encoding "powerline")
 (defpowerline powerline-encoding
   (let ((buf-coding (format "%s" buffer-file-coding-system)))
@@ -347,6 +414,24 @@
             ("%" all-the-icons-octicon-family all-the-icons-octicon "lock" :height 1.0 :v-adjust 0.1)))
          (result (cdr (assoc (format-mode-line "%*") config-alist))))
     (propertize (format "%s" (apply (cadr result) (cddr result))) 'face `(:family ,(funcall (car result)) :inherit ))))
+
+;; https://github.com/howardabrams/dot-files/blob/master/emacs-mode-line.org
+(defun powerline-get-icon (name alt-sym help-message)
+  "Returns a propertized icon if available, otherwise, returns ALT-SYM."
+  (propertize alt-sym 'help-echo help-message))
+
+(defun powerline-modified ()
+  (condition-case ex
+      (let ((state (vc-git-state (buffer-file-name))))
+        ;; (cond ((buffer-modified-p)  (powerline-get-icon "pencil" "**✦" "Modified buffer"))
+	(cond ((buffer-modified-p)  (when (buffer-modified-p) mode-line-modified))
+              ((eq state 'edited)   (powerline-get-icon "pencil" "✦" "Modified buffer, unregistered changes"))
+              ((eq state 'unregistered) (powerline-get-icon "question" "❓" "Unregistered file in VCS"))
+              ((eq state 'missing)  (powerline-get-icon "exclamation" "⁈" "File exists only in VCS, not on the hard disk"))
+              ((eq state 'ignored)  (powerline-get-icon "ban" "♟" "Ignored file in VCS"))
+              ((eq state 'added)    (powerline-get-icon "plus" "➕" "File will be registered in VCS in the next commit"))
+              (t " ")))
+    (error (powerline-get-icon "exclamation" "⁈" (car ex)))))
 
 ;; 修改或只读。片段在保存当前文件时显示链图标，在修改时显示断链，在文件只读时显示填充锁定。
 ;; (defun custom-modeline-modified
@@ -455,8 +540,10 @@
 ;;               'display '(raise 0.0)))
 
 ;; -------------------------------------------------------------------------------------------------------------------------
+
 ;; Major-mode图标显示
 (defun custom-modeline-mode-icon ()
+  (when (fboundp 'all-the-icons-icon-for-buffer)
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon) ;; This implies it's the major mode
       (propertize icon
@@ -464,14 +551,8 @@
                   'display '(raise 0.0)
                   ;; 'face `(:height 1.0 :family ,(all-the-icons-icon-family-for-buffer) :inherit)))))
 		  'face `(:family ,(all-the-icons-icon-family-for-buffer) :inherit)))))
-
-;; 模式图标       此代码段显示该缓冲区文件模式的开发人员图标。
-;; (defun custom-modeline-mode-icon ()
-;;   (format " %s"
-;; 	  (propertize icon
-;;                       'help-echo (format "Major-mode: `%s`" major-mode)
-;;                       'face `(:height 1.2 :family ,(all-the-icons-icon-family-for-buffer)))))
-
+  )
+;; (custom-modeline-mode-icon)
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; region-info及图标在modeline上显示
 (defun custom-modeline-region-info ()
@@ -497,169 +578,7 @@
 ;;        (propertize (format " (%s, %s)" words chars)
 ;;                    'face `(:height 0.9))))))
 
-;; -------------------------------------------------------------------------------------------------------------------------
-;; vc-mode 版本控制modeline显示
-;; https://emacs.stackexchange.com/questions/10955/customize-vc-mode-appearance-in-mode-line
-;; Define faces.
-(defface my/mode:vc-added
-  `(
-    (  ((class color))
-       (:background "#FFAA55"  :foreground "black")  )
-    (  t
-       (:weight bold :underline t)  )
-    )
-  "VC status tag face for files that have just been added to
-version-control."
-  :group 'MY/mode)
 
-(defface my/mode:vc-edited
-  `(
-    (  ((class color))
-       (:background "#F05B80"  :foreground "black")  )   ; "#F04040" maybe?
-    (  t
-       (:weight bold :underline t)  )
-    )
-  "VC status tag face for files that are under version control
-but which have been edited."
-  :group 'MY/mode)
-
-(defface my/mode:vc-in-sync
-  `(
-    (  ((class color))
-       (:background "#60CC60"  :foreground "black")  )
-    (  t
-       (:weight bold :underline t)  )
-    )
-  "VC status tag face for files that are under version control
-and which are in sync with the respository."
-  :group 'MY/mode)
-
-(defface my/mode:vc-none
-  `(
-    (  ((class color))
-       (:background "#70A0D0"  :foreground "black")  )
-    (  t
-       (:weight bold :underline t)  )
-    )
-  "VC status tag face for files that are not under version
-control"
-  :group 'MY/mode)
-
-(defface my/mode:vc-unknown
-  `(
-    (  ((class color))
-       (:background "#FF0000"  :foreground "white")  )
-    (  t
-       (:weight bold :underline t)  )
-    )
-  "VC status tag face for files whose version-control status
-cannot be determined."
-  :group 'MY/mode)
-
-(defvar my-vc-mode-attrs
-  '((""  . (" NoVC "  my/mode:vc-none))
-    ("-" . (" VC = "  my/mode:vc-in-sync))
-    (":" . (" VC > "  my/mode:vc-edited))
-    ("@" . (" VC + "  my/mode:vc-added))
-    ("?" . (" ?VC? "  my/mode:vc-unknown))
-    )
-  "Lookup table to translate vc-mode character into another string/face."
-  )
-
-;; This function helps me understand the version-control status.
-(defun my-mode-line-vc-info ()
-  "Return version-control status information about the file in
-the current buffer, as a fontified string.
-
-The mode-line variable `vc-mode' is nil if the file is not under
-version control, and displays a hyphen or a colon depending on whether
-the file has been modified since check-in.  I can never keep those
-straight.
-
-This function returns \"NoVC\" if the file is not under version 
-control.  It displays a string with an = sign if the file is in sync
-with its version control, and a string with a > sign if the file has
-been modified since its last check-in."
-  (let* ((class
-          (cond
-           ;; If not under version-control
-           ((not vc-mode)
-            "")
-
-           ;; If under version-control decode the -:@ character
-           ((string-match "\\` ?\\(?:CVS\\|Git\\)\\([-:@]\\)\\([^^:~ \x00-\x1F\\\\/]+\\)?" vc-mode)
-            (match-string-no-properties 1 vc-mode))
-
-           ;; Otherwise, indicate confusion
-           (t
-            "?")
-           ))
-
-         (branch
-          ;; (if (any class '("-" ":" "@"))
-          (concat " " (match-string-no-properties 2 vc-mode))
-          ;; ""
-	  ;; )
-	  )
-
-         ;; Fetch properties list for the class character above
-         (props (cdr (assoc class my-vc-mode-attrs)))
-         )
-
-    (concat (propertize (car props) 'face (cadr props))
-            branch)))
-
-(defun spaceline---github-vc ()
-  "Function to return the Spaceline formatted GIT Version Control text."
-  (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
-    (concat
-     (propertize (all-the-icons-alltheicon "git") 'face '(:height 1.1 :inherit) 'display '(raise 0.1))
-     (propertize " · ")
-     (propertize (format "%s" (all-the-icons-octicon "git-branch"))
-                 'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
-                 'display '(raise 0.2))
-     (propertize (format " %s" branch) 'face `(:height 0.9 :inherit) 'display '(raise 0.2)))))
-
-(defun spaceline---svn-vc ()
-  "Function to return the Spaceline formatted SVN Version Control text."
-  (let ((revision (cadr (split-string vc-mode "-"))))
-    (concat
-     (propertize (format " %s" (all-the-icons-faicon "cloud")) 'face `(:height 1.2) 'display '(raise -0.1))
-     (propertize (format " · %s" revision) 'face `(:height 0.9)))))
-
-(defun custom-modeline-vc-icons ()
-  ;;ati-vc-icon "An `all-the-icons' segment for the current Version Control icon"
-  ;; (when vc-mode
-  (cond ((string-match "Git[:-]" vc-mode) (spaceline---github-vc))
-        ((string-match "SVN-" vc-mode) (spaceline---svn-vc))
-        (t (propertize (format "%s" vc-mode))))
-  ;; )
-  ;; :when active
-  )
-
-;; 版本控制图标    此代码段显示有关当前缓冲区版本控制系统的信息。目前，它仅支持SVN和Git包含图标。
-;; (defun -custom-modeline-github-vc ()
-;;   (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
-;;     (concat
-;;      (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
-;;      " · "
-;;      (propertize (format "%s" (all-the-icons-octicon "git-branch"))
-;;                  'face `(:height 1.3 :family ,(all-the-icons-octicon-family))
-;;                  'display '(raise -0.1))
-;;      (propertize (format " %s" branch) 'face `(:height 0.9)))))
-
-;; (defun -custom-modeline-svn-vc ()
-;;   (let ((revision (cadr (split-string vc-mode "-"))))
-;;     (concat
-;;      (propertize (format " %s" (all-the-icons-faicon "cloud")) 'face `(:height 1.2) 'display '(raise -0.1))
-;;      (propertize (format " · %s" revision) 'face `(:height 0.9)))))
-
-;; (defun custom-modeline-icon-vc ()
-;;   (when vc-mode
-;;     (cond
-;;      ((string-match "Git[:-]" vc-mode) (-custom-modeline-github-vc))
-;;      ((string-match "SVN-" vc-mode) (-custom-modeline-svn-vc))
-;;      (t (format "%s" vc-mode)))))
 
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; flycheck状态图标显示
@@ -679,6 +598,32 @@ been modified since its last check-in."
 	(`not-checked "✖ Disabled")
 	(`errored (propertize "⚠ Error"))
 	(`interrupted "⛔ Interrupted"))))))
+
+;; https://github.com/RenChunhui/.emacs.d
+(defun modeline-flycheck-status ()
+  "自定义 flycheck 状态."
+  (let* ((text (pcase flycheck-last-status-change
+		 (`finished (if flycheck-current-errors
+				(let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
+					       (+ (or .warning 0) (or .error 0)))))
+				  (propertize (format "✖ %s Issue%s" count (if (eq 1 count) "" "s"))
+					      'face '(:foreground "#ff6c6b")))
+			      (propertize "✔ No Issues"
+					  'face '(:foreground "#61afef"))))
+
+		 (`running (propertize "⟲ Running"
+				       'face '(:foreground "#da8548")))
+		 (`no-checker (propertize "⚠ No Checke"
+					  'face '(:foreground "#da8548")))
+		 (`not-checked "✖ Disabled")
+		 (`errored (propertize "⚠ Error" 'face '(:foreground "#ff6c6b")))
+		 (`interrupted "⛔ Interrupted")
+		 (`suspicious  ""))))
+    (propertize text
+		'help-echo "Show Flycheck Errors"
+		'mouse-face '(:box 1)
+		'local-map (make-mode-line-mouse-map
+			    'mouse-1 (lambda () (interactive) (flycheck-list-errors))))))
 
 (use-package  flycheck
   :init
@@ -737,9 +682,10 @@ been modified since its last check-in."
   (let* ((num (or spaceline--upgrades (spaceline--count-upgrades))))
     (propertize
      (concat
-      (propertize (format "%s" (all-the-icons-octicon "package"))
+      ;; (propertize (format "%s" (all-the-icons-octicon "package"))
+      (when (fboundp 'all-the-icons-octicon) (propertize (format "%s"  (all-the-icons-octicon "package"))
                   'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
-                  'display '(raise 0.0))
+                  'display '(raise 0.0)))
       ;; (propertize (format " %d updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
       (propertize (format " %s updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
      'help-echo "Open Packages Menu"
@@ -844,6 +790,13 @@ been modified since its last check-in."
      (propertize (format-time-string " %H:%M ") 'face `(:height 0.9))
      (propertize (format "%s " icon) 'face `(:height 0.9 :family ,(all-the-icons-wicon-family)) 'display '(raise -0.0)))))
 
+(defun modeline-time ()
+  "自定义时间显示."
+  (concat
+   (propertize " " 'face `(:height 0.9))
+   (propertize (format-time-string " %H:%M ") 'face `(:height 0.9))
+   ))
+
 ;; 时间与图标时钟    此片段以一个小时钟图标显示当前时间，该图标表示当前小时（即分针不移动的钟面）
 ;; (defun custom-modeline-time ()
 ;;   (let* ((hour (string-to-number (format-time-string "%I")))
@@ -866,6 +819,13 @@ been modified since its last check-in."
   )
 
 ;; projectile
+(defun powerline-project-vc ()
+  (ignore-errors
+    (when (projectile-project-p)
+      (propertize (projectile-project-name)
+                  'help-echo (format "Base: %s"
+                                     (projectile-project-root))))))
+
 (defun custom-projectile-icon ()
   ;; ati-projectile "An `all-the-icons' segment for current `projectile' project"
   (concat
@@ -918,6 +878,19 @@ been modified since its last check-in."
 		   (t (upcase (symbol-name (plist-get sys :name))))))
 	   " ")))
 
+(defun powerline-evil-state ()
+  "Displays *my* version of displaying the evil state."
+  (case evil-state
+    ('normal " Ⓝ")
+    ('insert " Ⓘ")
+    ('visual " Ⓥ")
+    ('motion " Ⓜ")
+    (t       " Ⓔ")))
+
+(defpowerline powerline-evil
+  (powerline-evil-state))
+
+
 ;; selected-window
 
 (defvar powerline-selected-window (frame-selected-window)
@@ -928,7 +901,7 @@ been modified since its last check-in."
   "Return whether the current window is active."
   (eq powerline-selected-window (selected-window)))
 
-;; 布局处理
+;; item处理
 
 (defun pl/render (item)
   "Render a powerline ITEM."
@@ -961,6 +934,15 @@ been modified since its last check-in."
 ;; (display-time-mode)          ;; modeline中显示时间模式。
 ;; (which-function-mode)        ;; modeline中显示选择那个函数模式。如这里开启了，modeline中设不设置为：(which-func-mode ("" which-func-format "--"))，modeline中都会显示的。
 
+(defun Short-directory ()
+(if (buffer-file-name)
+	   (concat "{"
+		   (directory-file-name
+		    (file-name-directory
+		     (abbreviate-file-name
+		      (buffer-file-name))))"}"))
+       )
+
 ;;;###autoload
 (defun powerline-center-theme ()
   "Setup a mode-line with major and minor modes centered."
@@ -977,57 +959,80 @@ been modified since its last check-in."
                           (lhs (list
 				(powerline-window-number face0 'l)
 		  		;; (powerline-raw (mapleline--unicode-number (winum-get-number-string)) face0 'l)
-				(powerline-raw (propertize (all-the-icons-octicon "package") 'face `(:family ,(all-the-icons-octicon-family) :height 1.0) 'display '(raise -0.0)) face0 'l)
-				;; (powerline-raw 	(propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.0) 'display '(raise -0.0)) face0 'l)
+				(when (and (boundp 'evil-mode) evil-mode)
+				  (powerline-evil face0 'l))
+				;; (powerline-raw (powerline-evil-state) face0 'r)
+				(when (featurep 'all-the-icons)
+				  (powerline-raw (propertize (all-the-icons-octicon "package") 'face `(:family ,(all-the-icons-octicon-family) :height 1.0) 'display '(raise -0.0)) face0 'l))
+				(powerline-raw (propertize "\xf418") face0 'l)
+				;; (powerline-raw (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.0) 'display '(raise -0.0)) face0 'l)
 				;; (powerline-raw " " face0 'l)
 				(powerline-buffer-size face0 'l)
 				(powerline-raw mode-line-mule-info face0 'l)     ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。
 				                                                 ;; 一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
+				;; (powerline-raw "[%z]" face0)
 				(powerline-raw mode-line-client face0 'l)        ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
-				(powerline-raw mode-line-modified face0 'l)      ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。
-				                                                 ;; 其默认值显示'**'如果缓冲区被修改，'--'如果没有修改缓冲区，'%%'如果缓冲区是只读的，'％*'如果缓冲区是只读和修改的。
+
+				(powerline-raw (powerline-modified) face0 'l)    ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。
+				;; (when (buffer-modified-p)
+				;;   (powerline-raw mode-line-modified face0 'l))
+				;; (when buffer-read-only
+				;;   (powerline-raw "[RO]" face0 'l))
+
 				;; (powerline-raw "|" face0 'l)
-				;; (powerline-raw mode-line-remote face0 'l)        ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。
-				;; (powerline-raw mode-line-frame-identification face0 'l) ;; 模式行帧识别:此变量标识当前帧。如果您正在使用可以显示多个帧的窗口系统,其默认值显示" "，
-				;;                                                         ;; 或者在一次只显示一个帧的普通终端上，显示"-%F " 。
+				;; (powerline-raw mode-line-remote face0 'l)     ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。
+				;; (powerline-raw mode-line-frame-identification face0 'l)  ;; 模式行帧识别:此变量标识当前帧。如果您正在使用可以显示多个帧的窗口系统,其默认值显示" "，
+				;;                                                          ;; 或者在一次只显示一个帧的普通终端上，显示"-%F " 。
 				(powerline-raw "|" face0 'l)
+				(powerline-raw (Short-directory) face0 'l)
+				(powerline-raw "/" face0 'l)
 				(powerline-buffer-id `(mode-line-buffer-id ,face0) 'r)
-				;; (powerline-raw mode-line-buffer-identification face0 'r)      ;; 模式行缓冲区识别:此变量标识窗口中显示的缓冲区。其默认值显示缓冲区名称，用空格填充至少12列。
+				;; (powerline-raw mode-line-buffer-identification face0 'r) ;; 模式行缓冲区识别:此变量标识窗口中显示的缓冲区。其默认值显示缓冲区名称，用空格填充至少12列。
 				;; (powerline-raw "%b" face0 'l)
-				(powerline-raw (custom-modeline-mode-icon) face0 'r)
+				(powerline-raw (custom-modeline-mode-icon) face0 'r)        ;; (when (featurep 'all-the-icons) ... )
 				(powerline-process face0)
 				;; (powerline-raw (custom-process-icon) face0)
-				(powerline-raw (custom-projectile-icon) face0)          ;;含有projectile，会使modeline高度变化,显示|x|
+				(powerline-raw (powerline-project-vc) face0) 
+				;; (powerline-raw (custom-projectile-icon) face0)              ;;含有projectile，会使modeline高度变化,显示|x|
 		  		(powerline-narrow face1 'l)
+				;; (powerline-raw (modeline-git-vc) face0 'l) 
 		  		(powerline-vc face1 'l)
 		  		))
                           (rhs (list
 				(powerline-flycheck face1 'l)
-				;; (powerline-raw (custom-modeline-flycheck-status) face1 'l)
+				;; (powerline-raw (modeline-flycheck-status) face1 'l)
 				(powerline-raw (custom-modeline-package-updates) face2 'l)
 				;; (powerline-encoding face1 'r)
-				(powerline-raw (replace-buffer-encoding) face1 'l)
-				(powerline-time face0 'r)
-				;; (powerline-raw (custom-modeline-time) face0 'r)
+				(powerline-raw (replace-buffer-encoding) face1 'r)
+				;; (powerline-time face0 'r)
+				(powerline-raw (modeline-time) face0 )
 				;; (powerline-raw global-mode-string face1 'r)
-				(powerline-raw "%l" face1 'l)
-				(powerline-raw ":" face1)
-				(powerline-raw "%c" (if (>= (current-column) 80)
-							'mode-line-80col-face face1) 'r)
+
+				;; (powerline-raw "%4l:%3c" face1 'l)
+				(powerline-raw "%4l:"  face1 'l)                       ;;(format-mode-line '(4 "%l"))
+				(powerline-raw "%3c" (if (>= (current-column) 80)    ;;(format-mode-line '(3 "%c"))
+							 'mode-line-80col-face face1))
 				(powerline-raw " " face0)
 				(powerline-raw (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p"))) face0 'r)
-				(powerline-raw "  " face0)
+				(powerline-raw "%3 " face0)
 				(powerline-fill face0 0)
 				))
                           (center (list
 				   (powerline-raw " " face1)
+				   (when (and (boundp 'which-func-mode) which-func-mode)
+				     (powerline-raw which-func-format nil 'l))
 				   (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
-				     (powerline-raw erc-modified-channels-object face2 'l))
-				   (powerline-major-mode face2 'l)
-				   (powerline-process face2)
-				   (powerline-raw " :" face2)
-				   (powerline-minor-modes face2 'l)
-				   (powerline-raw " " face2)
+				     (powerline-raw erc-modified-channels-object face1 'l))
+				   (powerline-raw "[" face0 'l)
+				   (powerline-major-mode face0)
+				   (powerline-process face0)
+				   (powerline-raw "]" face0)
+				   (powerline-raw "[" face0 'l)
+				   (powerline-minor-modes face0)
+				   (powerline-raw "%n" face0)
+				   (powerline-raw "]" face0)
+				   ;; (powerline-raw mode-line-modes face0)      ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。
+				                                              ;; 其中含有：mode-name、mode-line-process、minor-mode-alist。 
 				   (powerline-raw (custom-modeline-region-info) face2)
 				   ))
 		  	  )
@@ -1038,7 +1043,6 @@ been modified since its last check-in."
                              (powerline-render rhs)
 		     	     )
 		     )))))
-
 (powerline-center-theme)
 
 ;; 左右中布局：https://emacs.stackexchange.com/questions/16654/how-to-re-arrange-things-in-mode-line
@@ -1053,19 +1057,23 @@ been modified since its last check-in."
 ;; (setq-default mode-line-format                ;; Original value of mode-line-format
 ;; 	      '("%e"                             ;; %e 当Emacs对于Lisp对象几乎没有内存时，会发出一条简短的消息。否则，这是空的。
 ;; 		mode-line-front-space            ;; 模式行前置空间:该变量显示在模式行的前面。默认情况下，此构造显示在模式行的开头，但如果存在满内存消息，则首先显示该构造。
-;; 		mode-line-mule-info              ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。utf-8显示为‘U:’、prefer-utf-8显示为"-:"，C-\(toggle-input-method)显示‘拼符U:’。
+;; 		mode-line-mule-info              ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。
+;;                                               ;;请参阅非ASCII字符。utf-8显示为‘U:’、prefer-utf-8显示为"-:"，C-\(toggle-input-method)显示‘拼符U:’。
 ;; 		mode-line-client                 ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
-;; 		mode-line-modified               ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。其默认值显示'**'如果缓冲区被修改，'--'如果没有修改缓冲区，'%%'如果缓冲区是只读的，'％*'如果缓冲区是只读和修改的。
+;; 		mode-line-modified               ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。
+;;                                               ;;其默认值显示'**'如果缓冲区被修改，'--'如果没有修改缓冲区，'%%'如果缓冲区是只读的，'％*'如果缓冲区是只读和修改的。
 ;; 		mode-line-remote                 ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。
 ;; 		mode-line-frame-identification   ;; 模式行帧识别:此变量标识当前帧。如果您正在使用可以显示多个帧的窗口系统,其默认值显示" "，或者在一次只显示一个帧的普通终端上，显示"-%F " 。
 ;; 		mode-line-buffer-identification  ;; 模式行缓冲区识别:此变量标识窗口中显示的缓冲区。其默认值显示缓冲区名称，用空格填充至少12列。
 ;; 		"   "
 ;; 		mode-line-position               ;; 模式行位置:此变量指示缓冲区中的位置。其默认值显示缓冲区百分比，以及可选的缓冲区大小，行号和列号。显示形如：'xx% (xx,xx)'
-;; 		(vc-mode vc-mode)                ;; vc-mode每个缓冲区中的缓冲区本地变量记录缓冲区的访问文件是否使用版本控制进行维护，如果是，则记录哪种类型。它的值是出现在模式行中的字符串，或者nil没有版本控制。
+;; 		(vc-mode vc-mode)                ;; vc-mode每个缓冲区中的缓冲区本地变量记录缓冲区的访问文件是否使用版本控制进行维护，如果是，则记录哪种类型。
+;;                                               ;;它的值是出现在模式行中的字符串，或者nil没有版本控制。
 ;; 		"  "
-;; 		mode-line-modes                  ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。其中含有：mode-name、mode-line-process、minor-mode-alist。
+;; 		mode-line-modes                  ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。
+                                                 ;;其中含有：mode-name、mode-line-process、minor-mode-alist。
 ;; 		"      "
-;; 		;; mode-line-misc-info              ;; 用于杂项信息的模式行构造。默认情况下，它显示由指定的信息global-mode-string。与global-mode-string、"%M"效果相同。
+;; 		;; mode-line-misc-info           ;; 用于杂项信息的模式行构造。默认情况下，它显示由指定的信息global-mode-string。与global-mode-string、"%M"效果相同。
 ;; 		;; (:eval (custom-modeline-time))
 ;; 	        ;; (:eval (propertize (format-time-string " %H:%M ") 'face `(:height 1.0)))
 ;; 	        (:eval (format-time-string " %H:%M "))

@@ -63,7 +63,8 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)                  ;; 取消光标闪烁
  '(font-use-system-font t)
- '(show-paren-mode t))                     ;;光标位于括号之后显示匹配的括号
+ '(show-paren-mode t)                      ;;光标位于括号之后显示匹配的括号
+ )
 
 ;; Miscs
 (setq inhibit-startup-message t)          ;; 禁用启动画面
@@ -96,6 +97,31 @@
     (custom-set-faces '(show-paren-match ((t (:background "steelblue3" :foreground "yellow" :underline "yellow")))))
     ))
 
+;; Automatic parenthesis pairing
+(use-package elec-pair
+  :ensure nil
+  :hook (after-init . electric-pair-mode)
+  :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
+
+;; https://www.gnu.org/software/emacs/manual/html_node/efaq/Matching-parentheses.html
+(global-set-key "%" 'match-paren)
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s(") (forward-list 1) (backward-char 1))
+	((looking-at "\\s)") (forward-char 1) (backward-list 1))
+	(t (self-insert-command (or arg 1)))))
+
+;; M-x check-parens <RET>  https://codeday.me/bug/20180225/137251.html
+
+;; https://www.emacswiki.org/emacs/DebuggingParentheses
+;; could be bad, will not let you save at all, until you correct the error
+;; 可能是坏的，根本不会让你保存，直到你纠正错误
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda ()
+	    (add-hook 'local-write-file-hooks
+		      'check-parens)))
+
 ;; 光标在括号内时就高亮包含内容的两个括号
 (define-advice show-paren-function (:around (fn) fix-show-paren-function)
   "Highlight enclosing parens."
@@ -103,6 +129,50 @@
         (t (save-excursion
              (ignore-errors (backward-up-list))
              (funcall fn)))))
+
+;;突出显示匹配的双引号
+(defun show-paren--match-quotes ()
+  (let ((ppss (syntax-ppss)))
+    ;; In order to distinguish which quote is opening and which is starting,
+    ;; check that that point is not within a string (or comment, for that
+    ;; matter).  Also ignore escaped quotes.
+    (unless (or (nth 8 ppss) (nth 5 ppss))
+      (or
+       (and (not (bobp))
+	    (eq 7 (car-safe (syntax-after (1- (point)))))
+	    (save-excursion
+	      (let ((end (point))
+		    (ppss (syntax-ppss (1- (point)))))
+		(when (nth 3 ppss)
+		  (let ((beg (nth 8 ppss)))
+		    (list beg
+			  (1+ beg)
+			  (1- end)
+			  end))))))
+       (and (not (eobp))
+	    (eq 7 (car-safe (syntax-after (point))))
+	    (save-excursion
+	      (let ((beg (point)))
+		(condition-case nil
+		    (progn
+		      (forward-sexp 1)
+		      (list beg
+			    (1+ beg)
+			    (1- (point))
+			    (point)))))))))))
+
+(advice-add 'show-paren--default :after-until #'show-paren--match-quotes)
+
+;; 删除匹配的括号
+;; https://zhuanlan.zhihu.com/p/24309937
+(defun c-delete-pair ()
+  (interactive)
+  (let ((re "[([{<'\"]"))
+    (when (or (looking-at-p re) (re-search-backward re nil t))
+      (save-excursion (forward-sexp) (delete-char -1))
+      (delete-char 1))))
+;; ----------------------------------------------------------------------------------------
+
 
 ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode) ;;显示当前函数的参数列表,似乎已默认开启。
 
@@ -269,24 +339,6 @@
 ;;   (setq ediff-split-window-function 'split-window-horizontally)
 ;;   (setq ediff-merge-split-window-function 'split-window-horizontally))
 
-;; Automatic parenthesis pairing
-(use-package elec-pair
-  :ensure nil
-  :hook (after-init . electric-pair-mode)
-  :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
-
-
-;;add the % jump function in vim
-;;ref: http://docs.huihoo.com/homepage/shredderyin/emacs_elisp.html
-;;ref: emacs FAQ info doc "Matching parentheses"
-(defun match-paren (arg)
-  "Go to the matching paren if on a paren;otherwise insert %."
-  (interactive "p")
-  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-        (t (self-insert-command (or arg 1)))))
-(global-set-key "%" 'match-paren)
-
 ;; ;; Edit multiple regions in the same way simultaneously
 ;; (use-package iedit
 ;;   :defines desktop-minor-mode-table
@@ -398,7 +450,8 @@
 ;;----------------------------------------------------------------------------
 ;; comment
 ;;----------------------------------------------------------------------------
-(global-set-key [?\M-;] 'comment-or-uncomment-region)		 ;; 批量注释
+;; (global-set-key [?\M-;] 'comment-or-uncomment-region)		 ;; 批量注释
+(global-set-key (kbd "M-;") 'comment-or-uncomment-region)		 ;; 批量注释
 (defun my-comment-or-uncomment-region (beg end &optional arg)
   (interactive (if (use-region-p)
 		   (list (region-beginning) (region-end) nil)
@@ -436,13 +489,13 @@
 ;;----------------------------------------------------------------------------
 ;; line-numbers
 ;;----------------------------------------------------------------------------
-(add-hook 'find-file-hook 'linum-mode)
-(setq linum-format "%4d|")               ;;set format
-;; (setq linum-format "%4d \u2502 ")           ;; "\u2502"="|"
-;; ;; (setq display-line-numbers-type 'visual)
-;; (add-hook 'find-file-hook 'display-line-numbers-mode)
 ;; (global-linum-mode t)
-;; (setq linum-format "%4d\u2502 ")
+;; (add-hook 'find-file-hook 'linum-mode)                         ;; 当查看超过数万行的文件时,emacs会卡顿。查卡顿方法：M-x profiler-start 然后 M-x profiler-report
+;; (setq linum-format "%4d|")               ;;set format
+;; (setq linum-format "%4d \u2502 ")        ;; "\u2502"="|"
+(setq-default display-line-numbers-width nil)
+(add-hook 'find-file-hook 'display-line-numbers-mode)             ;; Emacs 26 新增了原生的行号支持。这与“linum-mode”提供的类似，但更快，并且不会占用行号的显示余量。
+
 ;;----------------------------------------------------------------------------
 ;; title
 ;;----------------------------------------------------------------------------
@@ -476,39 +529,6 @@
   (let ((face (or (get-char-property (point) 'read-face-name)
 		  (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
-
-;;突出显示匹配的双引号
-(defun show-paren--match-quotes ()
-  (let ((ppss (syntax-ppss)))
-    ;; In order to distinguish which quote is opening and which is starting,
-    ;; check that that point is not within a string (or comment, for that
-    ;; matter).  Also ignore escaped quotes.
-    (unless (or (nth 8 ppss) (nth 5 ppss))
-      (or
-       (and (not (bobp))
-	    (eq 7 (car-safe (syntax-after (1- (point)))))
-	    (save-excursion
-	      (let ((end (point))
-		    (ppss (syntax-ppss (1- (point)))))
-		(when (nth 3 ppss)
-		  (let ((beg (nth 8 ppss)))
-		    (list beg
-			  (1+ beg)
-			  (1- end)
-			  end))))))
-       (and (not (eobp))
-	    (eq 7 (car-safe (syntax-after (point))))
-	    (save-excursion
-	      (let ((beg (point)))
-		(condition-case nil
-		    (progn
-		      (forward-sexp 1)
-		      (list beg
-			    (1+ beg)
-			    (1- (point))
-			    (point)))))))))))
-
-(advice-add 'show-paren--default :after-until #'show-paren--match-quotes)
 
 ;; 高亮非ASCII字符
 ;; 高亮非ASCII字符   M-x highlight-regexp (C-x w h) RET [^[:ascii:]] RET
@@ -564,15 +584,6 @@ there's a region, all lines that region covers will be duplicated."
 	(forward-line 1)
 	(forward-char pos)))))
 (global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
-
-;; 删除匹配的括号
-;; https://zhuanlan.zhihu.com/p/24309937
-(defun c-delete-pair ()
-  (interactive)
-  (let ((re "[([{<'\"]"))
-    (when (or (looking-at-p re) (re-search-backward re nil t))
-      (save-excursion (forward-sexp) (delete-char -1))
-      (delete-char 1))))
 
 (defun get-mode-name ()
   "显示`major-mode'及`mode-name'"

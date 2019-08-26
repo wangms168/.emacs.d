@@ -591,7 +591,6 @@
 
 ;; https://github.com/RenChunhui/.emacs.d
 (defpowerline powerline-flycheck
-    '(:eval
       (let* ((text (pcase flycheck-last-status-change
 		     (`finished (if flycheck-current-errors
 				    (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
@@ -624,20 +623,22 @@
 (advice-add 'package-menu-execute :after 'spaceline--count-upgrades)
 
 (defpowerline powerline-package-updates
-    ;; ati-package-updates "An `all-the-icons' spaceline segment to indicate number of package updates needed"
-    (let* ((num (or spaceline--upgrades (spaceline--count-upgrades))))
-      (propertize
-       (concat
-	;; (propertize (format "%s" (all-the-icons-octicon "package"))
-	(when (fboundp 'all-the-icons-octicon) (propertize (format "%s"  (all-the-icons-octicon "package"))
-							   'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
-							   'display '(raise 0.0)))
-	(propertize (format " %s updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
-       'help-echo "Open Packages Menu"
-       'mouse-face '(:box 1)
-       'local-map (make-mode-line-mouse-map
-		   'mouse-1 (lambda () (interactive) (package-list-packages)))))
-  )
+  (powerline-raw
+   ;; ati-package-updates "An `all-the-icons' spaceline segment to indicate number of package updates needed"
+   (let* ((num (or spaceline--upgrades (spaceline--count-upgrades))))
+     (propertize
+      (concat
+       ;; (propertize (format "%s" (all-the-icons-octicon "package"))
+       (when (fboundp 'all-the-icons-octicon) (propertize (format "%s"  (all-the-icons-octicon "package"))
+							  'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
+							  'display '(raise 0.0)))
+       (propertize (format " %s updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
+      'help-echo "Open Packages Menu"
+      'mouse-face '(:box 1)
+      'local-map (make-mode-line-mouse-map
+		  'mouse-1 (lambda () (interactive) (package-list-packages)))))
+   ))
+
 
 ;; 要更新的包数     此代码段显示您上次需要更新的软件包数。每次刷新包归档列表时，这当前都有效，因此数字很快就会过时。
 ;; (defvar powerline/upgrades nil)
@@ -666,34 +667,34 @@
 
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; yahoo-weather雅虎天气modeline显示
-;; (use-package  yahoo-weather
-;;   :init
-;;   (yahoo-weather-mode)
-;;   ;; (setq yahoo-weather-guess-location-function #'yahoo-weather-ipinfo)
-;;   :config
-;;   (progn
-;;     (defun custom-modeline-Weather-icons ()
-;;       (let* ((weather (yahoo-weather-info-format 'yahoo-weather-info "%(weather)"))
-;;              ;; (temp (spaceline--get-temp)	      )
-;;              ;; (help (concat "Weather is '" weather "' and the temperature is " temp))
-;;              (icon (all-the-icons-icon-for-weather (downcase weather))))
-;; 	(concat
-;; 	 ;; (if (> (length icon) 1)
-;; 	 ;;     (propertize icon 'help-echo help 'face `(:height 0.9 :inherit) 'display '(raise 0.1))
-;; 	 (propertize icon
-;;                      ;; 'help-echo help
-;;                      'face `(:height 0.9 :family ,(all-the-icons-wicon-family) :inherit)
-;;                      'display '(raise 0.0))
-;; 	 ;; )
-;; 	 ;; (propertize " " 'help-echo help)
-;; 	 ;; (propertize (spaceline--get-temp) 'face '(:height 0.9 :inherit) 'help-echo help)
-;; 	 ))
-;;       ;; :when (and active (boundp 'yahoo-weather-info) yahoo-weather-mode)
-;;       ;; :enabled nil
-;;       ;; :tight t
-;;       )
-;;     )
-;;   )
+(use-package  yahoo-weather
+  :init
+  (yahoo-weather-mode)
+  ;; (setq yahoo-weather-guess-location-function #'yahoo-weather-ipinfo)
+  :config
+  (progn
+    (defun custom-modeline-Weather-icons ()
+      (let* ((weather (yahoo-weather-info-format 'yahoo-weather-info "%(weather)"))
+             ;; (temp (spaceline--get-temp)	      )
+             ;; (help (concat "Weather is '" weather "' and the temperature is " temp))
+             (icon (all-the-icons-icon-for-weather (downcase weather))))
+	(concat
+	 ;; (if (> (length icon) 1)
+	 ;;     (propertize icon 'help-echo help 'face `(:height 0.9 :inherit) 'display '(raise 0.1))
+	 (propertize icon
+                     ;; 'help-echo help
+                     'face `(:height 0.9 :family ,(all-the-icons-wicon-family) :inherit)
+                     'display '(raise 0.0))
+	 ;; )
+	 ;; (propertize " " 'help-echo help)
+	 ;; (propertize (spaceline--get-temp) 'face '(:height 0.9 :inherit) 'help-echo help)
+	 ))
+      ;; :when (and active (boundp 'yahoo-weather-info) yahoo-weather-mode)
+      ;; :enabled nil
+      ;; :tight t
+      )
+    )
+  )
 
 ;; 天气摘要     此片段显示当前时间，日出，日落，当前天气和当前温度。它使用（并依赖于）在 雅虎天气包。
 ;; (defun custom-modeline-suntime ()

@@ -52,11 +52,6 @@
 (message "* --[ Loading my Emacs init file ]--")
 
 ;;----------------------------------------------------------------------------
-;; uptimes
-;;----------------------------------------------------------------------------
-(defconst emacs-start-time (current-time))
-
-;;----------------------------------------------------------------------------
 ;; cl
 ;;----------------------------------------------------------------------------
 ;; turn on Common Lisp support
@@ -151,10 +146,12 @@
     (normal-top-level-add-subdirs-to-load-path)))
 ;; (add-subdirs-to-load-path "~/.emacs.d/config/")
 
-
+;; https://github.com/sjbalaji/myCustomizations/blob/master/ReferenceEmacsConfig
 ;; make loaded files give a message
- (defadvice load (before debug-log activate)
-   (message "wangms-Loading %s..." (locate-library (ad-get-arg 0))))
+(defadvice load (before debug-log activate)
+  (message "wangms-Loading %s..." (locate-library (ad-get-arg 0))))
+
+
 
 ;; load-path enhancement 增强
 (defun fni/add-to-load-path (this-directory &optional with-subdirs recursive)
@@ -313,7 +310,8 @@ of an error, just add the package to a list of missing packages."
         package-init-statistic nil)
 
 (require-extensions 'try-require
-		    '(init-const
+		    '(
+		      init-const
 		      init-custom
 		      init-package
 		      init-basic
@@ -332,12 +330,13 @@ of an error, just add the package to a list of missing packages."
 		      ;; sml-modeline
 		      ;; maple-modeline
 		      ;; init-tv-powerline
+		      ;;-----------------------------
 		      init-modeline
 		      init-theme
 		      ;; init-face
 
 		      doremi-frm          ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
-		      cursor-change       ;;智能光标形状
+		      cursor-change       ;; 智能光标形状
 
 		      init-ivy
 		      init-projectile
@@ -368,34 +367,20 @@ of an error, just add the package to a list of missing packages."
 ;; display time
 ;;----------------------------------------------------------------------------
 
-(let ((ts-init (current-time)))
-  (setq missing-packages-list nil
-        package-init-statistic nil)
-  (add-hook 'after-init-hook
-            (lambda () (message "*** --【 Finished startup in %.2f seconds,  %d packages missing%s 】-- ***"
-                                (float-time (time-since ts-init)) (length missing-packages-list)
-                                (if missing-packages-list
-                                    ". Refer to `missing-packages-list` for missing packages."
-                                  "."))
-              )))
-
 ;; 自定义"For information about GNU Emacs and the GNU system, type C-h C-a."这个消息。
-(defun display-startup-echo-area-message ()
-  "Display startup echo area message."
-  (message "*** --【 Initialized in %s 】-- ***" (emacs-init-time))
-  )
+;; (defun display-startup-echo-area-message ()
+;;   "Display startup echo area message."
+;;   (message "*** --【 Initialized in %s 】-- ***" (emacs-init-time))
+;;   )
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 (add-hook 'emacs-startup-hook
           (lambda ()
             (message "*** --【 Emacs ready in %s with %d garbage collections. 】-- ***"
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
+                     (emacs-init-time)
                      gcs-done)))
 
-(add-hook 'after-init-hook (lambda () (message (format "time-subtract = %s" (float-time (time-subtract (current-time) emacs-start-time))))))
-(add-hook 'after-init-hook (lambda () (message (format "after/before-init-time = %s" (float-time (time-subtract after-init-time before-init-time))))))
+;; (add-hook 'after-init-hook (lambda () (message (format "after/before-init-time = %s" (float-time (time-subtract after-init-time before-init-time))))))
 (add-hook 'after-init-hook (lambda () (message  (format "emacs-init-time = %s" (emacs-init-time)))))
 
 
@@ -449,8 +434,8 @@ of an error, just add the package to a list of missing packages."
   (move-line (if (null n) 1 n)))
 
 ;; ;; XXX `M-up' and `M-down' are bound multiple times (to different things)!
-;; (global-set-key (kbd "<M-up>") 'move-line-up)
-;; (global-set-key (kbd "<M-down>") 'move-line-down)
+(global-set-key (kbd "<M-up>") 'move-line-up)
+(global-set-key (kbd "<M-down>") 'move-line-down)
 
 
 (defun fullscreen ()

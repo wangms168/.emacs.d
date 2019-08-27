@@ -1,4 +1,4 @@
-;; init-edit.el --- Initialize editing configurations.	-*- lexical-binding: t  -*-
+;;; init-edit.el --- Initialize editing configurations.	-*- lexical-binding: t  -*-
 
 ;; Copyright (C) 2019 Vincent Zhang
 
@@ -117,10 +117,13 @@
 ;; https://www.emacswiki.org/emacs/DebuggingParentheses
 ;; could be bad, will not let you save at all, until you correct the error
 ;; 可能是坏的，根本不会让你保存，直到你纠正错误
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda ()
-	    (add-hook 'local-write-file-hooks
-		      'check-parens)))
+;; (add-hook 'emacs-lisp-mode-hook                 ;; 如有括号不匹配，则给出提示并不让保存。
+;; 	  (lambda ()
+;; 	    (add-hook 'local-write-file-hooks      ;;  local-write-file-hooks在22.1版过时了，用write-file-functions代替。   ;; 用before-save-hook，也有出错提示，但仍然保存。
+;; 		      'check-parens)))
+
+(add-hook 'write-file-functions 'check-parens)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; 光标在括号内时就高亮包含内容的两个括号
 (define-advice show-paren-function (:around (fn) fix-show-paren-function)

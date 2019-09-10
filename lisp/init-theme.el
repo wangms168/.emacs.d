@@ -16,7 +16,6 @@
 ;;        )))
 ;; ;; 用M-x color-theme-select来选择你喜欢的颜色主题了
 
-
 ;; 第8步 ==========================================================================;;
 ;; 主题设置：内置/自定义主题是custom-theme-load-path后load-theme；彩色主题是load-path后require后再主题函数；theme.el是指定路径后load主题文件再主题函数。
 ;; 1 内置主题及自定义主题 load customize theme

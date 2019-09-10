@@ -141,6 +141,8 @@
 (defun tabbar-config ()
   (use-package tabbar
     :ensure t
+    :init
+    (tabbar-mode 1)
     :config
     (global-set-key (kbd "C-<left>") 'tabbar-backward)
     (global-set-key (kbd "C-<right>") 'tabbar-forward)
@@ -184,11 +186,8 @@
     (set-face-attribute
      'tabbar-unselected nil
      :foreground "white"
-     :background "#242424"
+     :background "#21242B"
      :box nil)
-    ;; :foreground "white"
-    ;; :background "#444444"
-    ;; :box nil)
 
     (set-face-attribute
      'tabbar-selected nil
@@ -196,24 +195,19 @@
      :background "orange"
      :underline nil
      :box nil)
-    ;; :foreground "white"
-    ;; :background "#242424"
-    ;; :box nil)
 
-    ;; (set-face-attribute
-    ;;  'tabbar-modified nil
-    ;;  :foreground "orange red"
-    ;;  :background "gray25"
-    ;;  :box '(:line-width 1 :color "gray19"))
+    (set-face-attribute
+     'tabbar-modified nil
+     :foreground "orange red"
+     :background "white"              ;; "gray25"
+     :box '(:line-width 1 :color "gray19"))
 
-    ;; (set-face-attribute
-    ;;  'tabbar-selected-modified nil
-    ;;  :foreground "orange red"
-    ;;  :background "gray19"
-    ;;  :box '(:line-width 1 :color "gray19"))
-
-    :init
-    (tabbar-mode 1)))
+    (set-face-attribute
+     'tabbar-selected-modified nil
+     :foreground "orange red"
+     :background  "blue"               ;;"gray19"
+     :box '(:line-width 1 :color "gray19"))
+    ))
 
 
 (defun tabbar-graphic-p ()

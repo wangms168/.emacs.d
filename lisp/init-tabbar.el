@@ -149,7 +149,7 @@
     ;; 设置tabbar底色。
     ;; tabbar的box边框是mode-line-inactive的face继承mode-line的face中的box得来的
     ;; 将mode-line-inactive的face的:box设为nil即可取消tanbar的边框box。
-    (setq tabbar-background-color "gray12")
+    (setq tabbar-background-color "#21242B")
     ;; (set-face-attribute
     ;;  'mode-line-inactive nil            ; 默认情况下，未选择窗口的模式行显示在另一个面上，称为mode-line-inactive(inactive待用的意思)。
     ;; 					; 只有选定的窗口显示在mode-line脸部。
@@ -163,7 +163,7 @@
     (setq tabbar-separator '(0.5))
     (set-face-attribute
      'tabbar-separator nil
-     :background "#444444"
+     :background "21242B"
      :box nil)
 
     ;; 使字体粗园

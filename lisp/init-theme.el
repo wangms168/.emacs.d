@@ -67,19 +67,18 @@
   ;; (add-hook 'after-init-hook '(lambda () (load-theme 'monokai t)))     ;; 将使header-line的box显现
   )
 
-
-  ;; 用于helm迷你栏的face
-  (defface helm-source-header
-    '((((background dark))
-       :background "#22083397778B"
-       :foreground "white"
-       :weight bold :height 1.3 :family "Sans Serif")
-      (((background light))
-       :background "#abd7f0"
-       :foreground "black"
-       :weight bold :height 1.3 :family "Sans Serif"))
-    "Face for source header in the helm buffer."
-    :group 'helm-faces)
+;; 用于helm迷你栏的face
+(defface helm-source-header
+  '((((background dark))
+     :background "#22083397778B"
+     :foreground "white"
+     :weight bold :height 1.3 :family "Sans Serif")
+    (((background light))
+     :background "#abd7f0"
+     :foreground "black"
+     :weight bold :height 1.3 :family "Sans Serif"))
+  "Face for source header in the helm buffer."
+  :group 'helm-faces)
 
 
 

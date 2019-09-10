@@ -158,10 +158,10 @@
      :box nil)
 
     ;; 使分隔底色同tabbar底色
-    (setq tabbar-separator '(0.2))
+    (setq tabbar-separator '(0.5))
     (set-face-attribute
      'tabbar-separator nil
-     :background "#333333"
+     :background "#444444"
      :box nil)
 
     ;; 使字体粗园
@@ -174,26 +174,31 @@
      :background "#444444"
      :box nil)
 
+    ;; (set-face-attribute
+    ;;  'tabbar-highlight nil
+    ;;  :foreground "black"
+    ;;  :background "orange"
+    ;;  :underline nil
+    ;;  :box nil)
+
     (set-face-attribute
-     'tabbar-highlight nil
+     'tabbar-unselected nil
+     :foreground "white"
+     :background "#242424"
+     :box nil)
+    ;; :foreground "white"
+    ;; :background "#444444"
+    ;; :box nil)
+
+    (set-face-attribute
+     'tabbar-selected nil
      :foreground "black"
      :background "orange"
      :underline nil
      :box nil)
-
-    (set-face-attribute
-     'tabbar-unselected nil
-     ;; :foreground "white"
-     :background "#444444"
-     :box nil)
-    ;; :box '(:line-width 1 :color "white" :style sunken)
-
-    (set-face-attribute
-     'tabbar-selected nil
-     :foreground "white"
-     :background "#242424"
-     :box nil)
-    ;; :box '(:line-width 1 :color "white" :style sunken)
+    ;; :foreground "white"
+    ;; :background "#242424"
+    ;; :box nil)
 
     ;; (set-face-attribute
     ;;  'tabbar-modified nil

@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
+;; https://www.emacswiki.org/emacs/NeoTree_%E4%B8%AD%E6%96%87wiki
 ;; neotree设置
 ;; 注意，打开calendar日历，要在neotr关闭开启状态下进行，否则日历会显示在上部分。
 (use-package neotree

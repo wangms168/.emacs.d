@@ -41,10 +41,11 @@
 ;;  ;; stop ido from suggesting when naming new file
 ;;  (define-key (cdr ido-minor-mode-map-entry) [remap write-file] nil))
 
+
 ;; Ivy, Counsel, Swiper Setup
 (use-package counsel)              ;; 依赖ivy、swiper
 (ivy-mode 1) ;; Turn on ivy by default
-(setq ivy-initial-inputs-alist nil)      ;; 默认情况下ivy启用过滤器^
+;; (setq ivy-initial-inputs-alist nil)      ;; 默认情况下ivy启用过滤器^
 (setq ivy-use-virtual-buffers t)  ;; no idea, but recommended by project maintainer
 (setq enable-recursive-minibuffers t) ;; no idea, but recommended by project maintainer
 (setq ivy-count-format "(%d/%d) ")  ;; changes the format of the number of results
@@ -106,7 +107,7 @@
    ("x" counsel-find-file-extern "open externally")
    ("d" delete-file "delete")
    ("r" counsel-find-file-as-root "open as root")))
- 
+
 ;; set actions when running C-x b
 ;; replace "frame" with window to open in new window
 (ivy-set-actions
@@ -119,30 +120,47 @@
 
 
 (use-package ivy-rich
-  :init
-    (ivy-rich-mode 1)
-    )
-
-;; (defun ivy-rich-switch-buffer-icon (candidate)
-;;   (with-current-buffer
-;;       (get-buffer candidate)
-;;     (let ((icon (all-the-icons-icon-for-mode major-mode)))
-;;       (if (symbolp icon)
-;; 	  (all-the-icons-icon-for-mode 'fundamental-mode)
-;; 	icon))))
-
-;; (setq ivy-rich--display-transformers-list
-;;       '(ivy-switch-buffer
-;;         (:columns
-;;          ((ivy-rich-switch-buffer-icon :width 2)
-;;           (ivy-rich-candidate (:width 30))
-;;           (ivy-rich-switch-buffer-size (:width 7))
-;;           (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-;;           (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
-;;           (ivy-rich-switch-buffer-project (:width 15 :face success))
-;;           (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
-;;          :predicate
-;;          (lambda (cand) (get-buffer cand)))))
+  :ensure t
+  ;; :init
+  ;; (defun ivy-rich-switch-buffer-icon (candidate)
+  ;;   (with-current-buffer
+  ;; 	(get-buffer candidate)
+  ;;     (let ((icon (all-the-icons-icon-for-mode major-mode)))
+  ;; 	(if (symbolp icon)
+  ;; 	    (all-the-icons-icon-for-mode 'fundamental-mode)
+  ;; 	  icon))))
+  ;; (setq ivy-rich-display-transformers-list
+  ;; 	'(ivy-switch-buffer
+  ;; 	  (:columns
+  ;; 	   ((ivy-rich-switch-buffer-icon :width 2)
+  ;; 	    (ivy-rich-candidate (:width 30))
+  ;; 	    (ivy-rich-switch-buffer-size (:width 7))
+  ;; 	    (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+  ;; 	    (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+  ;; 	    (ivy-rich-switch-buffer-project (:width 15 :face success))
+  ;; 	    (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
+  ;; 	   :predicate
+  ;; 	   (lambda (cand) (get-buffer cand)))
+  ;; 	  counsel-M-x
+  ;; 	  (:columns
+  ;; 	   ((counsel-M-x-transformer (:width 40))  ; thr original transformer
+  ;; 	    (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))  ; return the docstring of the command
+  ;; 	  counsel-describe-function
+  ;; 	  (:columns
+  ;; 	   ((counsel-describe-function-transformer (:width 40))  ; the original transformer
+  ;; 	    (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))  ; return the docstring of the function
+  ;; 	  counsel-describe-variable
+  ;; 	  (:columns
+  ;; 	   ((counsel-describe-variable-transformer (:width 40))  ; the original transformer
+  ;; 	    (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face))))  ; return the docstring of the variable
+  ;; 	  counsel-recentf
+  ;; 	  (:columns
+  ;; 	   ((ivy-rich-candidate (:width 0.8)) ; return the candidate itself
+  ;; 	    (ivy-rich-file-last-modified-time (:face font-lock-comment-face))))) ; return the last modified time of the file
+  ;; 	)
+  :config
+  (ivy-rich-mode 1)
+)
 
 (provide 'init-ivy)
 

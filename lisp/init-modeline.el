@@ -78,7 +78,7 @@
 		    :foreground "black"
 		    :background "#eab700")
 
-;; 
+;;
 
 ;; the frame-local powerline cache causes problems if included in a saved desktop,
 ;; so delete it before the desktop is saved.
@@ -403,7 +403,7 @@
 ;; 	  (lambda () (setq mode-name (all-the-icons-icon-for-buffer))))
 ;; (add-hook 'buffer-list-update-hook
 ;; 	  (lambda () (setq mode-name (propertize (format "%s" (all-the-icons-icon-for-buffer)) 'display '(raise 0.0)
-;; 						 'face `(:height 1.0 :family ,(all-the-icons-icon-family-for-buffer) :inherit))))) 
+;; 						 'face `(:height 1.0 :family ,(all-the-icons-icon-family-for-buffer) :inherit)))))
 
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; mode-line-modified状态图标显示
@@ -478,7 +478,7 @@
   (winum-mode))
 (defun powerline--unicode-number (str)
   "Return a nice unicode representation of a single-digit number STR."
-  (propertize 
+  (propertize
      (concat
       (cond
        ((string= "1" str) "\u278A")     ;;U+278A   ➊
@@ -496,7 +496,7 @@
      'face `(:height 0.9 :inherit)
      'display '(raise 0.0)
      ))
-     
+
 (defpowerline powerline-window-number
   (when (bound-and-true-p winum-mode)
     (let* ((num (winum-get-number-string)))
@@ -700,8 +700,8 @@
 ;;   (if (and (boundp 'yahoo-weather-info) yahoo-weather-mode)
 ;;       (concat
 ;;        (format "%s "(yahoo-weather-info-format yahoo-weather-info "%(sunrise-time)"))
-;;        (format "%s  " (all-the-icons-wicon "sunrise" :height 0.5 :v-adjust -0.1)) 
-;;        (format "%s "(yahoo-weather-info-format yahoo-weather-info "%(sunset-time)")) 
+;;        (format "%s  " (all-the-icons-wicon "sunrise" :height 0.5 :v-adjust -0.1))
+;;        (format "%s "(yahoo-weather-info-format yahoo-weather-info "%(sunset-time)"))
 ;;        (format "%s "(all-the-icons-wicon "sunset" :height 0.5 :v-adjust -0.1)))
 ;;     ""))
 
@@ -891,7 +891,7 @@
 (defun powerline-center-theme ()
   "Setup a mode-line with major and minor modes centered."
   (interactive)
-  (setq-default mode-line-format
+  (setq-default mode-line-format           ;; header-line-format 是tabbar的格式
                 '("%e"
                   (:eval
                    (let* ((active (powerline-selected-window-active))
@@ -976,7 +976,7 @@
 				   (powerline-raw "%n" face2)
 				   (powerline-raw "]" face2)
 				   ;; (powerline-raw mode-line-modes face2)      ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。
-				                                              ;; 其中含有：mode-name、mode-line-process、minor-mode-alist。 
+				                                              ;; 其中含有：mode-name、mode-line-process、minor-mode-alist。
 				   (powerline-raw (custom-modeline-region-info) face2)
 				   ))
 		  	  )
@@ -989,7 +989,8 @@
 		     )))))
 
 (powerline-center-theme)
-
+;; (setq-local mode-line-format nil)
+;; (setq-default mode-line-format nil)
 
 (defun powerline-center-theme-ori ()
   "Setup a mode-line with major and minor modes centered."

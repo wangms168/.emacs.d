@@ -10,11 +10,11 @@
   (progn
     (defvar tv-default-font (if (string= (invocation-name) "remacs")
 				;; "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"   ;; C-q C-l 分页符有问题
-				"-PfEd-DejaVuSansMono Nerd Font-normal-normal-normal-*-12-*-*-*-*-0-iso10646-1"
+				"-PfEd-DejaVuSansMono Nerd Font-normal-normal-normal-*-11-*-*-*-*-0-iso10646-1"
                               ;; Use .Xdefaults config
                               ;; (assoc-default 'font (frame-parameters))
 			      ;; "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
-			      "-PfEd-DejaVuSansMono Nerd Font-normal-normal-normal-*-12-*-*-*-*-0-iso10646-1"    ;; 文泉驿等宽微米黑
+			      "-PfEd-DejaVuSansMono Nerd Font-normal-normal-normal-*-11-*-*-*-*-0-iso10646-1"    ;; 文泉驿等宽微米黑
                               ))
     ;; (setq-default frame-background-mode 'dark)
     (setq frame-auto-hide-function 'delete-frame)

@@ -35,8 +35,8 @@
 ;; (set-face-attribute 'tabbar-button nil
 ;; 		    :box nil)
 
-;; ;; Use Powerline to make tabs look nicer
-;; ;; (this needs to run *after* the colors are set)
+;; Use Powerline to make tabs look nicer
+;; (this needs to run *after* the colors are set)
 ;; (require 'powerline)
 ;; (defvar my/tabbar-height 20)
 ;; (defvar my/tabbar-left (powerline-wave-right 'tabbar-default nil my/tabbar-height))
@@ -52,20 +52,67 @@
 (defun awesome-tab-config ()
   (use-package awesome-tab
     :ensure nil
-    :load-path (lambda () (expand-file-name (concat  user-emacs-directory "site-lisp/awesome-tab")))
-    ;; :load-path (expand-file-name "site-lisp/awesome-tab" user-emacs-directory))
-    ;; :load-path (expand-file-name (concat user-emacs-directory "site-lisp/awexome-tab"))
-    ;; :load-path (file-truename (expand-file-name (concat user-emacs-directory "site-lisp/awexome-tab")))  ;;file-truename能将~转化为实际路径
+    :load-path "site-lisp/awesome-tab"
+
+    ;; :commands (hydra-tab/body)                 ;; 配合hydra的:pre、:post开启。
+    ;; :functions (hydra-tab)
+
     :init
-    ;; (setq awesome-tab-display-icon t)
+    (set-face-attribute
+     'header-line nil
+     :box nil)
     (setq awesome-tab-style "alternate")
-    ;; (when (not (display-graphic-p))
-    ;;   (setq frame-background-mode 'dark))
-    (global-set-key (kbd "C-<left>") 'awesome-tab-backward-tab)
-    (global-set-key (kbd "C-<right>") 'awesome-tab-forward-tab)
+
+    (defhydra hydra-tab (:color pink :hint nil
+				;; :pre (awesome-tab-mode t)
+				;; :post (awesome-tab-mode -1)
+				)
+      "
+   ^^Tab                   Group^^               Other^^                  Search
+  -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
+    ^_H_^    move to left  | _p_   prev group    | _d_   kill buffer      | _b_ search buffer
+  _h_   _l_  switch tab    | _n_   next group    | _K_   kill-all-buffers | _g_ search group
+   ^ _L_^    move to right | _s_   switch group  | _C-h_ backward window  | ^^
+  ^^0 ~ 9^^  select window | ^^                  | _C-l_ forward window   | ^^
+  -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
+"
+      ;; Tab
+      ("h" awesome-tab-backward-tab)
+      ("l" awesome-tab-forward-tab)
+      ("H" awesome-tab-move-current-tab-to-left)
+      ("L" awesome-tab-move-current-tab-to-right)
+      ;; Group
+      ("p" awesome-tab-backward-group)
+      ("n" awesome-tab-forward-group)
+      ("s" awesome-tab-switch-group)
+      ;; Other
+      ("d" spacemacs/kill-this-buffer)
+      ("K" awesome-tab-kill-all-buffers-in-current-group)
+      ;; ("b" awesome-tab-select-beg-tab)
+      ;; ("e" awesome-tab-select-end-tab)
+      ("C-h" awesome-tab-backward-tab-other-window)
+      ("C-l" awesome-tab-forward-tab-other-window)
+      ;; Search
+      ("b" ivy-switch-buffer)
+      ("g" awesome-tab-counsel-switch-group)
+      q      ("q" nil "quit"))
+    (global-set-key (kbd "M-t") 'hydra-tab/body)
+
     :config
     (awesome-tab-mode t)
     ))
+
+;; (defun awesome-tab-config ()
+;;   (use-package awesome-tab
+;;     :ensure nil
+;;     :load-path"site-lisp/awesome-tab"
+;;     :init
+;;     (setq awesome-tab-style "alternate")
+;;     (global-set-key (kbd "C-<left>") 'awesome-tab-backward-tab)
+;;     (global-set-key (kbd "C-<right>") 'awesome-tab-forward-tab)
+;;     :config
+;;     (awesome-tab-mode t)
+;;     ))
 
 (defun tabbar-ruler-config ()
   (use-package tabbar-ruler
@@ -101,8 +148,13 @@
     ;; tabbar的box边框是mode-line-inactive的face继承mode-line的face中的box得来的
     ;; 将mode-line-inactive的face的:box设为nil即可取消tanbar的边框box。
     (setq tabbar-background-color "gray12")
+    ;; (set-face-attribute
+    ;;  'mode-line-inactive nil            ; 默认情况下，未选择窗口的模式行显示在另一个面上，称为mode-line-inactive(inactive待用的意思)。
+    ;; 					; 只有选定的窗口显示在mode-line脸部。
+    ;;  :box nil)
+
     (set-face-attribute
-     'mode-line-inactive nil
+     'header-line nil
      :box nil)
 
     ;; 使分隔底色同tabbar底色
@@ -158,6 +210,7 @@
     :init
     (tabbar-mode 1)))
 
+
 (defun tabbar-graphic-p ()
   (if (display-graphic-p)
       (progn
@@ -184,9 +237,11 @@
 ;;     (tabbar-ruler-config)
 ;;     ))
 
-;; (tabbar-config)
+;; (add-hook 'find-file-hook 'tabbar-config)
+(tabbar-config)
 ;; (tabbar-ruler-config)
-(awesome-tab-config)
+;; (awesome-tab-config)
+
 
 (defun tabbar/console-frame-setup ()
   (message "--> tabbar-terminal")

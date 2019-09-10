@@ -1,4 +1,5 @@
-;;; .emacs --- my Emacs Init File   	-*- lexical-binding: t no-byte-compile: t; -*-
+;;; init.el --- personal emacs config file -*- lexical-binding: t -*-
+;; make this file lexically bound 上面是使这个文件在词汇上绑定
 
 ;; -*- eval: (setq before-save-hook (lambda() (delete-trailing-whitespace))); -*-
 ;; 启用词法作用域. lexical scope（词法作用域）指局部变量只能作用在函数中和一个块里（block）
@@ -254,6 +255,18 @@ Do it recursively if the third argument is not nil."
   )
 
 ;;----------------------------------------------------------------------------
+;; with-eval-after-load (after-load)
+;;----------------------------------------------------------------------------
+;; https://github.com/purcell/emacs.d/blob/a97dc5a44242f7f78c70335a9532bc657ea0a8d8/lisp/init-utils.el
+(if (fboundp 'with-eval-after-load)
+    (defalias 'after-load 'with-eval-after-load)
+  (defmacro after-load (feature &rest body)
+    "After FEATURE is loaded, evaluate BODY."
+    (declare (indent defun))
+    `(eval-after-load ,feature
+       '(progn ,@body))))
+
+;;----------------------------------------------------------------------------
 ;; Features
 ;;----------------------------------------------------------------------------
 
@@ -346,6 +359,12 @@ of an error, just add the package to a list of missing packages."
 		      init-tabbar
 		      init-sidebar
 		      init-slime
+		      ;; init-treemacs
+		      init-imenu-list
+		      init-hydra
+		      init-avyace
+		      init-dumb-jump
+		      init-aggressive-indent
 		      ) t)
 
 ;; https://www.cnblogs.com/yangyingchao/p/3418630.html
@@ -358,7 +377,7 @@ of an error, just add the package to a list of missing packages."
 (message "Finished startup in %.2f seconds,  %d packages missing%s\n\n"
 	 (float-time (time-since ts-init)) (length missing-packages-list)
 	 (if missing-packages-list
-	     ". Refer to `missing-packages-list` for missing packages."
+	     ". Refer to `missing-packages-list` for missing packages.\n}"
 	   ".\n}")))
 
 (cursor-change-mode 1) ;;智能光标形状
@@ -401,41 +420,6 @@ of an error, just add the package to a list of missing packages."
 ;;   (interactive "vVariable: ")
 ;;   (message (format "%s: %s" (symbol-name var) (symbol-value var))) )
 ;; (global-set-key "\C-hV" 'describe-variable-short)
-
-
-;; move (shift) a line of text up or down like you would do in Eclipse
-;; pressing `M-up' (or `M-down')
-(defun move-line (n)
-  "Move the current line up or down by N lines."
-  (interactive "p")
-  (let ((col (current-column))
-        start
-        end)
-    (beginning-of-line)
-    (setq start (point))
-    (end-of-line)
-    (forward-char)
-    (setq end (point))
-    (let ((line-text (delete-and-extract-region start end)))
-      (forward-line n)
-      (insert line-text)
-      ;; restore point to original column in moved line
-      (forward-line -1)
-      (forward-char col))))
-
-(defun move-line-up (n)
-  "Move the current line up by N lines."
-  (interactive "p")
-  (move-line (if (null n) -1 (- n))))
-
-(defun move-line-down (n)
-  "Move the current line down by N lines."
-  (interactive "p")
-  (move-line (if (null n) 1 n)))
-
-;; ;; XXX `M-up' and `M-down' are bound multiple times (to different things)!
-(global-set-key (kbd "<M-up>") 'move-line-up)
-(global-set-key (kbd "<M-down>") 'move-line-down)
 
 
 (defun fullscreen ()

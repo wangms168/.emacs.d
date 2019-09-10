@@ -43,7 +43,7 @@
 ;; (prefer-coding-system 'utf-8)
 ;; (setq visible-bell t)                     ;; 将Emacs配置为闪存而不是响铃
 (setq-default indicate-empty-lines t)        ;; 在缓冲区结束后可视地指示空行
-(setq-default show-trailing-whitespace t)    ;; 突出显示尾随空格
+;; (setq-default show-trailing-whitespace t)    ;; 突出显示行尾空格,但这样C-x b的minibuffer行尾空格显示出来很难看。
 (defalias 'yes-or-no-p 'y-or-n-p)            ;; 用'y'和'n'来代替频繁地输入'yes’和'no'
 ;; (fset 'yes-or-no-p 'y-or-n-p)
 ;; (setq-default cursor-type 'bar)           ;; 设置光标为小长条形状.设置这个，智能改变光标形状不起作用。
@@ -497,6 +497,7 @@
 ;; (setq linum-format "%4d|")               ;;set format
 ;; (setq linum-format "%4d \u2502 ")        ;; "\u2502"="|"
 (setq-default display-line-numbers-width nil)
+;; (global-display-line-numbers-mode t)
 (add-hook 'find-file-hook 'display-line-numbers-mode)             ;; Emacs 26 新增了原生的行号支持。这与“linum-mode”提供的类似，但更快，并且不会占用行号的显示余量。
 
 ;;----------------------------------------------------------------------------
@@ -593,6 +594,41 @@ there's a region, all lines that region covers will be duplicated."
   (interactive)
   (message "major-mode为%s, mode-name为%s" major-mode mode-name))
 (global-set-key (kbd "C-x m") 'get-mode-name)
+
+
+;; move (shift) a line of text up or down like you would do in Eclipse
+;; pressing `M-up' (or `M-down')
+(defun move-line (n)
+  "Move the current line up or down by N lines."
+  (interactive "p")
+  (let ((col (current-column))
+        start
+        end)
+    (beginning-of-line)
+    (setq start (point))
+    (end-of-line)
+    (forward-char)
+    (setq end (point))
+    (let ((line-text (delete-and-extract-region start end)))
+      (forward-line n)
+      (insert line-text)
+      ;; restore point to original column in moved line
+      (forward-line -1)
+      (forward-char col))))
+
+(defun move-line-up (n)
+  "Move the current line up by N lines."
+  (interactive "p")
+  (move-line (if (null n) -1 (- n))))
+
+(defun move-line-down (n)
+  "Move the current line down by N lines."
+  (interactive "p")
+  (move-line (if (null n) 1 n)))
+
+;; ;; XXX `M-up' and `M-down' are bound multiple times (to different things)!
+(global-set-key (kbd "<M-up>") 'move-line-up)
+(global-set-key (kbd "<M-down>") 'move-line-down)
 
 
 (provide 'init-edit)

@@ -2,52 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Tab Bar
-;; https://amitp.blogspot.com/2018/10/emacs-prettier-tabbar.html
-;; (require 'tabbar)
-;; (customize-set-variable 'tabbar-background-color "gray20")
-;; (customize-set-variable 'tabbar-separator '(0.5))
-;; (customize-set-variable 'tabbar-use-images nil)
-;; (tabbar-mode 1)
-
-;; ;; My preferred keys
-;; (define-key global-map [(alt j)] 'tabbar-backward)
-;; (define-key global-map [(alt k)] 'tabbar-forward)
-
-;; ;; Colors
-;; (set-face-attribute 'tabbar-default nil
-;; 		    :background "gray20" :foreground "gray60"
-;; 		    :distant-foreground "gray50"
-;; 		    :family "Helvetica Neue"
-;; 		    :box nil
-;; 		    :height 1.2
-;; 		    ;; 使字体粗园
-;; 		    )
-;; (set-face-attribute 'tabbar-unselected nil
-;; 		    :background "gray80" :foreground "black" :box nil)
-;; (set-face-attribute 'tabbar-modified nil
-;; 		    :foreground "red4" :box nil
-;; 		    :inherit 'tabbar-unselected)
-;; (set-face-attribute 'tabbar-selected nil
-;; 		    :background "#4090c0" :foreground "white" :box nil)
-;; (set-face-attribute 'tabbar-selected-modified nil
-;; 		    :inherit 'tabbar-selected :foreground "GoldenRod2" :box nil)
-;; (set-face-attribute 'tabbar-button nil
-;; 		    :box nil)
-
-;; Use Powerline to make tabs look nicer
-;; (this needs to run *after* the colors are set)
-;; (require 'powerline)
-;; (defvar my/tabbar-height 20)
-;; (defvar my/tabbar-left (powerline-wave-right 'tabbar-default nil my/tabbar-height))
-;; (defvar my/tabbar-right (powerline-wave-left nil 'tabbar-default my/tabbar-height))
-;; (defun my/tabbar-tab-label-function (tab)
-;;   (powerline-render (list my/tabbar-left
-;;                           (format " %s  " (car tab))
-;;                           my/tabbar-right)))
-;; (setq tabbar-tab-label-function #'my/tabbar-tab-label-function)
-
-
 ;; tabbar
 (defun awesome-tab-config ()
   (use-package awesome-tab
@@ -137,76 +91,60 @@
      '(tabbar-unselected ((t (:background "#444444" :box nil))))
      '(tabbar-separator ((t (:background "white" :box nil)))))))
 
-
 (defun tabbar-config ()
   (use-package tabbar
     :ensure t
     :init
     (tabbar-mode 1)
     :config
-    (global-set-key (kbd "C-<left>") 'tabbar-backward)
-    (global-set-key (kbd "C-<right>") 'tabbar-forward)
+    ;; C-x [right]	next-buffer	Move to next buffer
+    ;; C-x [left]	previous-buffer	Move to previous buffer
+    ;; (global-set-key (kbd "C-<left>") 'tabbar-backward)
+    ;; (global-set-key (kbd "C-<right>") 'tabbar-forward)
+
     ;; 设置tabbar底色。
+    (customize-set-variable 'tabbar-background-color "#21242B")
+    (customize-set-variable 'tabbar-separator '(0.5))
+    (customize-set-variable 'tabbar-use-images nil)
+
     ;; tabbar的box边框是mode-line-inactive的face继承mode-line的face中的box得来的
     ;; 将mode-line-inactive的face的:box设为nil即可取消tanbar的边框box。
-    (setq tabbar-background-color "#21242B")
-    ;; (set-face-attribute
-    ;;  'mode-line-inactive nil            ; 默认情况下，未选择窗口的模式行显示在另一个面上，称为mode-line-inactive(inactive待用的意思)。
+    ;; (set-face-attribute 'mode-line-inactive nil            ; 默认情况下，未选择窗口的模式行显示在另一个面上，称为mode-line-inactive(inactive待用的意思)。
     ;; 					; 只有选定的窗口显示在mode-line脸部。
-    ;;  :box nil)
-
-    (set-face-attribute
-     'header-line nil
-     :box nil)
-
+    ;; 			:box nil)
+    (set-face-attribute 'header-line nil
+			:box nil)
     ;; 使分隔底色同tabbar底色
-    (setq tabbar-separator '(0.5))
-    (set-face-attribute
-     'tabbar-separator nil
-     :background "21242B"
-     :box nil)
-
+    (set-face-attribute 'tabbar-separator nil
+			:background "21242B"
+			:box nil)
     ;; 使字体粗园
-    (set-face-attribute
-     'tabbar-default nil
-     :height 1.0)
-
-    (set-face-attribute
-     'tabbar-button nil
-     :background "#444444"
-     :box nil)
-
-    ;; (set-face-attribute
-    ;;  'tabbar-highlight nil
-    ;;  :foreground "black"
-    ;;  :background "orange"
-    ;;  :underline nil
-    ;;  :box nil)
-
-    (set-face-attribute
-     'tabbar-unselected nil
-     :foreground "white"
-     :background "#21242B"
-     :box nil)
-
-    (set-face-attribute
-     'tabbar-selected nil
-     :foreground "black"
-     :background "orange"
-     :underline nil
-     :box nil)
-
-    (set-face-attribute
-     'tabbar-modified nil
-     :foreground "orange red"
-     :background "white"              ;; "gray25"
-     :box '(:line-width 1 :color "gray19"))
-
-    (set-face-attribute
-     'tabbar-selected-modified nil
-     :foreground "orange red"
-     :background  "blue"               ;;"gray19"
-     :box '(:line-width 1 :color "gray19"))
+    (set-face-attribute 'tabbar-default nil
+			:height 1.0)
+    (set-face-attribute 'tabbar-button nil
+			:background "#444444"
+			:box nil)
+    ;; (set-face-attribute 'tabbar-highlight nil
+    ;; 			:foreground "black"
+    ;; 			:background "orange"
+    ;; 			:underline nil
+    ;; 			:box nil)
+    (set-face-attribute 'tabbar-unselected nil
+			:foreground "white"
+			:background "#21242B"
+			:box nil)
+    (set-face-attribute 'tabbar-selected nil
+			:foreground "black"
+			:background "orange"
+			:box nil)
+    (set-face-attribute 'tabbar-modified nil
+			:foreground "orange red"
+			:background "white"
+			:box '(:line-width 1 :color "gray19"))
+    (set-face-attribute 'tabbar-selected-modified nil
+			:foreground "orange red"
+			:background  "blue"
+			:box '(:line-width 1 :color "gray19"))
     ))
 
 

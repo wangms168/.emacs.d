@@ -22,4 +22,3 @@
 (provide 'init-parinfer)
 
 ;;; init-tabbar.el ends here
-

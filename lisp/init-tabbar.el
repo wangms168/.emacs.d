@@ -116,7 +116,7 @@
 			:box nil)
     ;; 使分隔底色同tabbar底色
     (set-face-attribute 'tabbar-separator nil
-			:background "21242B"
+			:background "#21242B"
 			:box nil)
     ;; 使字体粗园
     (set-face-attribute 'tabbar-default nil

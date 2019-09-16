@@ -322,63 +322,65 @@ of an error, just add the package to a list of missing packages."
   (setq missing-packages-list nil
         package-init-statistic nil)
 
-(require-extensions 'try-require
-		    '(
-		      init-const
-		      init-custom
-		      init-package
-		      init-basic
-		      init-funcs
-		      init-edit
-		      init-edit-visual
-		      init-frame-hooks
-		      init-frame
-		      init-icons
-		      ;;------------------------------
-		      ;; init-test-modeline
-		      ;; chunhui-modeline
-		      ;; init-modeline-icons
-		      ;; gnus-bindings
-		      ;; core-modeline
-		      ;; sml-modeline
-		      ;; maple-modeline
-		      ;; init-tv-powerline
-		      ;;-----------------------------
-		      init-modeline
-		      init-theme
-		      ;; init-face
+  (require-extensions 'try-require
+		      '(
+			init-const
+			init-custom
+			init-package
+			init-basic
+			init-funcs
+			init-edit
+			init-edit-visual
+			init-frame-hooks
+			init-frame
+			init-icons
+			;;------------------------------
+			;; init-test-modeline
+			;; chunhui-modeline
+			;; init-modeline-icons
+			;; gnus-bindings
+			;; core-modeline
+			;; sml-modeline
+			;; maple-modeline
+			;; init-tv-powerline
+			;;-----------------------------
+			init-modeline
+			init-theme
+			;; init-face
 
-		      doremi-frm          ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
-		      cursor-change       ;; 智能光标形状
+			doremi-frm          ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
+			cursor-change       ;; 智能光标形状
 
-		      init-ivy
-		      init-projectile
-		      init-key
-		      init-complete
-		      init-neotree
-		      init-tabbar
-		      init-sidebar
-		      init-slime
-		      ;; init-treemacs
-		      init-imenu-list
-		      init-hydra
-		      init-avyace
-		      init-dumb-jump
-		      init-aggressive-indent
-		      ) t)
+			init-ivy
+			init-projectile
+			init-key
+			;; init-complete
+			init-company
+			init-neotree
+			init-tabbar
+			init-sidebar
+			init-slime
+			;; init-treemacs
+			init-imenu-list
+			init-hydra
+			init-avyace
+			init-dumb-jump
+			init-aggressive-indent
+			init-stardict
+			) t)
 
-;; https://www.cnblogs.com/yangyingchao/p/3418630.html
-(message "\n{\nShowing package initialization statistics:\n%s"
-	 (mapconcat (lambda (x)
-		      (format "package %s cost %.2f seconds" (car x) (cdr x)))
-		    (reverse package-init-statistic)
-		    "\n"
-		    ))
-(message "Finished startup in %.2f seconds,  %d packages missing%s\n\n"
-	 (float-time (time-since ts-init)) (length missing-packages-list)
-	 (if missing-packages-list
-	     ". Refer to `missing-packages-list` for missing packages.\n}"
-	   ".\n}")))
+  ;; https://www.cnblogs.com/yangyingchao/p/3418630.html
+  (message "\n{\nShowing package initialization statistics:\n%s"
+	   (mapconcat (lambda (x)
+			(format "package %s cost %.2f seconds" (car x) (cdr x)))
+		      (reverse package-init-statistic)
+		      "\n"
+		      ))
+  (message "Finished startup in %.2f seconds,  %d packages missing%s\n\n"
+	   (float-time (time-since ts-init)) (length missing-packages-list)
+	   (if missing-packages-list
+	       ". Refer to `missing-packages-list` for missing packages.\n}"
+	     ".\n}")))
 
 (cursor-change-mode 1) ;;智能光标形状
 

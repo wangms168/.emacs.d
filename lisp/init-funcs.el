@@ -92,8 +92,8 @@
       (message "\"%s\" doesn't exist." dir))))
 (defalias 'centaur-update-config 'update-config)
 
-(declare-function upgrade-packages 'init-package)
-(defalias 'centaur-update-packages 'upgrade-packages)
+;; (declare-function upgrade-packages 'init-package)
+;; (defalias 'centaur-update-packages 'upgrade-packages)
 (defun update-centaur()
   "Update confgiurations and packages."
   (interactive)

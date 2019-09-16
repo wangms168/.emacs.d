@@ -88,14 +88,15 @@
 ;;----------------------------------------------------------------------------
 (use-package paren
   :ensure nil
-  :config
-  (progn
-    (setq show-paren-ring-bell-on-mismatch t)
-    (setq show-paren-style 'parentheses)
-    ;; (set-face-attribute 'show-paren-match nil :background nil :underline "#13F811")
-    ;;'(show-paren-match ((t (:background "steelblue3" :underline "lawn green")))))
-    (custom-set-faces '(show-paren-match ((t (:background "steelblue3" :foreground "yellow" :underline "yellow")))))
-    ))
+  :hook
+  (after-init . show-paren-mode)
+  :custom-face
+  (show-paren-match ((nil (:background "#44475a" :foreground "#f1fa8c" :underline "blue"))))
+  :custom
+  (show-paren-style 'parentheses)
+  (show-paren-when-point-inside-paren t)
+  (show-paren-when-point-in-periphery t))
+
 
 ;; Automatic parenthesis pairing
 (use-package elec-pair
@@ -483,20 +484,12 @@
 ;;     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
 ;;----------------------------------------------------------------------------
-;; 二次选择高亮
-;;----------------------------------------------------------------------------
-(use-package volatile-highlights
-  :config
-  (volatile-highlights-mode))
-
-;;----------------------------------------------------------------------------
 ;; line-numbers
 ;;----------------------------------------------------------------------------
 ;; (global-linum-mode t)
 ;; (add-hook 'find-file-hook 'linum-mode)                         ;; 当查看超过数万行的文件时,emacs会卡顿。查卡顿方法：M-x profiler-start 然后 M-x profiler-report
 ;; (setq linum-format "%4d|")               ;;set format
 ;; (setq linum-format "%4d \u2502 ")        ;; "\u2502"="|"
-(setq-default display-line-numbers-width nil)
 ;; (global-display-line-numbers-mode t)
 (add-hook 'find-file-hook 'display-line-numbers-mode)             ;; Emacs 26 新增了原生的行号支持。这与“linum-mode”提供的类似，但更快，并且不会占用行号的显示余量。
 

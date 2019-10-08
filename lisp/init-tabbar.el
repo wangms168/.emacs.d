@@ -5,12 +5,8 @@
 ;; tabbar
 (defun awesome-tab-config ()
   (use-package awesome-tab
-    :ensure nil
     :load-path "site-lisp/awesome-tab"
-
-    ;; :commands (hydra-tab/body)                 ;; 配合hydra的:pre、:post开启。
-    ;; :functions (hydra-tab)
-
+    ;; :commands (awesome-tab-mode)              ;; 与bind关键字,:pre,:post 配套。
     :init
     (set-face-attribute
      'header-line nil
@@ -18,18 +14,18 @@
     (setq awesome-tab-style "alternate")
 
     (defhydra hydra-tab (:color pink :hint nil
-				;; :pre (awesome-tab-mode t)
-				;; :post (awesome-tab-mode -1)
-				)
+    				;; :pre (awesome-tab-mode t)
+    				;; :post (awesome-tab-mode -1)
+    				)
       "
-   ^^Tab                   Group^^               Other^^                  Search
-  -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
-    ^_H_^    move to left  | _p_   prev group    | _d_   kill buffer      | _b_ search buffer
-  _h_   _l_  switch tab    | _n_   next group    | _K_   kill-all-buffers | _g_ search group
-   ^ _L_^    move to right | _s_   switch group  | _C-h_ backward window  | ^^
-  ^^0 ~ 9^^  select window | ^^                  | _C-l_ forward window   | ^^
-  -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
-"
+       ^^Tab                   Group^^               Other^^                  Search
+      -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
+        ^_H_^    move to left  | _p_   prev group    | _d_   kill buffer      | _b_ search buffer
+      _h_   _l_  switch tab    | _n_   next group    | _K_   kill-all-buffers | _g_ search group
+       ^ _L_^    move to right | _s_   switch group  | _C-h_ backward window  | ^^
+      ^^0 ~ 9^^  select window | ^^                  | _C-l_ forward window   | ^^
+      -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
+    "
       ;; Tab
       ("h" awesome-tab-backward-tab)
       ("l" awesome-tab-forward-tab)
@@ -49,24 +45,14 @@
       ;; Search
       ("b" ivy-switch-buffer)
       ("g" awesome-tab-counsel-switch-group)
-      q      ("q" nil "quit"))
+      ("q" nil "quit"))
     (global-set-key (kbd "M-t") 'hydra-tab/body)
-
-    :config
-    (awesome-tab-mode t)
+    ;; :bind
+    ;; (("M-t" . hydra-tab/body))
+    :config            ;; commands\bind 关键字与config下的模式开启是排斥关系。
+    (awesome-tab-mode 1)
     ))
 
-;; (defun awesome-tab-config ()
-;;   (use-package awesome-tab
-;;     :ensure nil
-;;     :load-path"site-lisp/awesome-tab"
-;;     :init
-;;     (setq awesome-tab-style "alternate")
-;;     (global-set-key (kbd "C-<left>") 'awesome-tab-backward-tab)
-;;     (global-set-key (kbd "C-<right>") 'awesome-tab-forward-tab)
-;;     :config
-;;     (awesome-tab-mode t)
-;;     ))
 
 (defun tabbar-ruler-config ()
   (use-package tabbar-ruler
@@ -103,7 +89,7 @@
     ;; (global-set-key (kbd "C-<right>") 'tabbar-forward)
 
     ;; 设置tabbar底色。
-    (customize-set-variable 'tabbar-background-color "#21242B")
+    (customize-set-variable 'tabbar-background-color "#16161D")   ;;#353439   ;; #16161D
     (customize-set-variable 'tabbar-separator '(0.5))
     (customize-set-variable 'tabbar-use-images nil)
 
@@ -116,22 +102,23 @@
 			:box nil)
     ;; 使分隔底色同tabbar底色
     (set-face-attribute 'tabbar-separator nil
-			:background "#21242B"
-			:box nil)
+    			:background "#16161D"
+    			:box nil)
     ;; 使字体粗园
     (set-face-attribute 'tabbar-default nil
 			:height 1.0)
     (set-face-attribute 'tabbar-button nil
-			:background "#444444"
-			:box nil)
-    ;; (set-face-attribute 'tabbar-highlight nil
-    ;; 			:foreground "black"
-    ;; 			:background "orange"
-    ;; 			:underline nil
-    ;; 			:box nil)
+    			:background "#444444"
+    			:box nil)
+    (set-face-attribute 'tabbar-highlight nil
+    			:foreground "black"
+    			:background "#89B6E1"
+    			:underline nil
+    			:box nil)
     (set-face-attribute 'tabbar-unselected nil
 			:foreground "white"
 			:background "#21242B"
+			:underline nil
 			:box nil)
     (set-face-attribute 'tabbar-selected nil
 			:foreground "black"
@@ -175,9 +162,9 @@
 ;;     ))
 
 ;; (add-hook 'find-file-hook 'tabbar-config)
-(tabbar-config)
+;; (tabbar-config)
 ;; (tabbar-ruler-config)
-;; (awesome-tab-config)
+(awesome-tab-config)
 
 
 (defun tabbar/console-frame-setup ()

@@ -479,23 +479,23 @@
 (defun powerline--unicode-number (str)
   "Return a nice unicode representation of a single-digit number STR."
   (propertize
-     (concat
-      (cond
-       ((string= "1" str) "\u278A")     ;;U+278A   ➊
-       ((string= "2" str) "\u278B")     ;;U+278B   ➋
-       ((string= "3" str) "\u278C")     ;;U+278C   ➌
-       ((string= "4" str) "\u278D")     ;;U+278D   ➍
-       ((string= "5" str) "\u278E")     ;;U+278E   ➎
-       ((string= "6" str) "\u278F")     ;;U+278F   ➏
-       ((string= "7" str) "\u2790")     ;;U+2790   ➐
-       ((string= "8" str) "\u2791")     ;;U+2790   ➑
-       ((string= "9" str) "\u2792")     ;;U+2792   ➒
-       ((string= "10" str) "\u2793")    ;;U+2793   ➓
-       (t str)
-       ))
-     'face `(:height 0.9 :inherit)
-     'display '(raise 0.0)
+   (concat
+    (cond
+     ((string= "1" str) "\u278A")     ;;U+278A   ➊
+     ((string= "2" str) "\u278B")     ;;U+278B   ➋
+     ((string= "3" str) "\u278C")     ;;U+278C   ➌
+     ((string= "4" str) "\u278D")     ;;U+278D   ➍
+     ((string= "5" str) "\u278E")     ;;U+278E   ➎
+     ((string= "6" str) "\u278F")     ;;U+278F   ➏
+     ((string= "7" str) "\u2790")     ;;U+2790   ➐
+     ((string= "8" str) "\u2791")     ;;U+2790   ➑
+     ((string= "9" str) "\u2792")     ;;U+2792   ➒
+     ((string= "10" str) "\u2793")    ;;U+2793   ➓
+     (t str)
      ))
+   'face `(:height 0.9 :inherit)
+   'display '(raise 0.0)
+   ))
 
 (defpowerline powerline-window-number
   (when (bound-and-true-p winum-mode)
@@ -547,12 +547,12 @@
 ;; Major-mode图标显示
 (defun custom-modeline-mode-icon ()
   (when (fboundp 'all-the-icons-icon-for-buffer)
-  (let ((icon (all-the-icons-icon-for-buffer)))
-    (unless (symbolp icon) ;; This implies it's the major mode
-      (propertize icon
-                  'help-echo (format "Major-mode: `%s`" major-mode)
-                  'display '(raise 0.0)
-                  'face `(:height 0.9 :family ,(all-the-icons-icon-family-for-buffer) :inherit)))))
+    (let ((icon (all-the-icons-icon-for-buffer)))
+      (unless (symbolp icon) ;; This implies it's the major mode
+	(propertize icon
+		    'help-echo (format "Major-mode: `%s`" major-mode)
+		    'display '(raise 0.0)
+		    'face `(:height 0.9 :family ,(all-the-icons-icon-family-for-buffer) :inherit)))))
   )
 
 ;; -------------------------------------------------------------------------------------------------------------------------
@@ -591,25 +591,25 @@
 
 ;; https://github.com/RenChunhui/.emacs.d
 (defpowerline powerline-flycheck
-    '(:eval
-      (let* ((text (pcase flycheck-last-status-change
-		     (`finished (if flycheck-current-errors
-				    (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
-						   (+ (or .warning 0) (or .error 0)))))
-				      (format "✖ %s Issue%s" count (unless (eq 1 count) "s")))
-				  "✔ No Issues"))
-		     (`running     "⟲ Running")
-		     (`no-checker  "⚠ No Checker")
-		     (`not-checked "✖ Disabled")
-		     (`errored     "⚠ Error")
-		     (`interrupted "⛔ Interrupted")
-		     (`suspicious  ""))))
-	(propertize text
-		    'help-echo "Show Flycheck Errors"
-		    'mouse-face '(:box 1)
-		    'local-map (make-mode-line-mouse-map
-				'mouse-1 (lambda () (interactive) (flycheck-list-errors)))))
-   ))
+  '(:eval
+    (let* ((text (pcase flycheck-last-status-change
+		   (`finished (if flycheck-current-errors
+				  (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
+						 (+ (or .warning 0) (or .error 0)))))
+				    (format "✖ %s Issue%s" count (unless (eq 1 count) "s")))
+				"✔ No Issues"))
+		   (`running     "⟲ Running")
+		   (`no-checker  "⚠ No Checker")
+		   (`not-checked "✖ Disabled")
+		   (`errored     "⚠ Error")
+		   (`interrupted "⛔ Interrupted")
+		   (`suspicious  ""))))
+      (propertize text
+		  'help-echo "Show Flycheck Errors"
+		  'mouse-face '(:box 1)
+		  'local-map (make-mode-line-mouse-map
+			      'mouse-1 (lambda () (interactive) (flycheck-list-errors)))))
+    ))
 
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; 包更新图标
@@ -624,19 +624,19 @@
 (advice-add 'package-menu-execute :after 'spaceline--count-upgrades)
 
 (defpowerline powerline-package-updates
-    ;; ati-package-updates "An `all-the-icons' spaceline segment to indicate number of package updates needed"
-    (let* ((num (or spaceline--upgrades (spaceline--count-upgrades))))
-      (propertize
-       (concat
-	;; (propertize (format "%s" (all-the-icons-octicon "package"))
-	(when (fboundp 'all-the-icons-octicon) (propertize (format "%s"  (all-the-icons-octicon "package"))
-							   'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
-							   'display '(raise 0.0)))
-	(propertize (format " %s updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
-       'help-echo "Open Packages Menu"
-       'mouse-face '(:box 1)
-       'local-map (make-mode-line-mouse-map
-		   'mouse-1 (lambda () (interactive) (package-list-packages)))))
+  ;; ati-package-updates "An `all-the-icons' spaceline segment to indicate number of package updates needed"
+  (let* ((num (or spaceline--upgrades (spaceline--count-upgrades))))
+    (propertize
+     (concat
+      ;; (propertize (format "%s" (all-the-icons-octicon "package"))
+      (when (fboundp 'all-the-icons-octicon) (propertize (format "%s"  (all-the-icons-octicon "package"))
+							 'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :inherit)
+							 'display '(raise 0.0)))
+      (propertize (format " %s updates " num) 'face `(:height 1.0 :inherit) 'display '(raise 0.0)))
+     'help-echo "Open Packages Menu"
+     'mouse-face '(:box 1)
+     'local-map (make-mode-line-mouse-map
+		 'mouse-1 (lambda () (interactive) (package-list-packages)))))
   )
 
 ;; 要更新的包数     此代码段显示您上次需要更新的软件包数。每次刷新包归档列表时，这当前都有效，因此数字很快就会过时。
@@ -879,13 +879,13 @@
 ;; (which-function-mode)        ;; modeline中显示选择那个函数模式。如这里开启了，modeline中设不设置为：(which-func-mode ("" which-func-format "--"))，modeline中都会显示的。
 
 (defun Short-directory ()
-(if (buffer-file-name)
-	   (concat "{"
-		   (directory-file-name
-		    (file-name-directory
-		     (abbreviate-file-name
-		      (buffer-file-name))))"}"))
-       )
+  (if (buffer-file-name)
+      (concat "{"
+	      (directory-file-name
+	       (file-name-directory
+		(abbreviate-file-name
+		 (buffer-file-name))))"}"))
+  )
 
 ;;;###autoload
 (defun powerline-center-theme ()
@@ -913,7 +913,7 @@
 				;; (powerline-raw " " face0 'l)
 				(powerline-buffer-size face0 'l)
 				(powerline-raw mode-line-mule-info face0 'l)     ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。
-				                                                 ;; 一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
+				;; 一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
 				;; (powerline-raw "[%z]" face0)
 				(powerline-raw mode-line-client face0 'l)        ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
 
@@ -935,7 +935,7 @@
 				(powerline-raw (custom-modeline-mode-icon) face0 'r)        ;; (when (featurep 'all-the-icons) ... )
 				(powerline-process face0)
 				;; (powerline-raw (custom-process-icon) face0)
-				(powerline-raw (powerline-project-vc) face0)
+				;; (powerline-raw (powerline-project-vc) face0 'r)
 				;; (powerline-raw (custom-projectile-icon) face0)              ;;含有projectile，会使modeline高度变化,显示|x|
 		  		(powerline-narrow face1 'l)
 				;; (powerline-raw (modeline-git-vc) face0 'l)
@@ -976,7 +976,7 @@
 				   (powerline-raw "%n" face2)
 				   (powerline-raw "]" face2)
 				   ;; (powerline-raw mode-line-modes face2)      ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。
-				                                              ;; 其中含有：mode-name、mode-line-process、minor-mode-alist。
+				   ;; 其中含有：mode-name、mode-line-process、minor-mode-alist。
 				   (powerline-raw (custom-modeline-region-info) face2)
 				   ))
 		  	  )
@@ -1074,7 +1074,7 @@
 ;;                                               ;;它的值是出现在模式行中的字符串，或者nil没有版本控制。
 ;; 		"  "
 ;; 		mode-line-modes                  ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。
-                                                 ;;其中含有：mode-name、mode-line-process、minor-mode-alist。
+;;其中含有：mode-name、mode-line-process、minor-mode-alist。
 ;; 		"      "
 ;; 		;; mode-line-misc-info           ;; 用于杂项信息的模式行构造。默认情况下，它显示由指定的信息global-mode-string。与global-mode-string、"%M"效果相同。
 ;; 		;; (:eval (custom-modeline-time))

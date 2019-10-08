@@ -66,6 +66,7 @@
  '(show-paren-mode t)                      ;;光标位于括号之后显示匹配的括号
  )
 
+
 ;; Miscs
 (setq inhibit-startup-message t)          ;; 禁用启动画面
 (setq-default indicate-empty-lines t)     ;; show (in left margin) marker for empty lines
@@ -622,6 +623,20 @@ there's a region, all lines that region covers will be duplicated."
 ;; ;; XXX `M-up' and `M-down' are bound multiple times (to different things)!
 (global-set-key (kbd "<M-up>") 'move-line-up)
 (global-set-key (kbd "<M-down>") 'move-line-down)
+
+;; https://segmentfault.com/a/1190000000507209
+;; 用下面代码，你可以在任何支持imenu的buffer的菜单栏加入imenu索引。
+(defun try-to-add-imenu ()
+  (condition-case nil (imenu-add-to-menubar "Imenu") (error nil)))
+(add-hook 'font-lock-mode-hook 'try-to-add-imenu)
+;;(setq global-font-lock-mode t)
+;;(add-hook 'font-lock-mode-hook 'imenu-add-menubar-index)
+
+(use-package cursor-change       ;; 智能光标形状
+  :load-path "site-lisp/cursor-change"
+  :config
+  (cursor-change-mode 1)
+  )
 
 
 (provide 'init-edit)

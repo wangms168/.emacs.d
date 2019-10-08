@@ -1,0 +1,18 @@
+Content-Type: text/enriched
+Text-Width: 70
+
+Content-Type: text/enriched
+Text-Width: 98
+
+
+standard
+
+
+<<bold>bold
+
+
+<</bold><<x-color><<param>yellow<</param>yellow<</x-color>
+
+
+end
+

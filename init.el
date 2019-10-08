@@ -12,7 +12,7 @@
 
 ;; $Revision: 4145 $
 ;; $Date: 2010-07-08 15:13:00 +0200 (Thu, 08 Jul 2010) $
-
+
 ;;
 ;;    ___ _ __ ___   __ _  ___ ___
 ;;   / _ \ '_ ` _ \ / _` |/ __/ __|
@@ -203,7 +203,8 @@ Do it recursively if the third argument is not nil."
 (defun update-load-path (&rest _)
   "Update `load-path'."
   (push (expand-file-name "site-lisp" user-emacs-directory) load-path)      ;; push是加到`load-path'的前面。
-  (push (expand-file-name "lisp" user-emacs-directory) load-path))
+  (push (expand-file-name "lisp" user-emacs-directory) load-path)
+  )
 
 (defun add-subdirs-to-load-path (&rest _)
   "Add subdirectories to `load-path'."
@@ -212,7 +213,7 @@ Do it recursively if the third argument is not nil."
     (normal-top-level-add-subdirs-to-load-path)))
 
 (advice-add #'package-initialize :after #'update-load-path)
-(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
+;; (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 
 (update-load-path)
 
@@ -349,25 +350,27 @@ of an error, just add the package to a list of missing packages."
 			;; init-face
 
 			doremi-frm          ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
-			cursor-change       ;; 智能光标形状
 
 			init-ivy
 			init-projectile
 			init-key
 			;; init-complete
 			init-company
+			init-hydra
 			init-neotree
 			init-tabbar
 			init-sidebar
 			init-slime
 			;; init-treemacs
 			init-imenu-list
-			init-hydra
 			init-avyace
 			init-dumb-jump
 			init-aggressive-indent
 			init-stardict
+			;; init-ggtags
+			;; init-xcscope
 			) t)
+
 
   ;; https://www.cnblogs.com/yangyingchao/p/3418630.html
   (message "\n{\nShowing package initialization statistics:\n%s"
@@ -382,7 +385,6 @@ of an error, just add the package to a list of missing packages."
 	       ". Refer to `missing-packages-list` for missing packages.\n}"
 	     ".\n}")))
 
-(cursor-change-mode 1) ;;智能光标形状
 
 ;;----------------------------------------------------------------------------
 ;; display time
@@ -429,9 +431,6 @@ of an error, just add the package to a list of missing packages."
   (set-frame-parameter nil 'fullscreen
 		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 
-
-
-(provide 'init)
 
 
 ;;; init.el ends here

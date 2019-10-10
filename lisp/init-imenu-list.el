@@ -1,7 +1,7 @@
 ;; imenu-list
 (use-package imenu-list
   :ensure t
-  :hook (imenu-list-major-mode-hook . (lambda ()
+  :hook (imenu-list-minor-mode-hook . (lambda ()             ;; imenu-list-major-mode-hook
 					(setq-local header-line-format nil)    ;; 没有tabbar
 					(setq-local mode-line-format nil)      ;; 没有mode-line
 					;; (display-line-numbers-mode -1)
@@ -15,6 +15,7 @@
   ;; (imenu-list-auto-resize nil)
   (imenu-list-size 0.15)
   (imenu-list-position 'right)
+
   )
 
 ;; https://blog.jft.rocks/emacs/treemacs-icons.html

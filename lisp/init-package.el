@@ -32,15 +32,6 @@
 
 (eval-when-compile
   (require 'init-custom))
-
-;; HACK: DO NOT copy package-selected-packages to init/custom file forcibly.
-;; https://github.com/jwiegley/use-package/issues/383#issuecomment-247801751
-(defun my-save-selected-packages (&optional value)
-  "Set `package-selected-packages' to VALUE but don't save to `custom-file'."
-  (when value
-    (setq package-selected-packages value)))
-(advice-add 'package--save-selected-packages :override #'my-save-selected-packages)
-
 ;;
 ;; ELPA: refer to https://github.com/melpa/melpa and https://elpa.emacs-china.org/.
 ;;
@@ -49,7 +40,6 @@
   (interactive
    (list (intern (completing-read "Choose package archives: "
                                   '(melpa melpa-mirror emacs-china netease tuna)))))
-
   (setq package-archives
         (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                             (not (gnutls-available-p))))
@@ -57,49 +47,110 @@
           (pcase archives
             ('melpa
              `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
-               ,(cons "melpa" (concat proto "://melpa.org/packages/"))))
+               ,(cons "melpa" (concat proto "://melpa.org/packages/"))
+	       ))
             ('melpa-mirror
              `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
-               ,(cons "melpa" (concat proto "://www.mirrorservice.org/sites/melpa.org/packages/"))))
+               ,(cons "melpa" (concat proto "://www.mirrorservice.org/sites/melpa.org/packages/"))
+	       ))
             ('emacs-china
              `(,(cons "gnu"   (concat proto "://elpa.emacs-china.org/gnu/"))
-               ,(cons "melpa" (concat proto "://elpa.emacs-china.org/melpa/"))))
+               ,(cons "melpa" (concat proto "://elpa.emacs-china.org/melpa/"))
+               ,(cons "melpa-stable" (concat proto "://elpa.emacs-china.org/melpa-stable/"))
+	       ))
             ('netease
              `(,(cons "gnu"   (concat proto "://mirrors.163.com/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.163.com/elpa/melpa/"))))
+               ,(cons "melpa" (concat proto "://mirrors.163.com/elpa/melpa/"))
+               ,(cons "melpa-stable" (concat proto "://mirrors.163.com/elpa/melpa-stable/"))
+	       ))
             ('tuna
              `(,(cons "gnu"   (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))
+               ,(cons "melpa" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
+	       ,(cons "melpa-stable" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/"))
+	       ))
             (archives
-             (error "Unknown archives: '%s'" archives)))))
-
+             (error "Unknown archives: '%s'" archives))))
+	;;	package-archive-priorities                   ;; 它指定每个存档的优先级（数字越大，优先级越高的存档）
+	;;	'(("melpa-stable" . 10)
+	;;	  ("melpa"        . 5)
+	;;	  ("gnu"          . 0))
+	)
   (message "Set package archives to '%s'." archives))
-
 (set-package-archives centaur-package-archives)
 
+;; 我需要稳定版的 `ace-page-break-lines'，只从 melpa-stable 安装
+(setq package-pinned-packages                      ;; 将程序包/归档对添加到此列表，以确保仅从指定的归档文件下载指定的程序包。
+      '(
+	(page-break-lines . "melpa-stable")
+	))
+
 ;; Initialize packages
+(require 'package)
 (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
-  (setq package-enable-at-startup nil)          ; To prevent initializing twice
-  (package-initialize))
+  (setq package--init-file-ensured t )          ;; t 是知道 init file 具有 package-initialize
+  (setq package-enable-at-startup nil)          ; To prevent initializing twice ;; emacs startup 会自动加载程序包。禁用它，是为了不重复下面显式(package-initialize)
+  (package-initialize))                         ;; 初始化并加载程序包
+
+
+(defun require-package (package &optional min-version no-refresh)
+  "Install given PACKAGE, optionally requiring MIN-VERSION.
+If NO-REFRESH is non-nil, the available package lists will not be
+re-downloaded in order to locate PACKAGE."
+  (if (package-installed-p package min-version)
+      t
+    (if (or (assoc package package-archive-contents) no-refresh)
+        (if (boundp 'package-selected-packages)
+            ;; Record this as a package the user installed explicitly
+            (package-install package nil)
+          (package-install package))
+      (progn
+        (package-refresh-contents)
+        (require-package package min-version t)))))
+
+(defun require-packages (packages)
+  (while packages
+    (require-package (car packages))
+    (setq packages (cdr packages)))
+  t)
+
+
+;; 用 Emacs 25 的话，应该可以直接设置 package-selected-packages，然后 M-x package-install-selected-packages 安装。我自己没试过，一直用 use-package 的 :ensure 安装包。
+;; (defvar sanityinc/required-packages nil)
+;; (when (fboundp 'package--save-selected-packages)
+;;   (require-package 'seq)
+;;   (add-hook 'after-init-hook
+;;             (lambda () (package--save-selected-packages
+;; 			(seq-uniq (append sanityinc/required-packages package-selected-packages))))))
+
+;; HACK: DO NOT copy package-selected-packages to init/custom file forcibly.
+;; https://github.com/jwiegley/use-package/issues/383#issuecomment-247801751
+(defun my-save-selected-packages (&optional value)            ;; 删除了customize-save-variable呼叫
+  "Set `package-selected-packages' to VALUE but don't save to `custom-file'."
+  (when value
+    (setq package-selected-packages value)))
+(advice-add 'package--save-selected-packages :override #'my-save-selected-packages)
 
 ;; Setup `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(eval-when-compile
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package)
+    (package-install 'diminish)
+    (package-install 'bind-key)
+    ))
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
+;; (setq use-package-verbose t)
 
 ;; Should set before loading `use-package'
 (eval-and-compile
-  (setq use-package-always-ensure t)
+  ;; (setq use-package-always-ensure t)
   ;; (setq use-package-always-defer t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))
 
-(eval-when-compile
-  (require 'use-package))
-
-;; Required by `use-package'
-(use-package diminish)
-(use-package bind-key)
 
 ;; ;; Initialization benchmark
 ;; (when centaur-benchmark

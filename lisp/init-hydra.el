@@ -634,8 +634,8 @@
   (hydra-posframe-border-face ((t (:background "#6272a4"))))
   :hook (after-init . hydra-posframe-enable))
 
-
 (use-package pretty-hydra
+  :ensure t
   :functions set-package-archives centaur-load-theme
   :bind ("<f6>" . toggles-hydra/body)
   :init

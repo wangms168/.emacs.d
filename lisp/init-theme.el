@@ -37,6 +37,7 @@
 
 ;; monokai-theme主题并稍加配色
 (use-package monokai-theme
+  :ensure t
   :init
   ;; (require 'monokai-theme)     ;;为了显示加载时间，显式require请求下。
   (setq

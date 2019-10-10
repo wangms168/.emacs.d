@@ -34,7 +34,8 @@
   (require 'init-custom))
 
 (use-package company
-  :diminish company-mode
+  :ensure t
+  :diminish nil
   :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
   :commands company-abort
   :bind (("M-/" . company-complete)
@@ -71,7 +72,8 @@
   ;; Icons and quickhelp
   (when emacs/>=26p
     (use-package company-box
-      :diminish
+      :ensure t
+      :diminish nil
       :functions (my-company-box--make-line
                   my-company-box-icons--elisp)
       :commands (company-box--get-color

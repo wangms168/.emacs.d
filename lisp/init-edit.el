@@ -506,10 +506,12 @@
 ;;测试撤销重启前的修改,经测试，上述的设置不管用。
 
 (use-package beacon     ;; 每当窗口滚动时，光线就会照亮光标顶部;你知道它在哪里。
+  :ensure t
   :config
   (beacon-mode 1))
 
 (use-package pos-tip
+  :ensure t
   :config
   )
 

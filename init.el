@@ -349,7 +349,7 @@ of an error, just add the package to a list of missing packages."
 			init-theme
 			;; init-face
 
-			doremi-frm          ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
+			;; doremi-frm          ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
 
 			init-ivy
 			init-projectile
@@ -424,12 +424,6 @@ of an error, just add the package to a list of missing packages."
 ;;   (interactive "vVariable: ")
 ;;   (message (format "%s: %s" (symbol-name var) (symbol-value var))) )
 ;; (global-set-key "\C-hV" 'describe-variable-short)
-
-
-(defun fullscreen ()
-  (interactive)
-  (set-frame-parameter nil 'fullscreen
-		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 
 
 

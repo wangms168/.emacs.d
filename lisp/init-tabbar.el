@@ -8,47 +8,69 @@
     :load-path "site-lisp/awesome-tab"
     ;; :commands (awesome-tab-mode)              ;; 与bind关键字,:pre,:post 配套。
     :init
+    (defun my-awesome-tab-hide-tab (x)
+      (let ((name (format "%s" x)))
+    	(or
+    	 (string-prefix-p "*Ilist*" name)
+    	 (string-prefix-p "*epc" name)
+    	 (string-prefix-p "*helm" name)
+    	 (string-prefix-p "*Compile-Log*" name)
+    	 (string-prefix-p "*lsp" name)
+    	 (and (string-prefix-p "magit" name)
+    	      (not (file-name-extensionname)))
+    	 )))
+    (setq awesome-tab-hide-tab-function 'my-awesome-tab-hide-tab)
+
+    ;; (with-eval-after-load 'imenu-list
+    ;;   (push 'imenu-list-minor-mode-hook awesometab-hide-tabs-hooks))
+
+    ;; (setq awesome-tab-height 12)
+    ;; (setq awesome-tab-display-icon nil)
+
     (set-face-attribute
      'header-line nil
      :box nil)
     (setq awesome-tab-style "alternate")
 
-    (defhydra hydra-tab (:color pink :hint nil
-    				;; :pre (awesome-tab-mode t)
-    				;; :post (awesome-tab-mode -1)
-    				)
+    (defhydra awesome-fast-switch (:hint nil)
       "
-       ^^Tab                   Group^^               Other^^                  Search
-      -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
-        ^_H_^    move to left  | _p_   prev group    | _d_   kill buffer      | _b_ search buffer
-      _h_   _l_  switch tab    | _n_   next group    | _K_   kill-all-buffers | _g_ search group
-       ^ _L_^    move to right | _s_   switch group  | _C-h_ backward window  | ^^
-      ^^0 ~ 9^^  select window | ^^                  | _C-l_ forward window   | ^^
-      -^^^^--------------------+-^^------------------+-^^---------------------+-^^----------------
-    "
-      ;; Tab
+ ^^^^Fast Move             ^^^^Tab                    ^^Search            ^^Misc
+-^^^^--------------------+-^^^^---------------------+-^^----------------+-^^---------------------------
+   ^_k_^   prev group    | _C-a_^^     select first | _b_ search buffer | _C-k_   kill buffer
+ _h_   _l_  switch tab   | _C-e_^^     select last  | _g_ search group  | _C-S-k_ kill others in group
+   ^_j_^   next group    | _C-j_^^     ace jump     | ^^                | ^^
+ ^^0 ~ 9^^ select window | _C-h_/_C-l_ move current | ^^                | ^^
+-^^^^--------------------+-^^^^---------------------+-^^----------------+-^^---------------------------
+"
       ("h" awesome-tab-backward-tab)
+      ("j" awesome-tab-forward-group)
+      ("k" awesome-tab-backward-group)
       ("l" awesome-tab-forward-tab)
-      ("H" awesome-tab-move-current-tab-to-left)
-      ("L" awesome-tab-move-current-tab-to-right)
-      ;; Group
-      ("p" awesome-tab-backward-group)
-      ("n" awesome-tab-forward-group)
-      ("s" awesome-tab-switch-group)
-      ;; Other
-      ("d" spacemacs/kill-this-buffer)
-      ("K" awesome-tab-kill-all-buffers-in-current-group)
-      ;; ("b" awesome-tab-select-beg-tab)
-      ;; ("e" awesome-tab-select-end-tab)
-      ("C-h" awesome-tab-backward-tab-other-window)
-      ("C-l" awesome-tab-forward-tab-other-window)
-      ;; Search
+      ("0" my-select-window)
+      ("1" my-select-window)
+      ("2" my-select-window)
+      ("3" my-select-window)
+      ("4" my-select-window)
+      ("5" my-select-window)
+      ("6" my-select-window)
+      ("7" my-select-window)
+      ("8" my-select-window)
+      ("9" my-select-window)
+      ("C-a" awesome-tab-select-beg-tab)
+      ("C-e" awesome-tab-select-end-tab)
+      ("C-j" awesome-tab-ace-jump)
+      ("C-h" awesome-tab-move-current-tab-to-left)
+      ("C-l" awesome-tab-move-current-tab-to-right)
       ("b" ivy-switch-buffer)
       ("g" awesome-tab-counsel-switch-group)
+      ("C-k" kill-current-buffer)
+      ("C-S-k" awesome-tab-kill-other-buffers-in-current-group)
       ("q" nil "quit"))
-    (global-set-key (kbd "M-t") 'hydra-tab/body)
+
+    (global-set-key (kbd "M-t") 'awesome-fast-switch/body)
     ;; :bind
     ;; (("M-t" . hydra-tab/body))
+
     :config            ;; commands\bind 关键字与config下的模式开启是排斥关系。
     (awesome-tab-mode 1)
     ))

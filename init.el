@@ -370,7 +370,7 @@ of an error, just add the package to a list of missing packages."
 			init-stardict
 			;; init-ggtags
 			;; init-xcscope
-			init-lsp
+			;; init-lsp                          ;; misss
 			) t)
 
 

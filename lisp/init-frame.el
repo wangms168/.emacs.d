@@ -6,7 +6,7 @@
 (defun core-font/exists-p (font-name)
   "检查字体是否存在."
   (if (null (x-list-fonts font-name)) nil t))
-(core-font/exists-p "DejaVuSansMono Nerd Font")
+;; (core-font/exists-p "DejaVuSansMono Nerd Font")            ;; 执行这个函数，在deamaon时初始化失败！
 
 
 ;;  https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/init.el
@@ -20,7 +20,7 @@
 			      ;; Use .Xdefaults config
 			      ;; (assoc-default 'font (frame-parameters))
 			      ;; "-*-Bitstream Vera Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"
-			      "-PfEd-DejaVuSansMono Nerd Font-normal-normal-normal-*-12-*-*-*-*-0-iso10646-1"    ;; 文泉驿等宽微米黑
+			      "-PfEd-DejaVuSansMono Nerd Font-normal-normal-normal-*-11-*-*-*-*-0-iso10646-1"    ;; 文泉驿等宽微米黑
                               ))
     ;; (setq-default frame-background-mode 'dark)
     (setq frame-auto-hide-function 'delete-frame)

@@ -3,6 +3,12 @@
 ;;; Code:
 
 
+(defun core-font/exists-p (font-name)
+  "检查字体是否存在."
+  (if (null (x-list-fonts font-name)) nil t))
+(core-font/exists-p "DejaVuSansMono Nerd Font")
+
+
 ;;  https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/init.el
 (use-package frame
   :ensure nil
@@ -34,9 +40,10 @@ With a prefix arg decrease transparency."
           (message "Alpha[%s]" mod-alpha))))
 
     ;;set transparent effect
-    (global-set-key [(f9)] 'loop-alpha)
+    ;; (global-set-key [(f8)] 'loop-alpha)
     (setq alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))
     (defun loop-alpha ()
+      "说明文本"
       (interactive)
       (let ((h (car alpha-list)))                ;; head value will set to
 	((lambda (a ab)
@@ -82,59 +89,59 @@ With a prefix arg decrease transparency."
     (setq default-frame-alist initial-frame-alist)      ;;http://ergoemacs.org/emacs/emacs_playing_with_color_theme.html
 
     ;; Special buffer display.
-    ;; (add-hook 'window-setup-hook
-    ;;           (lambda ()
-    ;;             (setq special-display-regexps `(
-    ;; 						("\\*Help"
-    ;;                                              (minibuffer . nil)
-    ;;                                              (width . 80)
-    ;;                                              (height . 24)
-    ;;                                              (left-fringe . 0)
-    ;;                                              (border-width . 0)
-    ;;                                              (menu-bar-lines . 0)
-    ;;                                              (tool-bar-lines . 0)
-    ;;                                              (unsplittable . t)
-    ;;                                              (top . 24)
-    ;;                                              (left . 450)
-    ;;                                              (background-color . "Lightsteelblue1")
-    ;;                                              (foreground-color . "black")
-    ;;                                              (alpha . nil)
-    ;;                                              (fullscreen . nil))
-    ;;                                             ("\\*Compile-Log"
-    ;;                                              (minibuffer . nil)
-    ;;                                              (width . 85)
-    ;;                                              (height . 24)
-    ;;                                              (left-fringe . 0)
-    ;;                                              (border-width . 0)
-    ;;                                              (menu-bar-lines . 0)
-    ;;                                              (tool-bar-lines . 0)
-    ;;                                              (unsplittable . t)
-    ;;                                              (top . 24)
-    ;;                                              (left . 450)
-    ;;                                              (background-color . "Brown4")
-    ;;                                              (foreground-color . "black")
-    ;;                                              (alpha . nil)
-    ;;                                              (fullscreen . nil))
-    ;;                                             ("\\*Dict"
-    ;;                                              (minibuffer . nil)
-    ;;                                              (width . 80)
-    ;;                                              (height . 24)
-    ;;                                              (left-fringe . 0)
-    ;;                                              (border-width . 0)
-    ;;                                              (menu-bar-lines . 0)
-    ;;                                              (tool-bar-lines . 0)
-    ;;                                              (unsplittable . t)
-    ;;                                              (top . 24)
-    ;;                                              (left . 450)
-    ;;                                              (background-color . "LightSteelBlue")
-    ;;                                              (foreground-color . "DarkGoldenrod")
-    ;;                                              (alpha . nil)
-    ;;                                              (fullscreen . nil))
-    ;;                                             ))))
+    (add-hook 'window-setup-hook
+              (lambda ()
+                (setq special-display-regexps `(
+    						("\\*Help"
+                                                 (minibuffer . nil)
+                                                 (width . 80)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "Lightsteelblue1")
+                                                 (foreground-color . "black")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ("\\*Compile-Log"
+                                                 (minibuffer . nil)
+                                                 (width . 85)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "Brown4")
+                                                 (foreground-color . "black")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ("\\*Dict"
+                                                 (minibuffer . nil)
+                                                 (width . 80)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "LightSteelBlue")
+                                                 (foreground-color . "DarkGoldenrod")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ))))
     )
-  :bind ("C-8" . loop-alpha))
+  :bind ("<f8>" . loop-alpha))
 
-;; 应用实例https://github.com/purcell/emacs.d/blob/master/lisp/init-xterm.el
+;; 应用实例 https://github.com/purcell/emacs.d/blob/master/lisp/init-xterm.el
 ;; (defun sanityinc/console-frame-setup ()
 ;;   (xterm-mouse-mode 1) ; Mouse in a terminal (Use shift to paste with middle button)
 ;;   (mwheel-install))

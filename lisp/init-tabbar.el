@@ -11,6 +11,7 @@
     (defun my-awesome-tab-hide-tab (x)
       (let ((name (format "%s" x)))
     	(or
+   	 (string-prefix-p "*NeoTree*" name)
     	 (string-prefix-p "*Ilist*" name)
     	 (string-prefix-p "*epc" name)
     	 (string-prefix-p "*helm" name)
@@ -111,49 +112,87 @@
     ;; (global-set-key (kbd "C-<right>") 'tabbar-forward)
 
     ;; 设置tabbar底色。
-    (customize-set-variable 'tabbar-background-color "#16161D")   ;;#353439   ;; #16161D
-    (customize-set-variable 'tabbar-separator '(0.5))
-    (customize-set-variable 'tabbar-use-images nil)
+    ;; (customize-set-variable 'tabbar-background-color "#16161D")   ;;#353439   ;; #16161D
+    (customize-set-variable 'tabbar-separator '(0.5))      ;; Change padding of the tabs    ;; we also need to set separator to avoid overlapping tabs by highlighted tabs
+    (customize-set-variable 'tabbar-use-images nil)        ;; Disable images for a speed-up
 
     ;; tabbar的box边框是mode-line-inactive的face继承mode-line的face中的box得来的
     ;; 将mode-line-inactive的face的:box设为nil即可取消tanbar的边框box。
     ;; (set-face-attribute 'mode-line-inactive nil            ; 默认情况下，未选择窗口的模式行显示在另一个面上，称为mode-line-inactive(inactive待用的意思)。
     ;; 					; 只有选定的窗口显示在mode-line脸部。
     ;; 			:box nil)
+
     (set-face-attribute 'header-line nil
 			:box nil)
-    ;; 使分隔底色同tabbar底色
-    (set-face-attribute 'tabbar-separator nil
-    			:background "#16161D"
-    			:box nil)
-    ;; 使字体粗园
+
     (set-face-attribute 'tabbar-default nil
-			:height 1.0)
-    (set-face-attribute 'tabbar-button nil
-    			:background "#444444"
-    			:box nil)
-    (set-face-attribute 'tabbar-highlight nil
-    			:foreground "black"
-    			:background "#89B6E1"
-    			:underline nil
-    			:box nil)
+			:background "gray20"
+			:foreground "gray20"
+			:height 1.1
+			:box '(:line-width 1 :color "gray20" :style nil))
+
     (set-face-attribute 'tabbar-unselected nil
+			:background "gray30"
 			:foreground "white"
-			:background "#21242B"
-			:underline nil
-			:box nil)
+			:box '(:line-width 1 :color "gray30" :style nil))
+
     (set-face-attribute 'tabbar-selected nil
-			:foreground "black"
-			:background "orange"
-			:box nil)
+			:background "#1c1c1c"
+			:foreground "white"
+			:box '(:line-width 1 :color "#1c1c1c" :style nil))
+
     (set-face-attribute 'tabbar-modified nil
-			:foreground "orange red"
-			:background "white"
-			:box '(:line-width 1 :color "gray19"))
+			:background "blue"
+			:foreground "Turquoise1"
+			:box '(:line-width 1 :color "gray30" :style nil))
+
     (set-face-attribute 'tabbar-selected-modified nil
-			:foreground "orange red"
-			:background  "blue"
-			:box '(:line-width 1 :color "gray19"))
+			:background "blue"
+			:foreground "Turquoise1"
+			:box '(:line-width 1 :color "#1c1c1c" :style nil))
+
+
+    (set-face-attribute 'tabbar-highlight nil
+			:background "white"
+			:foreground "black"
+			:underline nil
+			:box '(:line-width 1 :color "white" :style nil))
+
+    (set-face-attribute 'tabbar-separator nil
+			:background "gray20"
+			:height 0.6)
+
+    (set-face-attribute 'tabbar-button nil
+			:foreground "white"
+			:background "gray30"
+			:family "Monospace"
+			:box '(:line-width 1 :color "gray30" :style nil)
+			:inherit 'tabbar-default)
+
+    (set-face-attribute 'tabbar-button-highlight nil
+			:foreground "Turquoise1"
+			:background "gray30"
+			:family "Monospace"
+			:box '(:line-width 1 :color "gray30" :style nil)
+			:inherit 'tabbar-default)
+
+    ;; adding spaces
+    (defun tabbar-buffer-tab-label (tab)
+      "Return a label for tab.
+That is, a string used to represent it on the tab bar."
+      (let ((label  (if tabbar--buffer-show-groups
+			(format "[%s]  " (tabbar-tab-tabset tab))
+		      (format "%s  " (tabbar-tab-value tab)))))
+	;; Unless the tab bar auto scrolls to keep the selected tab
+	;; visible, shorten the tab label to keep as many tabs as possible
+	;; in the visible area of the tab bar.
+	(if tabbar-auto-scroll-flag
+	    label
+	  (tabbar-shorten
+	   label (max 1 (/ (window-width)
+			   (length (tabbar-view
+				    (tabbar-current-tabset)))))))))
+
     ))
 
 
@@ -184,9 +223,9 @@
 ;;     ))
 
 ;; (add-hook 'find-file-hook 'tabbar-config)
-;; (tabbar-config)
+(tabbar-config)
 ;; (tabbar-ruler-config)
-(awesome-tab-config)
+;; (awesome-tab-config)
 
 
 (defun tabbar/console-frame-setup ()

@@ -140,8 +140,8 @@ re-downloaded in order to locate PACKAGE."
     ))
 (eval-when-compile
   (require 'use-package))
-(require 'diminish)                ;; if you use :diminish
-(require 'bind-key)                ;; if you use any :bind variant
+;; (require 'diminish)                ;; if you use :diminish
+;; (require 'bind-key)                ;; if you use any :bind variant
 ;; (setq use-package-verbose t)
 
 ;; Should set before loading `use-package'
@@ -151,26 +151,6 @@ re-downloaded in order to locate PACKAGE."
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))
 
-
-;; ;; Initialization benchmark
-;; (when centaur-benchmark
-;;   (use-package benchmark-init
-;;     :defines swiper-font-lock-exclude
-;;     :commands (benchmark-init/activate)
-;;     :hook (after-init . benchmark-init/deactivate)
-;;     :init (benchmark-init/activate)
-;;     :config
-;;     (with-eval-after-load 'swiper
-;;       (add-to-list 'swiper-font-lock-exclude 'benchmark-init/tree-mode))))
-
-;; ;; Extensions
-;; (use-package paradox
-;;   :commands paradox-enable
-;;   :hook (after-init . paradox-enable)
-;;   :init
-;;   (setq paradox-execute-asynchronously t)
-;;   (setq paradox-github-token t)
-;;   (defalias 'upgrade-packages 'paradox-upgrade-packages))
 
 (provide 'init-package)
 

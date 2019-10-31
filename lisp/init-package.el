@@ -89,6 +89,7 @@
 (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
   (setq package--init-file-ensured t )          ;; t 是知道 init file 具有 package-initialize
   (setq package-enable-at-startup nil)          ; To prevent initializing twice ;; emacs startup 会自动加载程序包。禁用它，是为了不重复下面显式(package-initialize)
+  (setq load-prefer-newer t)
   (package-initialize))                         ;; 初始化并加载程序包
 
 

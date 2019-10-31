@@ -481,16 +481,16 @@
   (propertize
    (concat
     (cond
-     ((string= "1" str) "\u278A")     ;;U+278A   ➊
-     ((string= "2" str) "\u278B")     ;;U+278B   ➋
-     ((string= "3" str) "\u278C")     ;;U+278C   ➌
-     ((string= "4" str) "\u278D")     ;;U+278D   ➍
-     ((string= "5" str) "\u278E")     ;;U+278E   ➎
-     ((string= "6" str) "\u278F")     ;;U+278F   ➏
-     ((string= "7" str) "\u2790")     ;;U+2790   ➐
-     ((string= "8" str) "\u2791")     ;;U+2790   ➑
-     ((string= "9" str) "\u2792")     ;;U+2792   ➒
-     ((string= "10" str) "\u2793")    ;;U+2793   ➓
+     ((string= "1" str) "➀ ")     ;;U+278A   ➊
+     ((string= "2" str) "➁ ")     ;;U+278B   ➋
+     ((string= "3" str) "➂ ")     ;;U+278C   ➌
+     ((string= "4" str) "➃ ")     ;;U+278D   ➍
+     ((string= "5" str) "➄ ")     ;;U+278E   ➎
+     ((string= "6" str) "➅ ")     ;;U+278F   ➏
+     ((string= "7" str) "➆ ")     ;;U+2790   ➐
+     ((string= "8" str) "➇ ")     ;;U+2790   ➑
+     ((string= "9" str) "➈ ")     ;;U+2792   ➒
+     ((string= "10" str) "➉ ")    ;;U+2793   ➓
      (t str)
      ))
    'face `(:height 0.9 :inherit)

@@ -81,12 +81,11 @@
 ;; https://samrayleung.github.io/blog/2017/02/22/%E6%8F%90%E9%AB%98emacs%E5%90%AF%E5%8A%A8%E9%80%9F%E5%BA%A6/
 ;;----------------------------------------------------------------------------
 ;; 1MB=1024*1024
-(let ((normal-gc-cons-threshold (* 20 1024 1024))        ;; 默认0.76MB=0.76*1024*1024 .  (* 5 1024 1024)这个值垃圾回收6次 / 400000这个值垃圾回收10次 / 32位40万、64位80万
-      (init-gc-cons-threshold (* 128 1024 1024)))       ;;(* 500 1024 1024) / (* 128 1024 1024) / 100000000 / most-positive-fixnum
+(let ((normal-gc-cons-threshold (* 20 1024 1024))       ;; 默认情况下，Emacs将每分配0.76 MB（gc-cons-threshold == 800000）启动GC。  (* 5 1024 1024)这个值垃圾回收6次 / 400000这个值垃圾回收10次 / 32位40万、64位80万
+      (init-gc-cons-threshold (* 128 1024 1024)))       ;; 如果将其增加到20 MB（gc-cons-threshold== 20000000） https://github.com/lewang/flx 。 (* 500 1024 1024) / (* 128 1024 1024) / 100000000 / most-positive-fixnum
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'after-init-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
-
 
 ;;----------------------------------------------------------------------------
 ;; load-path
@@ -333,7 +332,7 @@ of an error, just add the package to a list of missing packages."
 			init-edit
 			init-edit-visual
 			init-frame-hooks
-			init-frame
+			;; init-frame
 			init-icons
 			;;------------------------------
 			;; init-test-modeline
@@ -346,7 +345,8 @@ of an error, just add the package to a list of missing packages."
 			;; init-tv-powerline
 			;;-----------------------------
 			init-modeline
-			init-theme
+			;; init-theme
+			init-xresources-theme
 			;; init-hide-modeline
 			;; init-face
 

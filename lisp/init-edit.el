@@ -47,7 +47,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)            ;; 用'y'和'n'来代替频繁地输入'yes’和'no'
 ;; (fset 'yes-or-no-p 'y-or-n-p)
 ;; (setq-default cursor-type 'bar)           ;; 设置光标为小长条形状.设置这个，智能改变光标形状不起作用。
-
+(xterm-mouse-mode 1)                         ;; 终端下鼠标响应
 (setq split-width-threshold nil)             ;; 窗口垂直分割
 (setq split-height-threshold 0)
 
@@ -61,8 +61,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(blink-cursor-mode nil)                  ;; 取消光标闪烁
- '(font-use-system-font t)
+ ;; '(blink-cursor-mode nil)                  ;; 取消光标闪烁
+ ;; '(font-use-system-font t)
  '(show-paren-mode t)                      ;;光标位于括号之后显示匹配的括号
  )
 
@@ -640,13 +640,19 @@ there's a region, all lines that region covers will be duplicated."
   (cursor-change-mode 1)
   )
 
-;; Hungry deletion
+;; Hungry deletion  饿删除次要模式
 (use-package hungry-delete
   :ensure t
   :diminish
   :hook (after-init . global-hungry-delete-mode)
   :config (setq-default hungry-delete-chars-to-skip " \t\f\v"))
 
+(defmacro λ! (&rest body)
+  "A shortcut for inline interactive lambdas."
+  (declare (doc-string 1))
+  `(lambda () (interactive) ,@body))
+
+(defalias 'lambda! 'λ!)
 
 (provide 'init-edit)
 

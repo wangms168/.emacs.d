@@ -133,12 +133,12 @@
 
     (set-face-attribute 'tabbar-unselected nil
 			:background "gray30"
-			:foreground "white"
+			:foreground "#EEDD82"
 			:box '(:line-width 1 :color "gray30" :style nil))
 
     (set-face-attribute 'tabbar-selected nil
 			:background "#1c1c1c"
-			:foreground "white"
+			:foreground "#EEDD82"
 			:box '(:line-width 1 :color "#1c1c1c" :style nil))
 
     (set-face-attribute 'tabbar-modified nil
@@ -153,17 +153,17 @@
 
 
     (set-face-attribute 'tabbar-highlight nil
-			:background "white"
+			:background "#EEDD82"
 			:foreground "black"
 			:underline nil
-			:box '(:line-width 1 :color "white" :style nil))
+			:box '(:line-width 1 :color "#EEDD82" :style nil))
 
     (set-face-attribute 'tabbar-separator nil
 			:background "gray20"
 			:height 0.6)
 
     (set-face-attribute 'tabbar-button nil
-			:foreground "white"
+			:foreground "#EEDD82"
 			:background "gray30"
 			:family "Monospace"
 			:box '(:line-width 1 :color "gray30" :style nil)

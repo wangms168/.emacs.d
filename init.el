@@ -332,7 +332,7 @@ of an error, just add the package to a list of missing packages."
 			init-edit
 			init-edit-visual
 			init-frame-hooks
-			;; init-frame
+			init-frame
 			init-icons
 			;;------------------------------
 			;; init-test-modeline
@@ -345,8 +345,8 @@ of an error, just add the package to a list of missing packages."
 			;; init-tv-powerline
 			;;-----------------------------
 			init-modeline
-			;; init-theme
-			init-xresources-theme
+			init-theme
+			;; init-xresources-theme
 			;; init-hide-modeline
 			;; init-face
 

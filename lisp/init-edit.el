@@ -431,6 +431,7 @@
 
 ;; Goto last change
 (use-package goto-chg
+  :ensure t
   :bind ("C-," . goto-last-change))
 
 ;; ;; Handling capitalized subwords in a nomenclature

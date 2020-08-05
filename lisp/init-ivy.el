@@ -46,7 +46,7 @@
 
 
 ;; Ivy, Counsel, Swiper Setup
-(use-package counsel)              ;; 依赖ivy、swiper
+(use-package counsel :ensure t)              ;; 依赖ivy、swiper
 (ivy-mode 1) ;; Turn on ivy by default
 ;; (setq ivy-initial-inputs-alist nil)      ;; 默认情况下ivy启用过滤器^
 (setq ivy-use-virtual-buffers t)  ;; no idea, but recommended by project maintainer

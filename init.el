@@ -39,7 +39,7 @@
 
 ;;; Commentary:
 
-;; 下载地址：http://mirrors.ustc.edu.cn/gnu/emacs/windows/
+;; emacs下载地址：http://mirrors.ustc.edu.cn/gnu/emacs/windows/
 ;; http://ftp.gnu.org/gnu/emacs/windows/
 
 ;; use-package的:after 关键字的作用基本跟 with-eval-after-load 的作用是相同的：是加载:after值的包后、require请求use-package作用的包。
@@ -327,12 +327,12 @@ of an error, just add the package to a list of missing packages."
 			init-const
 			;; init-custom
 			init-package
+			init-frame
 			init-basic
 			init-funcs
 			init-edit
 			init-edit-visual
 			init-frame-hooks
-			init-frame
 			init-icons
 			;;------------------------------
 			;; init-test-modeline
@@ -350,7 +350,7 @@ of an error, just add the package to a list of missing packages."
 			;; init-hide-modeline
 			;; init-face
 
-			;; doremi-frm          ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
+			;; doremi-frm	       ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
 
 			init-ivy
 			init-projectile
@@ -407,7 +407,6 @@ of an error, just add the package to a list of missing packages."
 
 ;; (add-hook 'after-init-hook (lambda () (message (format "after/before-init-time = %s" (float-time (time-subtract after-init-time before-init-time))))))
 (add-hook 'after-init-hook (lambda () (message  (format "emacs-init-time = %s" (emacs-init-time)))))
-
 
 ;;----------------------------------------------------------------------------
 ;; other

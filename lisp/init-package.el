@@ -139,15 +139,16 @@ re-downloaded in order to locate PACKAGE."
     (package-install 'diminish)
     (package-install 'bind-key)
     ))
-(eval-when-compile
-  (require 'use-package))
+(setq use-package-verbose t)
+;;(eval-when-compile
+;;  (require 'use-package))
 ;; (require 'diminish)                ;; if you use :diminish
 ;; (require 'bind-key)                ;; if you use any :bind variant
 ;; (setq use-package-verbose t)
 
 ;; Should set before loading `use-package'
 (eval-and-compile
-  ;; (setq use-package-always-ensure t)
+  ;; (setq use-package-always-ensure t)        ;;总是安装软件包
   ;; (setq use-package-always-defer t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))

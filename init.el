@@ -53,12 +53,6 @@
 (message "* --[ Loading my Emacs init file ]--")
 
 ;;----------------------------------------------------------------------------
-;; cl
-;;----------------------------------------------------------------------------
-;; turn on Common Lisp support
-(require 'cl)  ; provides useful things like `loop' and `setf'
-
-;;----------------------------------------------------------------------------
 ;; Speed up startup
 ;;----------------------------------------------------------------------------
 ;; (defvar default-file-name-handler-alist file-name-handler-alist)
@@ -87,172 +81,14 @@
   (add-hook 'after-init-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
-;;----------------------------------------------------------------------------
-;; load-path
-;;----------------------------------------------------------------------------
-
-;; load/load-file/autoload说明: load会搜索load-path，load-file需要指定文件完整路
-;; 径和扩展名，autoload在一个函数被call后再load指定文件
-
-;; 一、加载目录
-;; 1、加载某一目录
-;; (add-to-list 'load-path "~/.emacs.d/config/")        ;; 这个要放在所有require语句的前面，否则require语句会报错。通过 load-path 注册扩展文件的所在位置
-;; (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-;; (push (expand-file-name "lisp" user-emacs-directory) load-path)
-
-;; https://www.emacswiki.org/emacs/LoadPath
-;; (let ((default-directory  "~/.emacs.d/lisp/"))
-;;   (setq load-path
-;;         (append
-;;          (let ((load-path  (copy-sequence load-path))) ;; Shadow
-;;            (append
-;;             (copy-sequence (normal-top-level-add-to-load-path '(".")))
-;;             (normal-top-level-add-subdirs-to-load-path)))
-;;          load-path)))
-
-;; 2、加载目录和子目录
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-
-;; 二、加载文件,这种方式可能无法控制加载顺序
-;; 1、load仅加载指定目录下的el文件
-;; (mapc 'load (directory-files "~/.emacs.d/config/" t "\\.el$"))    ;;mapcar 函数逐个装载 "~/..." 目录下的所有配置文件
-
-;; 2、load加载指定目录及其子目录下的el文件
-;; ~/.emacs.d/load-directory.el
-;; Handy function to load recursively all '.el' files in a given directory
-(defun load-directory (directory)
-  "Load recursively all '.el' files in DIRECTORY."
-  (dolist (element (directory-files-and-attributes directory nil nil nil))
-    (let* ((path (car element))
-           (fullpath (concat directory "/" path))
-           (isdir (car (cdr element)))
-           (ignore-dir (or (string= path ".") (string= path ".."))))
-      (cond
-       ((and (eq isdir t) (not ignore-dir))
-        (load-directory fullpath))
-       ((and (eq isdir nil) (string= (substring path -3) ".el"))
-        (load (file-name-sans-extension fullpath)))))))
-;; (load-directory "~/.emacs.d/my-config/config")
-
-;; 3、 加载目录和子目录 ;; 用provide/require这种方式加载配置文件，能自己控制加载先后顺序
-(defun add-subdirs-to-load-path (dir)
-  "Recursive add directories to `load-path'."
-  (let ((default-directory (file-name-as-directory dir)))
-    (add-to-list 'load-path dir)
-    (normal-top-level-add-subdirs-to-load-path)))
-;; (add-subdirs-to-load-path "~/.emacs.d/config/")
-
-;; https://github.com/sjbalaji/myCustomizations/blob/master/ReferenceEmacsConfig
-;; make loaded files give a message
-(defadvice load (before debug-log activate)
-  (message "wangms-Loading %s..." (locate-library (ad-get-arg 0))))
-
-
-
-;; load-path enhancement 增强
-(defun fni/add-to-load-path (this-directory &optional with-subdirs recursive)
-  "Add THIS-DIRECTORY at the beginning of the load-path, if it exists.
-Add all its subdirectories not starting with a '.' if the
-optional argument WITH-SUBDIRS is not nil.
-Do it recursively if the third argument is not nil."
-  (when (and this-directory
-             (file-directory-p this-directory))
-    (let* ((this-directory (expand-file-name this-directory))
-           (files (directory-files this-directory t "^[^\\.]")))
-
-      ;; completely canonicalize the directory name (*may not* begin with `~')
-      (while (not (string= this-directory (expand-file-name this-directory)))
-        (setq this-directory (expand-file-name this-directory)))
-
-      (message "Adding `%s' to load-path..." this-directory)
-      (add-to-list 'load-path this-directory)
-
-      (when with-subdirs
-        (while files
-          (setq dir-or-file (car files))
-          (when (file-directory-p dir-or-file)
-            (if recursive
-                (fni/add-to-load-path dir-or-file 'with-subdirs 'recursive)
-              (fni/add-to-load-path dir-or-file)))
-          (setq files (cdr files)))))))
-
-;; Use `M-x list-load-path-shadows RET' to display a list of external Emacs
-;; Lisp files that shadow Emacs builtins (listing potential load path
-;; problems).
-
-
-;; (dolist (i '("lisp"
-;; 	     "site-lisp"
-;; 	     ))
-;;   ;; Add all at end of `load-path' to avoid conflicts.
-;;   (add-to-list 'load-path (expand-file-name i user-emacs-directory) t)) ;; 参数t是Add all at end of `load-path'
-
-;; (eval-and-compile
-;;   (mapc
-;;    #'(lambda (path)
-;;        (push (expand-file-name path zwb-private-emacs-config-path) load-path))
-;;    '("lib""theme" "")))     ;;lambda函数的实参写法
-
-;; Load path
-;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
-(defun update-load-path (&rest _)
-  "Update `load-path'."
-  (push (expand-file-name "site-lisp" user-emacs-directory) load-path)      ;; push是加到`load-path'的前面。
-  (push (expand-file-name "lisp" user-emacs-directory) load-path)
-  )
-
-(defun add-subdirs-to-load-path (&rest _)
-  "Add subdirectories to `load-path'."
-  (let ((default-directory
-          (expand-file-name "site-lisp" user-emacs-directory)))
-    (normal-top-level-add-subdirs-to-load-path)))
-
-(advice-add #'package-initialize :after #'update-load-path)
-;; (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
-
-(update-load-path)
-
-
-;;*** Library Search
-
-;; `load-path' is a list of directories where Emacs Lisp libraries (`.el' and
-;; `.elc' files) are installed.
-
-;; `exec-path' is different: it is a list of directories where executable
-;; programs are installed.
-;;
-;; Shouldn't be `exec-path' and `PATH' achieve the same goal under Emacs?
-;;
-;; No. `exec-path' is used by Emacs to search for programs it runs directly.
-;; But `M-x grep' does not run `grep.exe' directly; it runs the shell passing
-;; it a command that invokes `grep'. So it's the shell that needs to find
-;; `grep.exe', and it uses PATH, of course, not `exec-path'.
-;;
-;; So the right thing to do when you install a new program, in order for Emacs
-;; to find it, is *both* to update `exec-path' *and* update `PATH'. This is
-;; because some Emacs features invoke programs directly, while others do that
-;; through the shell or some other intermediary programs.
-
-;; The most important directories are the last!
+(load-theme 'adwaita t)
 
 ;; TODO Specify variables using `defcustom'
 
-(when (string-equal system-type "windows-nt")
-  (let ((mypaths
-         (list
-          "C:/Program Files/Git/usr/bin/"      ;; 将git-find排在(getenv "PATH")前面
-          (getenv "PATH")
-          )
-         ))
-
-    (setenv "PATH" (mapconcat 'identity mypaths ";"))
-    (setq exec-path (append mypaths (list "." exec-directory)))      ;;exec-path默认只是复制PATH的原来值Original value
-    )
-  )
+;;----------------------------------------------------------------------------
+;; load-path
+;;----------------------------------------------------------------------------
+(load-file (concat user-emacs-directory "lisp/init-paths.el"))
 
 ;;----------------------------------------------------------------------------
 ;; with-eval-after-load (after-load)
@@ -269,14 +105,59 @@ Do it recursively if the third argument is not nil."
 ;;----------------------------------------------------------------------------
 ;; Features
 ;;----------------------------------------------------------------------------
-
 ;;*** Features
+;;https://lists.gnu.org/archive/html/emacs-orgmode/2011-05/msg00466.html
+;; redefine require to leave a trace of packages being loaded
+;;(if (not (fboundp 'orig-require))
+;;    (fset 'orig-require (symbol-function 'require))
+;;  (message "The code to redefine `require' should not be loaded
+;;twice"))
+;;(defvar my/require-depth 0)
+;;(defun require (feature &optional filename noerror)
+;;  "Leave a trace of packages being loaded."
+;;  (cond ((member feature features)
+;;	 (message "%sRequiring `%s' (already loaded)"
+;;		  (concat (make-string (* 2 my/require-depth) ? )
+;;			  "+-> ")
+;;		  feature))
+;;	(t
+;;	 (message "%sRequiring `%s'"
+;;		  (concat (make-string (* 2 my/require-depth) ? )
+;;			  "+-> ")
+;;		  feature)
+;;	 (let ((my/require-depth (+ 1 my/require-depth)))
+;;	   (orig-require feature filename noerror))
+;;	 (message "%sRequiring `%s'...done"
+;;		  (concat (make-string (* 2 my/require-depth) ? )
+;;			  "+-> ")
+;;		  feature))))
+;;;;require函数经过这里改造后，在ivy的M-x时报“Symbol’s value as variable is void: amx-initialized”错误。
+;;;;于是初始化后要将require的定义恢复为原始：
+;;(add-hook 'after-init-hook
+;;	  (lambda () (fset 'require 'orig-require )))
 
-;; ;; REPLACES ORIGINAL in `C source code' (dumped)
-;; ;; redefine require to leave a trace of packages being loaded
-;; (if (not (fboundp 'orig-require))
-;;     (fset 'orig-require (symbol-function 'require))
-;;   (message "The code to redefine `require' should not be loaded twice"))
+;;(defvar missing-packages-list nil
+;;  "List of packages that `try-require' can't find.")
+;;
+;;;; attempt to load a feature/library, failing silently
+;;(defun try-require (feature)
+;;  "Attempt to load a library or module. Return true if the
+;;      library given as argument is successfully loaded. If not, instead
+;;      of an error, just add the package to a list of missing packages."
+;;  (condition-case err
+;;      ;; protected form
+;;      (progn
+;;	(message "Checking for library `%s'..." feature)
+;;	(if (stringp feature)
+;;	    (load-library feature)
+;;	  (require feature))
+;;	(message "Checking for library `%s'... Found" feature))
+;;    ;; error handler
+;;    (file-error  ; condition
+;;     (progn
+;;       (message "Checking for library `%s'... Missing" feature)
+;;       (add-to-list 'missing-packages-list feature 'append))
+;;     nil)))
 
 ;; https://www.cnblogs.com/yangyingchao/p/3418630.html
 ;; Function to collect information of packages.
@@ -292,19 +173,17 @@ library given as argument is successfully loaded. If not, instead
 of an error, just add the package to a list of missing packages."
   (condition-case err
       ;; protected form
-      (progn
-        (message "Checking for library `%s'..." feature)
-	(let ((timestamp (current-time))
-	      (package (if (stringp feature) feature (symbol-name feature))))
-	  (if (stringp feature)
-	      (load-library feature)
-	    (require feature))
-	  (if click
-	      (add-to-list 'package-init-statistic
-			   (cons (if (stringp feature) feature (symbol-name feature))
-				 (float-time (time-since timestamp)))))
-	  (message "Checking for library `%s'... Found, cost %.2f seconds"
-		   feature (float-time (time-since timestamp)))))
+      (let ((timestamp (current-time))
+            (package (if (stringp feature) feature (symbol-name feature))))
+        (if (stringp feature)
+            (load-library feature)
+          (require feature))
+        (if click
+            (add-to-list 'package-init-statistic
+                         (cons (if (stringp feature) feature (symbol-name feature))
+                               (float-time (time-since timestamp)))))
+        (message "Checking for library `%s'... Found, cost %.2f seconds"
+                 feature (float-time (time-since timestamp))))
     ;; error handler
     (file-error  ; condition
      (progn
@@ -312,10 +191,31 @@ of an error, just add the package to a list of missing packages."
        (add-to-list 'missing-packages-list feature 'append))
      nil)))
 
+;;(defadvice find-file (around my-find-file activate)
+;;  "Open FILENAME and report time spent."
+;;  (let* ((my-filename (ad-get-arg 0))
+;;         (find-file-time-start (float-time)))
+;;    (message (concat "| find-file | start |" my-filename " | ___ |"))
+;;    ad-do-it
+;;    (message "| find-file | stop | %s | %.1f |"
+;;             my-filename
+;;             (- (float-time) find-file-time-start))))
+
+;; https://github.com/sjbalaji/myCustomizations/blob/master/ReferenceEmacsConfig
+;; make loaded files give a message
+;;(defadvice load (before debug-log activate)
+;;  (message "wangms-Loading %s..." (locate-library (ad-get-arg 0))))
+
 (defun require-extensions (action lst &optional click)
   ""
   (mapcar (lambda(ext) "" (funcall action ext click)) lst))
 ;; 有了这个函数，我们就可以进行非常简单的工作了删掉 require ，换成 list 。
+
+;;----------------------------------------------------------------------------
+;; cl
+;;----------------------------------------------------------------------------
+;; turn on Common Lisp support
+(require 'cl)  ; provides useful things like `loop' and `setf'
 
 ;; Load all configuration and packages.
 (let ((ts-init (current-time)))
@@ -325,7 +225,7 @@ of an error, just add the package to a list of missing packages."
   (require-extensions 'try-require
 		      '(
 			init-const
-			;; init-custom
+			init-custom
 			init-package
 			init-frame
 			init-basic
@@ -348,7 +248,7 @@ of an error, just add the package to a list of missing packages."
 			init-theme
 			;; init-xresources-theme
 			;; init-hide-modeline
-			;; init-face
+			init-face
 
 			;; doremi-frm	       ;; 使用库doremi-frm.el(依赖库doremi.el、hexrgb.el、frame-fns.el、faces+.el)中doremi-font+命令, 循环查看可用字体及其效果.
 
@@ -357,7 +257,7 @@ of an error, just add the package to a list of missing packages."
 			init-key
 			;; init-complete
 			init-company
-			init-hydra
+;;			init-hydra             ;;影响ivy的icons
 			init-neotree
 			init-tabbar
 			init-sidebar

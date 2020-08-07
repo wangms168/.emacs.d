@@ -30,6 +30,12 @@
 
 ;;; Code:
 
+;;使用网络代理
+;;(setq url-proxy-services
+;;       '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+;;         ("http" . "127.0.0.1:49998")
+;;         ("https" . "127.0.0.1:49998")))
+
 (eval-when-compile
   (require 'init-custom))
 ;;
@@ -54,19 +60,21 @@
                ,(cons "melpa" (concat proto "://www.mirrorservice.org/sites/melpa.org/packages/"))
 	       ))
             ('emacs-china
-             `(,(cons "gnu"   (concat proto "://elpa.emacs-china.org/gnu/"))
-               ,(cons "melpa" (concat proto "://elpa.emacs-china.org/melpa/"))
-               ,(cons "melpa-stable" (concat proto "://elpa.emacs-china.org/melpa-stable/"))
+             `(,(cons "melpa-cn"   (concat proto "://elpa.emacs-china.org/melpa/"))
+               ,(cons "org-cn" (concat proto "://elpa.emacs-china.org/org/"))
+	       ,(cons "gnu-cn" (concat proto "://elpa.emacs-china.org/gnu/"))
+               ,(cons "melpa-stable-cn" (concat proto "://elpa.emacs-china.org/melpa-stable/"))
 	       ))
             ('netease
-             `(,(cons "gnu"   (concat proto "://mirrors.163.com/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.163.com/elpa/melpa/"))
-               ,(cons "melpa-stable" (concat proto "://mirrors.163.com/elpa/melpa-stable/"))
+             `(,(cons "melpa-163" (concat proto "://mirrors.163.com/elpa/melpa/"))
+               ,(cons "gnu-163"   (concat proto "://mirrors.163.com/elpa/gnu/"))
+               ,(cons "melpa-stable-163" (concat proto "://mirrors.163.com/elpa/melpa-stable/"))
 	       ))
             ('tuna
-             `(,(cons "gnu"   (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-	       ,(cons "melpa-stable" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/"))
+             `(,(cons "melpa-tuna"   (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
+               ,(cons "org-tuna" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/org/"))
+               ,(cons "gun-tuna" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/"))
+	       ,(cons "melpa-stable-tuna" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/"))
 	       ))
             (archives
              (error "Unknown archives: '%s'" archives))))
@@ -81,7 +89,7 @@
 ;; 我需要稳定版的 `ace-page-break-lines'，只从 melpa-stable 安装
 (setq package-pinned-packages                      ;; 将程序包/归档对添加到此列表，以确保仅从指定的归档文件下载指定的程序包。
       '(
-	(page-break-lines . "melpa-stable")
+	(page-break-lines . "melpa-stable-cn")
 	))
 
 ;; Initialize packages
@@ -91,7 +99,8 @@
   (setq package-enable-at-startup nil)          ; To prevent initializing twice ;; emacs startup 会自动加载程序包。禁用它，是为了不重复下面显式(package-initialize)
   (setq load-prefer-newer t)
   (package-initialize))                         ;; 初始化并加载程序包
-
+(unless package-archive-contents
+  (package-refresh-contents))
 
 (defun require-package (package &optional min-version no-refresh)
   "Install given PACKAGE, optionally requiring MIN-VERSION.
@@ -137,18 +146,13 @@ re-downloaded in order to locate PACKAGE."
     (package-refresh-contents)
     (package-install 'use-package)
     (package-install 'diminish)
-    (package-install 'bind-key)
+    ;;(package-install 'bind-key)     ;;安装use-package时附加bind-key包
     ))
 (setq use-package-verbose t)
-;;(eval-when-compile
-;;  (require 'use-package))
-;; (require 'diminish)                ;; if you use :diminish
-;; (require 'bind-key)                ;; if you use any :bind variant
-;; (setq use-package-verbose t)
 
 ;; Should set before loading `use-package'
 (eval-and-compile
-  ;; (setq use-package-always-ensure t)        ;;总是安装软件包
+  (setq use-package-always-ensure t)        ;;总是安装软件包
   ;; (setq use-package-always-defer t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))

@@ -1,5 +1,4 @@
 (use-package dumb-jump
-  :ensure t
   :init
   (defhydra dumb-jump-hydra (:color blue :columns 3)
     "Dumb Jump"

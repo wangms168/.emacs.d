@@ -29,40 +29,34 @@
 ;; ;; (load-theme 'monokai t)
 ;; ;; (load-theme 'organic-green t)
 
-
-;; ;; 2 彩色主题
+;; 2 彩色主题
 ;; (add-to-list 'load-path "~/.emacs.d/my-config/color-themes/")
-;; ;; (require 'color-theme-ahei)       ;; **************************就是这个未注释掉，将color-theme-ahei主题的高亮当前行设置，带入到monokai-theme主题，产生特差的效果,害我花了7、8个小时找原因。
-;; ;; (color-theme-ahei)              ;;按 d 看见的代码
+;; (require 'color-theme-ahei)       ;; **************************就是这个未注释掉，将color-theme-ahei主题的高亮当前行设置，带入到monokai-theme主题，产生特差的效果,害我花了7、8个小时找原因。
+;; (color-theme-ahei)              ;;按 d 看见的代码
 
 ;; monokai-theme主题并稍加配色
 (use-package monokai-theme
-  :ensure t
   :init
   ;; (require 'monokai-theme)     ;;为了显示加载时间，显式require请求下。
-  (setq
-   ;; foreground and background
-   ;; monokai-foreground     "green"		;;#ABB2BF\green
-   monokai-background     "#21242B"             ;;"#002B36"\#282C34\#0C1021\#002B36\0B0F20\#002A38\#414142\#464646\#262D2F\#1B1D1D
-
-   ;; highlights and comments
-   ;; monokai-comments       "#F8F8F0"
-   ;; monokai-emphasis       "#282C34"
-   ;; monokai-highlight      "#FFB269"
-   ;; monokai-highlight-alt  "#66D9EF"
-   ;; monokai-highlight-line "#1B1D1E"
-   ;; monokai-line-number    "#F8F8F0"
-
-   ;; colours
-   ;; monokai-blue           "#61AFEF"
-   ;; monokai-cyan           "#56B6C2"
-   ;; monokai-green          "#98C379"
-   ;; monokai-gray           "#3E4451"
-   ;; monokai-violet         "#C678DD"
-   ;; monokai-red            "#E06C75"
-   ;; monokai-orange         "#D19A66"
-   ;; monokai-yellow         "#E5C07B"
-   )
+    ;;setq ;; foreground and background
+    ;;monokai-foreground     "#ABB2BF"
+    ;;monokai-background     "#282C34"               ;; "#21242B"             ;;"#002B36"\#282C34\#0C1021\#002B36\0B0F20\#002A38\#414142\#464646\#262D2F\#1B1D1D
+    ;;;; highlights and comments
+    ;;monokai-comments       "#F8F8F0"
+    ;;monokai-emphasis       "#282C34"
+    ;;monokai-highlight      "#FFB269"
+    ;;monokai-highlight-alt  "#66D9EF"
+    ;;monokai-highlight-line "#1B1D1E"
+    ;;monokai-line-number    "#F8F8F0"
+    ;;;; colours
+    ;;monokai-blue           "#61AFEF"
+    ;;monokai-cyan           "#56B6C2"
+    ;;monokai-green          "#98C379"
+    ;;monokai-gray           "#3E4451"
+    ;;monokai-violet         "#C678DD"
+    ;;monokai-red            "#E06C75"
+    ;;monokai-orange         "#D19A66"
+    ;;monokai-yellow         "#E5C07B")
   :config
   (load-theme 'monokai t)
   ;; (add-hook 'after-init-hook '(lambda () (load-theme 'monokai t)))     ;; 将使header-line的box显现

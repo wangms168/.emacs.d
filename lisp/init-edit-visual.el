@@ -3,7 +3,6 @@
 ;;; Code:
 
 (use-package auto-highlight-symbol
-  :ensure t
   :diminish
   :hook (prog-mode . global-auto-highlight-symbol-mode))
 
@@ -11,7 +10,6 @@
 ;; 二次选择高亮
 ;;----------------------------------------------------------------------------
 (use-package volatile-highlights
-  :ensure t
   :diminish
   :hook (after-init . volatile-highlights-mode)
   :custom-face
@@ -19,13 +17,11 @@
   )
 
 (use-package rainbow-mode
-  :ensure t
   :diminish
   :hook (prog-mode . rainbow-mode))
 
 ;; ------------------------------------------------------------------------------------
 (use-package rainbow-delimiters
-  :ensure t
   :diminish
   :hook (prog-mode . rainbow-delimiters-mode))
 
@@ -38,7 +34,6 @@
 
 ;; ------------------------------------------------------------------------------------
 (use-package highlight-indentation            ;; 高亮缩进
-  :ensure t
   :diminish
   :hook ((prog-mode yaml-mode) . highlight-indentation-mode)
   :custom
@@ -58,24 +53,25 @@
 ;;   :hook ((prog-mode yaml-mode) . indent-guide-global-mode))
 
 (use-package page-break-lines
-  :ensure t
+  ;;:load-path "site-lisp/page-break-lines"
   :diminish
-  :hook (after-init . global-page-break-lines-mode))
+  :hook (after-init . global-page-break-lines-mode)
+  :config
+  ;;(set-fontset-font "fontset-default"
+  ;;		    (cons page-break-lines-char page-break-lines-char)
+  ;;		    (face-attribute 'default :family))
+  )
 
-(use-package flymd                        ;;预览md文件，M-x flymd-flyit。
-  :ensure t)
-(use-package impatient-mode               ;;实时预览html文件。依赖simple-httpd与htmlize
-  :ensure t)
+(use-package flymd)                        ;;预览md文件，M-x flymd-flyit。
+(use-package impatient-mode)               ;;实时预览html文件。依赖simple-httpd与htmlize
 
 (use-package skewer-mode       ;;html\css\js交互。依赖simple-httpd与js2-mode
-  :ensure t
   :hook (html-mode . skewer-html-mode)
   :config
   (require 'simple-httpd)
   ;; set root folder for httpd server
   (setq httpd-root "/home/wangms/Documents/javascript")
   )
-
 
 
 (provide 'init-edit-visual)

@@ -372,7 +372,7 @@
 (defun powerline-buffer-id (&optional face pad)
   (powerline-raw
    (format-mode-line
-    (concat " " (propertize
+    (concat (propertize
                  (format-mode-line mode-line-buffer-identification)
                  'face face
                  'mouse-face 'mode-line-highlight
@@ -426,10 +426,10 @@
         ;; (cond ((buffer-modified-p)  (powerline-get-icon "pencil" "**✦" "Modified buffer"))
 	(cond ((buffer-modified-p)  (when (buffer-modified-p) mode-line-modified))
               ((eq state 'edited)   (powerline-get-icon "pencil" "✦" "Modified buffer, unregistered changes"))
-              ((eq state 'unregistered) (powerline-get-icon "question" "❓" "Unregistered file in VCS"))
+              ((eq state 'unregistered) (powerline-get-icon "question" "" "Unregistered file in VCS"))
               ((eq state 'missing)  (powerline-get-icon "exclamation" "⁈" "File exists only in VCS, not on the hard disk"))
               ((eq state 'ignored)  (powerline-get-icon "ban" "♟" "Ignored file in VCS"))
-              ((eq state 'added)    (powerline-get-icon "plus" "➕" "File will be registered in VCS in the next commit"))
+              ((eq state 'added)    (powerline-get-icon "plus" "" "File will be registered in VCS in the next commit"))
               (t " ")))
     (error (powerline-get-icon "exclamation" "⁈" (car ex)))))
 
@@ -472,8 +472,7 @@
 ;;       )
 ;;     ))
 
-(use-package  winum
-  :ensure t
+(use-package  winum                 ;;依赖dash包
   :config
   (winum-mode))
 (defun powerline--unicode-number (str)
@@ -584,8 +583,7 @@
 
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; flycheck状态图标显示
-(use-package  flycheck
-  :ensure t
+(use-package  flycheck        ;;依赖epl和pkg-info两个包
   :init
   (global-flycheck-mode)
   :config)
@@ -738,7 +736,7 @@
 (defun modeline-time ()
   "自定义时间显示."
   (concat
-   (propertize " \ue03c" 'face `(:height 1.0))   ;;  nerd-fonts \uf64f ; allthe-icons "\xe192" ;\x1f552  🕒
+   (propertize " \uf64f" 'face `(:height 1.0))   ;;  nerd-fonts \uf64f  \ue03c ; all-the-icons "\xe192" ;\x1f552  🕒
    (propertize (format-time-string " %H:%M ") 'face `(:height 1.0))
    ))
 
@@ -881,11 +879,10 @@
 
 (defun Short-directory ()
   (if (buffer-file-name)
-      (concat "{"
-	      (directory-file-name
+      (concat (directory-file-name
 	       (file-name-directory
 		(abbreviate-file-name
-		 (buffer-file-name))))"}"))
+		 (buffer-file-name))))"/"))
   )
 
 ;;;###autoload
@@ -917,8 +914,8 @@
 				;; 一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
 				;; (powerline-raw "[%z]" face0)
 				(powerline-raw mode-line-client face0 'l)        ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
-
-				(powerline-raw (powerline-modified) face0 'l)    ;; 模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。
+				(powerline-raw mode-line-modified face0 'l)
+;;				(powerline-raw (powerline-modified) face0 'l)    ;; powerline-modified很卡。模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。
 				;; (when (buffer-modified-p)
 				;;   (powerline-raw mode-line-modified face0 'l))
 				;; (when buffer-read-only
@@ -1046,7 +1043,7 @@
                              (powerline-fill face1 (powerline-width rhs))
                              (powerline-render rhs)))))))
 
-;; (powerline-center-theme-ori)
+;;(powerline-center-theme-ori)
 
 
 ;; 左右中布局：https://emacs.stackexchange.com/questions/16654/how-to-re-arrange-things-in-mode-line
@@ -1084,6 +1081,7 @@
 ;; 		"-%-"
 ;; 		mode-line-end-spaces             ;; 模式行结束空间:该变量显示在模式行的末尾。
 ;; 		))
+
 
 
 (provide 'init-modeline)

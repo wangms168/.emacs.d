@@ -65,29 +65,6 @@ If Non-nil, use dashboard, otherwise will restore previous session."
 ;;   "Enable the init benchmark or not."
 ;;   :type 'boolean)
 
-;; Load `custom-file'
-;; If it doesn't exist, copy from the template, then load it.
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-
-(let ((custom-template-file
-       (expand-file-name "custom-template.el" user-emacs-directory)))
-  (if (and (file-exists-p custom-template-file)
-           (not (file-exists-p custom-file)))
-      (copy-file custom-template-file custom-file)))
-
-(if (file-exists-p custom-file)
-    ;; (load custom-file))
-    (load-file custom-file))
-
-
-;; Load `custom-post.el'
-;; Put personal configurations to override defaults here.
-(add-hook 'after-init-hook
-          (lambda ()
-            (let ((file
-                   (expand-file-name "custom-post.el" user-emacs-directory)))
-              (if (file-exists-p file)
-                  (load file)))))
 
 (provide 'init-custom)
 

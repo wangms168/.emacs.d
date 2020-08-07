@@ -29,61 +29,7 @@
 ;;
 
 ;;; Code:
-
-;; Explicitly set the prefered coding systems to avoid annoying prompt
-;; from emacs (especially on Microsoft Windows)
-;; (prefer-coding-system 'utf-8)
-
-;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-;; (setq savehist-file "~/.emacs.d/default/tmp/savehist")
-;; (tooltip-mode -1)
-;; (tool-bar-mode -1)
-;; (menu-bar-mode -1)
-;; (scroll-bar-mode -1)
-;; (prefer-coding-system 'utf-8)
-;; (setq visible-bell t)                     ;; 将Emacs配置为闪存而不是响铃
-(setq-default indicate-empty-lines t)        ;; 在缓冲区结束后可视地指示空行
-;; (setq-default show-trailing-whitespace t)    ;; 突出显示行尾空格,但这样C-x b的minibuffer行尾空格显示出来很难看。
-(defalias 'yes-or-no-p 'y-or-n-p)            ;; 用'y'和'n'来代替频繁地输入'yes’和'no'
-;; (fset 'yes-or-no-p 'y-or-n-p)
-;; (setq-default cursor-type 'bar)           ;; 设置光标为小长条形状.设置这个，智能改变光标形状不起作用。
-(xterm-mouse-mode 1)                         ;; 终端下鼠标响应
-(setq split-width-threshold nil)             ;; 窗口垂直分割
-(setq split-height-threshold 0)
-
-;; 在消息缓冲区中打印sexp时删除恼人的省略号
-;; remove annoying ellipsis when printing sexp in message buffer
-(setq eval-expression-print-length nil
-      eval-expression-print-level nil)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;; '(blink-cursor-mode nil)                  ;; 取消光标闪烁
- ;; '(font-use-system-font t)
- '(show-paren-mode t)                      ;;光标位于括号之后显示匹配的括号
- )
-
-
-;; Miscs
-(setq inhibit-startup-message t)          ;; 禁用启动画面
-(setq-default indicate-empty-lines t)     ;; show (in left margin) marker for empty lines
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets) ; Show path if names are same
-(setq adaptive-fill-regexp "[ t]+|[ t]*([0-9]+.|*+)[ t]*")
-(setq adaptive-fill-first-line-regexp "^* *$")
-(setq delete-by-moving-to-trash t)         ; Deleting files go to OS's trash folder
-;; (setq make-backup-files nil)               ; Forbide to make backup files
-;; (setq auto-save-default nil)               ; Disable auto save
-(setq set-mark-command-repeat-pop t)       ; Repeating C-SPC after popping mark pops it again
-(setq-default kill-whole-line t)           ; Kill line including '\n'
-(setq inhibit-compacting-font-caches t)    ;; Don’t compact font caches during GC.据说可以解决windows下所有字体的卡顿问题。
-
-(add-to-list 'auto-mode-alist '("\\.nanorc\\'" . sh-mode))   ;;conf-unix-mode  ;;.nanorc的语法高亮
-
-(global-hl-line-mode)                     ;;高亮当前行
-(with-eval-after-load 'hl-line (set-face-background hl-line-face "#212121" ) )
+
 ;;----------------------------------------------------------------------------
 ;; paren
 ;;----------------------------------------------------------------------------
@@ -238,6 +184,8 @@
   :ensure nil
   :diminish
   :hook (after-init . global-auto-revert-mode))
+
+;;
 
 ;; ;; Pass a URL to a WWW browser
 ;; (use-package browse-url
@@ -425,14 +373,28 @@
 ;;          ([M-kp-2] . pager-row-down)))
 
 ;; ;; Treat undo history as a tree
-;; (use-package undo-tree
-;;   :diminish
-;;   :hook (after-init . global-undo-tree-mode))
+;; C-x u 进入 undo-tree-visualizer-mode , p n 上下移动，在分支之前 b f 左右切换，t 显示时间戳，选定需要的状态后， q 退出。
+(use-package undo-tree
+   :diminish
+   :hook (after-init . global-undo-tree-mode)
+   :config
+   (global-undo-tree-mode)
+   ;;永久撤消历史记录
+   (setq undo-tree-auto-save-history t
+	 undo-tree-history-directory-alist
+	 `(("." . ,(concat user-emacs-directory "backup/undo"))))
+   (unless (file-exists-p (concat user-emacs-directory "backup/undo"))
+     (make-directory (concat user-emacs-directory "backup/undo")))
+   )
 
-;; Goto last change
+;; Goto last change      安装后附带undo-tree包
 (use-package goto-chg
-  :ensure t
-  :bind ("C-," . goto-last-change))
+  ;;:bind ("C-," . goto-last-change)
+  :config
+  (global-set-key [(control ?.)] 'goto-last-change)
+  (global-set-key [(control ?,)] 'goto-last-change-reverse)
+  ;;(require 'undo-tree)          ;;通过use-package安装的包已自动加载了
+  )
 
 ;; ;; Handling capitalized subwords in a nomenclature
 ;; (use-package subword
@@ -485,6 +447,9 @@
 ;;         (back-to-indentation)))
 ;;     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
+;;
+
+
 ;;----------------------------------------------------------------------------
 ;; line-numbers
 ;;----------------------------------------------------------------------------
@@ -507,14 +472,14 @@
 ;;测试撤销重启前的修改,经测试，上述的设置不管用。
 
 (use-package beacon     ;; 每当窗口滚动时，光线就会照亮光标顶部;你知道它在哪里。
-  :ensure t
   :config
   (beacon-mode 1))
 
 (use-package pos-tip
-  :ensure t
   :config
   )
+
+;;
 
 ;; 要在ProgrammingModes中自动填充注释而不是代码.
 (add-hook 'c-mode-common-hook
@@ -531,7 +496,6 @@
 		  (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-;; 高亮非ASCII字符
 ;; 高亮非ASCII字符   M-x highlight-regexp (C-x w h) RET [^[:ascii:]] RET
 ;; 取消高亮          M-x unhighlight-regexp (C-x w h)RET [^[:ascii:]] RET
 (defun occur-non-ascii ()
@@ -562,6 +526,7 @@ there's a region, all lines that region covers will be duplicated."
       (goto-char (+ origin (* (length region) arg) arg)))))
 (global-set-key (kbd "C-c <down>") 'duplicate-current-line-or-region)
 
+;;
 ;; https://www.emacswiki.org/emacs/CopyingWholeLines
 (defun duplicate-line-or-region (&optional n)
   "Duplicate current line, or region if active.
@@ -592,6 +557,7 @@ there's a region, all lines that region covers will be duplicated."
   (message "major-mode为%s, mode-name为%s" major-mode mode-name))
 (global-set-key (kbd "C-x m") 'get-mode-name)
 
+;;
 
 ;; move (shift) a line of text up or down like you would do in Eclipse
 ;; pressing `M-up' (or `M-down')
@@ -635,15 +601,22 @@ there's a region, all lines that region covers will be duplicated."
 ;;(setq global-font-lock-mode t)
 ;;(add-hook 'font-lock-mode-hook 'imenu-add-menubar-index)
 
+(use-package lazy-search         ;; 搜索光标下符号.M-s激活，q推出
+  :load-path "site-lisp/lazy-search"
+  :diminish
+  :config
+  (global-set-key (kbd "M-s") 'lazy-search)
+  )
+
 (use-package cursor-change       ;; 智能光标形状
   :load-path "site-lisp/cursor-change"
+  :diminish
   :config
   (cursor-change-mode 1)
   )
 
 ;; Hungry deletion  饿删除次要模式
 (use-package hungry-delete
-  :ensure t
   :diminish
   :hook (after-init . global-hungry-delete-mode)
   :config (setq-default hungry-delete-chars-to-skip " \t\f\v"))

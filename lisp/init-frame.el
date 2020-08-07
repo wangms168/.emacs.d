@@ -86,7 +86,7 @@ With a prefix arg decrease transparency."
     				;; (menu-bar-lines . 0)
     				(font . ,tv-default-font)
     				(cursor-color . "red")
-    				(fullscreen . fullboth)     ;;fullboth \fullscreen 全屏\maximized 最大化
+    				(fullscreen . maximized)     ;;fullboth \fullscreen 全屏\maximized 最大化
 				(modeline . nil)            ;; 为啥不起作用呢
     				))
 
@@ -148,9 +148,6 @@ With a prefix arg decrease transparency."
     ;;                                             ))))
     )
   :bind ("<f8>" . loop-alpha))
-
-(display-splash-screen)
-;;(display-about-screen)
 
 ;; 应用实例 https://github.com/purcell/emacs.d/blob/master/lisp/init-xterm.el
 ;; (defun sanityinc/console-frame-setup ()

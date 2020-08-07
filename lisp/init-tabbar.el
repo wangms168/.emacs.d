@@ -79,7 +79,6 @@
 
 (defun tabbar-ruler-config ()
   (use-package tabbar-ruler
-    :ensure t
     :init
     (setq tabbar-buffer-groups-function 'tabbar-buffer-groups) ;; this is the problem line
     (setq tabbar-ruler-global-tabbar t)    ; get tabbar
@@ -102,7 +101,6 @@
 
 (defun tabbar-config ()
   (use-package tabbar
-    :ensure t
     :init
     (tabbar-mode 1)
     :config

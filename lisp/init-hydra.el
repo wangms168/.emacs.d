@@ -31,7 +31,6 @@
 ;;; Code:
 
 (use-package hydra
-  :ensure t
   :defer 0.1
   :init
   (bind-key "\\" 'hydra-master/body)
@@ -635,7 +634,6 @@
   :hook (after-init . hydra-posframe-enable))
 
 (use-package pretty-hydra
-  :ensure t
   :functions set-package-archives centaur-load-theme
   :bind ("<f6>" . toggles-hydra/body)
   :init

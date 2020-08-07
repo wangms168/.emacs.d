@@ -7,25 +7,19 @@
 ;; 并手工安装“all-the-icons.el-fonts”这个文件夹下的字体，
 ;; 以使neotree和dired使用，并如下设置：
 
-(use-package all-the-icons
-  :ensure t )
+(use-package all-the-icons)
 
 ;; https://github.com/domtronn/all-the-icons.el/commit/f155ce7e6984d8fe11831cd8a9f89828f5c5be43    ;解决tabbar、neotree、spaceline用all-the-icons卡顿的方法
 (setq inhibit-compacting-font-caches t)
 
 (use-package all-the-icons-dired
-  :ensure t
   ;; :config
   ;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
   :hook (dired-mode . all-the-icons-dired-mode)
   )
 
-(use-package all-the-icons-ivy
-  :ensure t
-  :config
-  (all-the-icons-ivy-setup))
-
-
+(use-package all-the-icons-ivy           ;;依赖ivy包
+  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 
 (provide 'init-icons)
 

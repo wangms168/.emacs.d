@@ -244,7 +244,7 @@ Do it recursively if the third argument is not nil."
   (let ((mypaths
          (list
           "D/Program Files/Git/usr/bin/"      ;; 将git-find排在(getenv "PATH")前面
-	  "D:\Portable\ripgrep(rg)"
+	  "D:\\Portable\\ripgrep(rg)"
           (getenv "PATH")
           )
          ))

@@ -19,7 +19,8 @@
   )
 
 (use-package all-the-icons-ivy           ;;依赖ivy包
-  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)
+  )
 
 (provide 'init-icons)
 

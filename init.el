@@ -229,6 +229,7 @@ of an error, just add the package to a list of missing packages."
 			init-package
 			init-frame
 			init-basic
+			init-hydra
 			init-funcs
 			init-edit
 			init-edit-visual
@@ -257,7 +258,6 @@ of an error, just add the package to a list of missing packages."
 			init-key
 			;; init-complete
 			init-company
-;;			init-hydra             ;;影响ivy的icons
 			init-neotree
 			init-tabbar
 			init-sidebar

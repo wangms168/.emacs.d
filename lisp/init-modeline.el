@@ -592,23 +592,31 @@
 (defpowerline powerline-flycheck
   '(:eval
     (let* ((text (pcase flycheck-last-status-change
-		   (`finished (if flycheck-current-errors
-				  (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
-						 (+ (or .warning 0) (or .error 0)))))
-				    (format "✖ %s Issue%s" count (unless (eq 1 count) "s")))
-				"✔ No Issues"))
-		   (`running     "⟲ Running")
-		   (`no-checker  "⚠ No Checker")
-		   (`not-checked "✖ Disabled")
-		   (`errored     "⚠ Error")
-		   (`interrupted "⛔ Interrupted")
-		   (`suspicious  ""))))
+		           (`finished (if flycheck-current-errors
+				                  (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
+						                         (+ (or .warning 0) (or .error 0)))))
+				                    (format "✖ %s Issue%s" count (unless (eq 1 count) "s")))
+				                "✔ No Issues"))
+		           (`running     "⟲ Running")
+		           (`no-checker  "⚠ No Checker")
+		           (`not-checked "✖ Disabled")
+		           (`errored     "⚠ Error")
+		           (`interrupted "⛔ Interrupted")
+		           (`suspicious  ""))))
       (propertize text
-		  'help-echo "Show Flycheck Errors"
-		  'mouse-face '(:box 1)
-		  'local-map (make-mode-line-mouse-map
-			      'mouse-1 (lambda () (interactive) (flycheck-list-errors)))))
+		          'help-echo "Show Flycheck Errors"
+		          'mouse-face '(:box 1)
+		          'local-map (make-mode-line-mouse-map
+			                  'mouse-1 (lambda () (interactive) (flycheck-list-errors)))))
     ))
+
+
+;; -------------------------------------------------------------------------------------------------------------------------
+;; 在模式行中显示当前命令及其键
+( use-package keycast
+  :load-path "site-lisp/keycast-1.0.1"
+  :config
+  (keycast-mode))
 
 ;; -------------------------------------------------------------------------------------------------------------------------
 ;; 包更新图标
@@ -899,96 +907,100 @@
                           (face1 (if active 'powerline-active1 'powerline-inactive1))
                           (face2 (if active 'powerline-active2 'powerline-inactive2))
                           (lhs (list
-				(powerline-window-number face0 'l)
-		  		;; (powerline-raw (mapleline--unicode-number (winum-get-number-string)) face0 'l)
-		  		;; (powerline-raw (custom-modeline-window-number) face0 'l)
-				(when (and (boundp 'evil-mode) evil-mode)
-				  (powerline-evil face0 'l))
-				;; (powerline-raw (powerline-evil-state) face0 'r)
-				(when (featurep 'all-the-icons)
-				  (powerline-raw (propertize (all-the-icons-octicon "package") 'face `(:family ,(all-the-icons-octicon-family) :height 1.0) 'display '(raise -0.0)) face0 'l))
-				;; (powerline-raw (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.0) 'display '(raise -0.0)) face0 'l)
-				;; (powerline-raw " " face0 'l)
-				(powerline-buffer-size face0 'l)
-				(powerline-raw mode-line-mule-info face0 'l)     ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。
-				;; 一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
-				;; (powerline-raw "[%z]" face0)
-				(powerline-raw mode-line-client face0 'l)        ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
-				(powerline-raw mode-line-modified face0 'l)
-;;				(powerline-raw (powerline-modified) face0 'l)    ;; powerline-modified很卡。模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。
-				;; (when (buffer-modified-p)
-				;;   (powerline-raw mode-line-modified face0 'l))
-				;; (when buffer-read-only
-				;;   (powerline-raw "[RO]" face0 'l))
+				                (powerline-window-number face0 'l)
+		  		                ;; (powerline-raw (mapleline--unicode-number (winum-get-number-string)) face0 'l)
+		  		                ;; (powerline-raw (custom-modeline-window-number) face0 'l)
+				                (when (and (boundp 'evil-mode) evil-mode)
+				                  (powerline-evil face0 'l))
+				                ;; (powerline-raw (powerline-evil-state) face0 'r)
+				                (when (featurep 'all-the-icons)
+				                  (powerline-raw (propertize (all-the-icons-octicon "package") 'face `(:family ,(all-the-icons-octicon-family) :height 1.0) 'display '(raise -0.0)) face0 'l))
+				                ;; (powerline-raw (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.0) 'display '(raise -0.0)) face0 'l)
+				                ;; (powerline-raw " " face0 'l)
+				                (powerline-buffer-size face0 'l)
+				                (powerline-raw mode-line-mule-info face0 'l)     ;; 此变量保存模式行构造的值，该构造显示有关语言环境，缓冲区编码系统和当前输入方法的信息。请参阅非ASCII字符。
+				                ;; 一般显示为‘U:’，C-\(toggle-input-method)显示‘拼符U:’。
+				                ;; (powerline-raw "[%z]" face0)
+				                (powerline-raw mode-line-client face0 'l)        ;; 此变量用于标识emacsclient帧。emacsclient -cn时显示“@”。
+				                (powerline-raw mode-line-modified face0 'l)
+                                ;;				(powerline-raw (powerline-modified) face0 'l)    ;; powerline-modified很卡。模式行修改:此变量保存模式行构造的值，该构造显示当前缓冲区是否已修改。
+				                ;; (when (buffer-modified-p)
+				                ;;   (powerline-raw mode-line-modified face0 'l))
+				                ;; (when buffer-read-only
+				                ;;   (powerline-raw "[RO]" face0 'l))
 
-				;; (powerline-raw "|" face0 'l)
-				;; (powerline-raw mode-line-remote face0 'l)     ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。
-				;; (powerline-raw mode-line-frame-identification face0 'l)  ;; 模式行帧识别:此变量标识当前帧。如果您正在使用可以显示多个帧的窗口系统,其默认值显示" "，
-				;;                                                          ;; 或者在一次只显示一个帧的普通终端上，显示"-%F " 。
-				(powerline-raw "|" face0 'l)
-				(powerline-raw (Short-directory) face0 'l)
-				(powerline-buffer-id `(mode-line-buffer-id ,face0) 'r)
-				;; (powerline-raw mode-line-buffer-identification face0 'r) ;; 模式行缓冲区识别:此变量标识窗口中显示的缓冲区。其默认值显示缓冲区名称，用空格填充至少12列。
-				;; (powerline-raw "%b" face0 'l)
-				(powerline-raw (custom-modeline-mode-icon) face0 'r)        ;; (when (featurep 'all-the-icons) ... )
-				(powerline-process face0)
-				;; (powerline-raw (custom-process-icon) face0)
-				;; (powerline-raw (powerline-project-vc) face0 'r)
-				;; (powerline-raw (custom-projectile-icon) face0)              ;;含有projectile，会使modeline高度变化,显示|x|
-		  		(powerline-narrow face1 'l)
-				;; (powerline-raw (modeline-git-vc) face0 'l)
-		  		(powerline-vc face1 'l)
-		  		))
+				                ;; (powerline-raw "|" face0 'l)
+				                ;; (powerline-raw mode-line-remote face0 'l)     ;; 此变量用于显示default-directory当前缓冲区是否为远程缓冲区,若不是远程缓冲区，则显示为'-'。
+				                ;; (powerline-raw mode-line-frame-identification face0 'l)  ;; 模式行帧识别:此变量标识当前帧。如果您正在使用可以显示多个帧的窗口系统,其默认值显示" "，
+				                ;;                                                          ;; 或者在一次只显示一个帧的普通终端上，显示"-%F " 。
+				                (powerline-raw "|" face0 'l)
+				                (powerline-raw (Short-directory) face0 'l)
+				                (powerline-buffer-id `(mode-line-buffer-id ,face0) 'r)
+				                ;; (powerline-raw mode-line-buffer-identification face0 'r) ;; 模式行缓冲区识别:此变量标识窗口中显示的缓冲区。其默认值显示缓冲区名称，用空格填充至少12列。
+				                ;; (powerline-raw "%b" face0 'l)
+				                (powerline-raw (custom-modeline-mode-icon) face0 'r)        ;; (when (featurep 'all-the-icons) ... )
+				                (powerline-process face0)
+				                ;; (powerline-raw (custom-process-icon) face0)
+				                ;; (powerline-raw (powerline-project-vc) face0 'r)
+				                ;; (powerline-raw (custom-projectile-icon) face0)              ;;含有projectile，会使modeline高度变化,显示|x|
+		  		                (powerline-narrow face1 'l)
+				                ;; (powerline-raw (modeline-git-vc) face0 'l)
+		  		                (powerline-vc face1 'l)
+                                (when (bound-and-true-p mode-line-keycast)
+				                  (powerline-raw mode-line-keycast face1 'r))
+		  		                ))
                           (rhs (list
-				(powerline-flycheck face1 'l)
-				;; (powerline-raw (modeline-flycheck-status) face1 'l)
-				(powerline-package-updates face2 'l)
-				;; (powerline-raw (custom-modeline-package-updates) face2 'l)
-				;; (powerline-encoding face1 'r)
-				(powerline-raw (replace-buffer-encoding) face1 'r)
-				;; (powerline-time face0 'r)
-				(powerline-raw (modeline-time) face0 )
-				;; (powerline-raw global-mode-string face1 'r)
+				                (powerline-flycheck face1 'l)
+				                ;; (powerline-raw (modeline-flycheck-status) face1 'l)
+				                (powerline-package-updates face2 'l)
+				                ;; (powerline-raw (custom-modeline-package-updates) face2 'l)
+				                ;; (powerline-encoding face1 'r)
+				                (powerline-raw (replace-buffer-encoding) face1 'r)
+				                ;; (powerline-time face0 'r)
+				                (powerline-raw (modeline-time) face0 )
+				                ;; (powerline-raw global-mode-string face1 'r)
 
-				;; (powerline-raw "%4l:%3c" face1 'l)
-				(powerline-raw "%4l:"  face1 'l)                       ;;(format-mode-line '(4 "%l"))
-				(powerline-raw "%3c" (if (>= (current-column) 80)    ;;(format-mode-line '(3 "%c"))
-							 'mode-line-80col-face face1))
-				(powerline-raw " " face0)
-				(powerline-raw (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p"))) face0 'r)
-				(powerline-raw "%3 " face0)
-				(powerline-fill face0 0)
-				))
+				                ;; (powerline-raw "%4l:%3c" face1 'l)
+				                (powerline-raw "%4l:"  face1 'l)                       ;;(format-mode-line '(4 "%l"))
+				                (powerline-raw "%3c" (if (>= (current-column) 80)    ;;(format-mode-line '(3 "%c"))
+							                             'mode-line-80col-face face1))
+				                (powerline-raw " " face0)
+				                (powerline-raw (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p"))) face0 'r)
+				                (powerline-raw "%3 " face0)
+				                (powerline-fill face0 0)
+				                ))
                           (center (list
-				   (powerline-raw " " face2)
-				   (when (and (boundp 'which-func-mode) which-func-mode)
-				     (powerline-raw which-func-format face2 'l))
-				   (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
-				     (powerline-raw erc-modified-channels-object face2 'l))
-				   (powerline-raw "[" face2 'l)
-				   (powerline-major-mode face2)
-				   (powerline-process face2)
-				   (powerline-raw "]" face2)
-				   (powerline-raw "[" face2 'l)
-				   (powerline-minor-modes face2)
-				   (powerline-raw "%n" face2)
-				   (powerline-raw "]" face2)
-				   ;; (powerline-raw mode-line-modes face2)      ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。
-				   ;; 其中含有：mode-name、mode-line-process、minor-mode-alist。
-				   (powerline-raw (custom-modeline-region-info) face2)
-				   ))
-		  	  )
+				                   (powerline-raw "" face2)
+				                   (when (and (boundp 'which-func-mode) which-func-mode)
+				                     (powerline-raw which-func-format face2 'l))
+				                   (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
+				                     (powerline-raw erc-modified-channels-object face2 'l))
+				                   (powerline-raw "[" face2 'l)
+				                   (powerline-major-mode face2)
+				                   (powerline-process face2)
+				                   (powerline-raw "]" face2)
+				                   (powerline-raw "[" face2 'l)
+				                   ;;(powerline-minor-modes face2)
+                                   (powerline-raw "C-h m" face2)
+				                   (powerline-raw "%n" face2)
+				                   (powerline-raw "]" face2)
+				                   ;; (powerline-raw mode-line-modes face2)      ;; 模式线模式:此变量显示缓冲区的主要和次要模式。其默认值还显示递归编辑级别，有关进程状态的信息以及缩小是否有效。
+				                   ;; 其中含有：mode-name、mode-line-process、minor-mode-alist。
+				                   (powerline-raw (custom-modeline-region-info) face2)
+				                   ))
+		  	              )
                      (concat (powerline-render lhs)
                              (powerline-fill-center face1 (/ (powerline-width center) 2.0))
                              (powerline-render center)
                              (powerline-fill face1 (powerline-width rhs))
                              (powerline-render rhs)
-		     	     )
-		     )))))
+		     	             )
+		             )))))
 
 (powerline-center-theme)
 ;; (setq-local mode-line-format nil)
 ;; (setq-default mode-line-format nil)
+
 
 (defun powerline-center-theme-ori ()
   "Setup a mode-line with major and minor modes centered."
@@ -1036,7 +1048,7 @@
                                         (powerline-minor-modes face2 'l)
                                         (powerline-raw " " face2)
                                         ;; (funcall separator-right face2 face1)
-					)))
+					                    )))
                      (concat (powerline-render lhs)
                              (powerline-fill-center face1 (/ (powerline-width center) 2.0))
                              (powerline-render center)

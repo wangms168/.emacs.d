@@ -1,166 +1,99 @@
-;; init-basic.el --- Initialize basic configurations.	-*- lexical-binding: t -*-
+;; init-basic.el --- Better default configurations.	-*- lexical-binding: t -*-
+
+;; Copyright (C) 2006-2020 Vincent Zhang
+
+;; Author: Vincent Zhang <seagle0128@gmail.com>
+;; URL: https://github.com/seagle0128/.emacs.d
+
+;; This file is not part of GNU Emacs.
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;;
 
 ;;; Commentary:
 ;;
-;; Basic configuration.
+;; Better defaults.
 ;;
+
 ;;; Code:
-
-(eval-when-compile
-  (require 'init-const)
-  (require 'init-custom))
+
+(require 'init-const)
+(require 'init-custom)
+(require 'init-funcs)
 
 ;; Personal information
-(setq user-full-name centaur-full-name)
-(setq user-mail-address centaur-mail-address)
+(setq user-full-name centaur-full-name
+      user-mail-address centaur-mail-address)
 
 ;; Key Modifiers
-(when sys/win32p
-  ;; make PC keyboard's Win key or other to type Super or Hyper
-  ;; (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)    ; Left Windows key
-  (setq w32-apps-modifier 'hyper)       ; Menu/App key
+(with-no-warnings
+  (cond
+   (sys/win32p
+    ;; make PC keyboard's Win key or other to type Super or Hyper
+    ;; (setq w32-pass-lwindow-to-system nil)
+    (setq w32-lwindow-modifier 'super     ; Left Windows key
+          w32-apps-modifier 'hyper)       ; Menu/App key
+    (w32-register-hot-key [s-t]))
+   ((and sys/macp (eq window-system 'mac))
+    ;; Compatible with Emacs Mac port
+    (setq mac-option-modifier 'meta
+          mac-command-modifier 'super)
+    (bind-keys ([(super a)] . mark-whole-buffer)
+               ([(super c)] . kill-ring-save)
+               ([(super l)] . goto-line)
+               ([(super q)] . save-buffers-kill-emacs)
+               ([(super s)] . save-buffer)
+               ([(super v)] . yank)
+               ([(super w)] . delete-frame)
+               ([(super z)] . undo)))))
 
-  ;; (w32-register-hot-key [s-])
-  (w32-register-hot-key [s-t]))
+;; Encoding
+;; UTF-8 as the default coding system
+(when (fboundp 'set-charset-priority)
+  (set-charset-priority 'unicode))
+
+;; Explicitly set the prefered coding systems to avoid annoying prompt
+;; from emacs (especially on Microsoft Windows)
+(prefer-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
+
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(set-clipboard-coding-system 'utf-8)
+(set-file-name-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(modify-coding-system-alist 'process "*" 'utf-8)
 
 ;; Environment
 (when (or sys/mac-x-p sys/linux-x-p)
   (use-package exec-path-from-shell
-    :ensure t
     :init
-    (setq exec-path-from-shell-check-startup-files nil)
-    (setq exec-path-from-shell-variables '("PATH" "MANPATH" "PYTHONPATH" "GOPATH"))
-    (setq exec-path-from-shell-arguments '("-l"))
-    (exec-path-from-shell-initialize)
-    ))
-
-;; grep matches with background yellow and foreground black
-(setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
-
-;; Explicitly set the prefered coding systems to avoid annoying prompt
-;; from emacs (especially on Microsoft Windows)
-;; (prefer-coding-system 'utf-8)
-
-;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-;; (setq savehist-file "~/.emacs.d/default/tmp/savehist")
-;; (tooltip-mode -1)
-;; (tool-bar-mode -1)
-;; (menu-bar-mode -1)
-;; (scroll-bar-mode -1)
-;; (prefer-coding-system 'utf-8)
-;; (setq visible-bell t)                     ;; 将Emacs配置为闪存而不是响铃
-(setq-default indicate-empty-lines t)        ;; 在缓冲区结束后可视地指示空行
-;; (setq-default show-trailing-whitespace t)    ;; 突出显示行尾空格,但这样C-x b的minibuffer行尾空格显示出来很难看。
-(defalias 'yes-or-no-p 'y-or-n-p)            ;; 用'y'和'n'来代替频繁地输入'yes’和'no'
-;; (fset 'yes-or-no-p 'y-or-n-p)
-;; (setq-default cursor-type 'bar)           ;; 设置光标为小长条形状.设置这个，智能改变光标形状不起作用。
-(xterm-mouse-mode 1)                         ;; 终端下鼠标响应
-(setq split-width-threshold nil)             ;; 窗口垂直分割
-(setq split-height-threshold 0)
-
-;; 在消息缓冲区中打印sexp时删除恼人的省略号
-;; remove annoying ellipsis when printing sexp in message buffer
-(setq eval-expression-print-length nil
-      eval-expression-print-level nil)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;; '(blink-cursor-mode nil)                  ;; 取消光标闪烁
- ;; '(font-use-system-font t)
- '(show-paren-mode t)                      ;;光标位于括号之后显示匹配的括号
- )
-
-;; Miscs
-(display-splash-screen)                   ;;Welcome to GNU Emacs
-;;(display-about-screen)                  ;;About Emacs
-(setq inhibit-startup-message t)          ;; 禁用启动画面
-(setq-default indicate-empty-lines t)     ;; show (in left margin) marker for empty lines
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets) ; Show path if names are same
-(setq adaptive-fill-regexp "[ t]+|[ t]*([0-9]+.|*+)[ t]*")
-(setq adaptive-fill-first-line-regexp "^* *$")
-(setq delete-by-moving-to-trash t)         ; Deleting files go to OS's trash folder
-;; (setq make-backup-files nil)               ; Forbide to make backup files
-;; (setq auto-save-default nil)               ; Disable auto save
-(setq set-mark-command-repeat-pop t)       ; Repeating C-SPC after popping mark pops it again
-(setq-default kill-whole-line t)           ; Kill line including '\n'
-(setq inhibit-compacting-font-caches t)    ;; Don’t compact font caches during GC.据说可以解决windows下所有字体的卡顿问题。
-
-(add-to-list 'auto-mode-alist '("\\.nanorc\\'" . sh-mode))   ;;conf-unix-mode  ;;.nanorc的语法高亮
-
-(global-hl-line-mode)                     ;;高亮当前行
-(with-eval-after-load 'hl-line (set-face-background hl-line-face "#212121" ))
-
+    (setq exec-path-from-shell-check-startup-files nil
+          exec-path-from-shell-variables '("PATH" "MANPATH")
+          exec-path-from-shell-arguments '("-l"))
+    (exec-path-from-shell-initialize)))
 
 ;; Start server
-;; (use-package server
-;;  :ensure nil
-;;  :hook (after-init . server-mode))
-
-;;----------------------------------------------------------------------------
-;; Allow access from emacsclient
-;;----------------------------------------------------------------------------
-;; (require 'server)
-;; (add-hook 'after-init-hook (lambda ()
-;;                              (unless (or (daemonp) (server-running-p))
-;;                                (server-start)
-;;                                (setq server-raise-frame t))))
-
-;;----------------------------------------------------------------------------
-;; emacs-backup-config
-;;----------------------------------------------------------------------------
-;; Load `custom-file'
-;; If it doesn't exist, copy from the template, then load it.
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-
-(let ((custom-template-file
-       (expand-file-name "custom-template.el" user-emacs-directory)))
-  (if (and (file-exists-p custom-template-file)
-           (not (file-exists-p custom-file)))
-      (copy-file custom-template-file custom-file)))
-
-(if (file-exists-p custom-file)
-    ;; (load custom-file))
-    (load-file custom-file))
-
-;; Load `custom-post.el'
-;; Put personal configurations to override defaults here.
-(add-hook 'after-init-hook
-          (lambda ()
-            (let ((file
-                   (expand-file-name "custom-post.el" user-emacs-directory)))
-              (if (file-exists-p file)
-                  (load file)))))
-
-;; https://www.emacswiki.org/emacs/ForceBackups
-;; Make backups of files, even when they're in version control
-(setq vc-make-backup-files t)
-(setq version-control t     ;; Use version numbers for backups.
-      kept-new-versions 10  ;; Number of newest versions to keep.
-      kept-old-versions 0   ;; Number of oldest versions to keep.
-      delete-old-versions t ;; Don't ask to delete excess backup versions.
-      backup-by-copying t)  ;; Copy all files, don't rename them.
-;; Default and per-save backups go here:
-;; Write backup files to own directory
-(setq backup-directory-alist
-      `(("." . ,(expand-file-name "backup/per-save" user-emacs-directory))))
-(defun force-backup-of-buffer ()
-  ;; Make a special "per session" backup at the first save of each
-  ;; emacs session.
-  (when (not buffer-backed-up)
-    ;; Override the default parameters for per-session backups.
-    (let ((backup-directory-alist `(("." . ,(expand-file-name "backup/per-session" user-emacs-directory))))
-	  (kept-new-versions 3))
-      (backup-buffer)))
-  ;; Make a "per save" backup on each save.  The first save results in
-  ;; both a per-session and a per-save backup, to keep the numbering
-  ;; of per-save backups consistent.
-  (let ((buffer-backed-up nil))
-    (backup-buffer)))
-(add-hook 'before-save-hook  'force-backup-of-buffer)
+(use-package server
+  :ensure nil
+  :if centaur-server
+  :hook (after-init . server-mode))
 
 ;; History
 (use-package saveplace
@@ -169,20 +102,16 @@
 
 (use-package recentf
   :ensure nil
+  :bind (("C-x C-r" . recentf-open-files))
   :hook (after-init . recentf-mode)
-  :init
-  (setq recentf-max-saved-items 200)
-  (setq recentf-exclude '((expand-file-name package-user-dir)
-                          ".cache"
-                          ".cask"
-                          ".elfeed"
-                          "bookmarks"
-                          "cache"
-                          "ido.*"
-                          "persp-confs"
-                          "recentf"
-                          "url"
-                          "COMMIT_EDITMSG\\'")))
+  :init (setq recentf-max-saved-items 300
+              recentf-exclude
+              '("\\.?cache" ".cask" "url" "COMMIT_EDITMSG\\'" "bookmarks"
+                "\\.\\(?:gz\\|gif\\|svg\\|png\\|jpe?g\\|bmp\\|xpm\\)$"
+                "\\.?ido\\.last$" "\\.revive$" "/G?TAGS$" "/.elfeed/"
+                "^/tmp/" "^/var/folders/.+$" ; "^/ssh:"
+                (lambda (file) (file-in-directory-p file package-user-dir))))
+  :config (push (expand-file-name recentf-save-file) recentf-exclude))
 
 (use-package savehist
   :ensure nil
@@ -195,6 +124,78 @@
                                               regexp-search-ring
                                               extended-command-history)
               savehist-autosave-interval 300))
+
+(use-package simple
+  :ensure nil
+  :hook ((after-init . size-indication-mode)
+         (text-mode . visual-line-mode)
+         ((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace))
+  :init
+  (setq column-number-mode t
+        line-number-mode t
+        ;; kill-whole-line t               ; Kill line including '\n'
+        line-move-visual nil
+        track-eol t                     ; Keep cursor at end of lines. Require line-move-visual is nil.
+        set-mark-command-repeat-pop t)  ; Repeating C-SPC after popping mark pops it again
+
+  ;; Visualize TAB, (HARD) SPACE, NEWLINE
+  (setq-default show-trailing-whitespace nil) ; Don't show trailing whitespace by default
+  (defun enable-trailing-whitespace ()
+    "Show trailing spaces and delete on saving."
+    (setq show-trailing-whitespace t)
+    (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
+
+(use-package time
+  :ensure nil
+  :unless (display-graphic-p)
+  :hook (after-init . display-time-mode)
+  :init (setq display-time-24hr-format t
+              display-time-day-and-date t))
+
+;; Mouse & Smooth Scroll
+;; Scroll one line at a time (less "jumpy" than defaults)
+;;  (when (display-graphic-p)
+;;    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
+;;          mouse-wheel-progressive-speed nil))
+;;  (setq scroll-step 1
+;;        scroll-margin 0
+;;        scroll-conservatively 100000)
+
+;; Misc
+;; help
+(define-key 'help-command (kbd "C-k") 'find-function-on-key)
+(define-key 'help-command (kbd "C-v") 'find-variable)
+(define-key 'help-command (kbd "C-f") 'find-function)   ;;默认 C-h C-f runs the command view-emacs-FAQ
+
+(setq help-window-select 't)                             ;; Keep focus while navigating help buffers
+(add-to-list 'display-buffer-alist
+             '("*Apropos*" display-buffer-same-window))
+
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq-default major-mode 'text-mode
+              fill-column 80
+              tab-width 4
+              indent-tabs-mode nil)     ; Permanently indent with spaces, never with TABs
+
+(setq visible-bell t
+      inhibit-compacting-font-caches t  ; Don’t compact font caches during GC.
+      delete-by-moving-to-trash t       ; Deleting files go to OS's trash folder
+      make-backup-files nil             ; Forbide to make backup files
+      auto-save-default nil             ; Disable auto save
+
+      uniquify-buffer-name-style 'post-forward-angle-brackets ; Show path if names are same
+      adaptive-fill-regexp "[ t]+|[ t]*([0-9]+.|*+)[ t]*"
+      adaptive-fill-first-line-regexp "^* *$"
+      sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*"
+      sentence-end-double-space nil)
+
+;; Fullscreen
+(when (display-graphic-p)
+  (add-hook 'window-setup-hook #'fix-fullscreen-cocoa)
+  (bind-keys ("C-<f11>" . toggle-frame-fullscreen)
+             ("C-s-f" . toggle-frame-fullscreen) ; Compatible with macOS
+             ("S-s-<return>" . toggle-frame-fullscreen)
+             ("M-S-<return>" . toggle-frame-fullscreen)))
 
 (provide 'init-basic)
 

@@ -51,15 +51,18 @@
 
 ;; (use-package indent-guide
 ;;   :hook ((prog-mode yaml-mode) . indent-guide-global-mode))
-
+
 (use-package page-break-lines
-  ;;:load-path "site-lisp/page-break-lines"
   :diminish
-  :hook (after-init . global-page-break-lines-mode)
+  :init
+  (add-hook 'after-init-hook '(lambda () (global-page-break-lines-mode t)))     ;; 将使header-line的box显现
+  ;;:hook (after-init . global-page-break-lines-mode)
+  )
+
+(use-package form-feed
+  :diminish
   :config
-  ;;(set-fontset-font "fontset-default"
-  ;;		    (cons page-break-lines-char page-break-lines-char)
-  ;;		    (face-attribute 'default :family))
+  ;;(add-hook 'emacs-lisp-mode-hook 'form-feed-mode)
   )
 
 (use-package flymd)                        ;;预览md文件，M-x flymd-flyit。

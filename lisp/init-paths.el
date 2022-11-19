@@ -143,13 +143,6 @@
     (normal-top-level-add-subdirs-to-load-path)))
 ;; (add-subdirs-to-load-path "~/.emacs.d/config/")
 
-;; https://github.com/sjbalaji/myCustomizations/blob/master/ReferenceEmacsConfig
-;; make loaded files give a message
-(defadvice load (before debug-log activate)
-  (message "wangms-Loading %s..." (locate-library (ad-get-arg 0))))
-
-
-
 ;; load-path enhancement 增强
 (defun fni/add-to-load-path (this-directory &optional with-subdirs recursive)
   "Add THIS-DIRECTORY at the beginning of the load-path, if it exists.
@@ -194,24 +187,27 @@ Do it recursively if the third argument is not nil."
 ;;        (push (expand-file-name path zwb-private-emacs-config-path) load-path))
 ;;    '("lib""theme" "")))     ;;lambda函数的实参写法
 
-;; Load path
+
+
+;;----------------------------------------------------------------------------
+;; load-path
+;;----------------------------------------------------------------------------
 ;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
 (defun update-load-path (&rest _)
   "Update `load-path'."
-  (push (expand-file-name "site-lisp" user-emacs-directory) load-path)      ;; push是加到`load-path'的前面。
-  (push (expand-file-name "lisp" user-emacs-directory) load-path)
-  )
+  (dolist (dir '("site-lisp" "lisp"))
+    (push (expand-file-name dir user-emacs-directory) load-path)))
 
 (defun add-subdirs-to-load-path (&rest _)
   "Add subdirectories to `load-path'."
-  (let ((default-directory
-          (expand-file-name "site-lisp" user-emacs-directory)))
+  (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
     (normal-top-level-add-subdirs-to-load-path)))
 
 (advice-add #'package-initialize :after #'update-load-path)
-;; (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
+(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 
 (update-load-path)
+
 
 
 ;;*** Library Search
@@ -236,20 +232,15 @@ Do it recursively if the third argument is not nil."
 
 ;; The most important directories are the last!
 
-;; M-:(getenv ​"PATH")
-;; M-:(getenv ​"exec-path")
+;; M-:(getenv "PATH")
+;; M-:(getenv "exec-path")
 ;; (executable-find "ag")    看看能不能找到可执行程序
 
-(when (string-equal system-type "windows-nt")
-  (let ((mypaths
-         (list
-          "D/Program Files/Git/usr/bin/"      ;; 将git-find排在(getenv "PATH")前面
-	  "D:\\Portable\\ripgrep(rg)"
-          (getenv "PATH")
-          )
-         ))
-
-    (setenv "PATH" (mapconcat 'identity mypaths ";"))
-    (setq exec-path (append mypaths (list "." exec-directory)))      ;;exec-path默认只是复制PATH的原来值Original value
-    )
-  )
+;;Environment
+;;(when (or sys/mac-x-p sys/linux-x-p)
+;;  (use-package exec-path-from-shell
+;;    :init
+;;    (setq exec-path-from-shell-check-startup-files nil
+;;          exec-path-from-shell-variables '("PATH" "MANPATH")
+;;          exec-path-from-shell-arguments '("-l"))
+;;    (exec-path-from-shell-initialize)))

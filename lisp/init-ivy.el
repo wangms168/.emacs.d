@@ -1,3 +1,4 @@
+
 ;;; init-ivy.el --- Initialize ivy configurations.	-*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
@@ -44,13 +45,38 @@
 ;; ;; big minibuffer height, for ido to show choices vertically
 ;; (setq max-mini-window-height 0.5)
 
+;; https://benaiah.me/posts/using-ido-emacs-completion/
+;;  (use-package ido
+;;    :config
+;;    (setq ido-everywhere t
+;;      ido-virtual-buffers t
+;;      ido-use-faces t
+;;      ido-default-buffer-method 'selected-window
+;;      ido-auto-merge-work-directories-length -1)
+;;    (ido-mode))
+;;  (use-package flx-ido :requires ido :config (flx-ido-mode))
+;;  (use-package ido-grid-mode :requires ido
+;;    :config
+;;    (setq ido-grid-mode-prefix-scrolls t)
+;;    (ido-grid-mode 1))
+;;  ;;(use-package ido-vertical-mode :requires ido :config (ido-vertical-mode))
+;;  (use-package ido-completing-read+ :requires ido
+;;    :config
+;;    (setq ido-ubiquitous-max-items 50000
+;;      ido-cr+-max-items 50000)
+;;    (ido-ubiquitous-mode +1))
+
 
 ;; Ivy, Counsel, Swiper Setup
 (use-package counsel    ;; 依赖ivy、swiper
+  :diminish
   :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
+  (use-package ivy
+    :diminish
+    :config
+    (ivy-mode 1))
+  ;;(setq ivy-use-virtual-buffers t)
+  ;;(setq enable-recursive-minibuffers t)
   ;; enable this if you want `swiper' to use it
   ;; (setq search-default-mode #'char-fold-to-regexp)
   (global-set-key "\C-s" 'swiper)
@@ -82,7 +108,7 @@
   ;;      map)
   ;;    "Map for `counsel-mode'.
   ;;  Remaps built-in functions to counsel replacements.")
-   )
+  )
 
 ;;  (define-key help-map (kbd "a") 'counsel-apropos)                 ;; apropos-command
 ;;  ;; (define-key help-map (kbd "b") 'counsel-descbinds)              ;; describe-bindings
@@ -112,6 +138,7 @@
 
 
 (use-package ivy-rich
+  :diminish
   :config
   (ivy-rich-mode 1)
   )

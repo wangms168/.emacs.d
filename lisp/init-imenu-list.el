@@ -24,7 +24,7 @@
 					;; (display-line-numbers-mode -1)
 					))
   :bind
-  ("<f10>" . imenu-list-smart-toggle)
+  ("<f7>" . imenu-list-smart-toggle)
   :custom-face
   (imenu-list-entry-face-1 ((t (:foreground "white"))))
   :custom

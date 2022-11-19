@@ -185,7 +185,7 @@
   :diminish
   :hook (after-init . global-auto-revert-mode))
 
-;;
+
 
 ;; ;; Pass a URL to a WWW browser
 ;; (use-package browse-url
@@ -458,7 +458,25 @@
 ;; (setq linum-format "%4d|")               ;;set format
 ;; (setq linum-format "%4d \u2502 ")        ;; "\u2502"="|"
 ;; (global-display-line-numbers-mode t)
-(add-hook 'find-file-hook 'display-line-numbers-mode)             ;; Emacs 26 新增了原生的行号支持。这与“linum-mode”提供的类似，但更快，并且不会占用行号的显示余量。
+;; (add-hook 'find-file-hook 'display-line-numbers-mode)             ;; Emacs 26 新增了原生的行号支持。这与“linum-mode”提供的类似，但更快，并且不会占用行号的显示余量。
+
+;; Show native line numbers if possible, otherwise use `linum'
+(if (fboundp 'display-line-numbers-mode)
+    (use-package display-line-numbers
+      :ensure nil
+      :hook (prog-mode . display-line-numbers-mode))
+  (use-package linum-off
+    :demand
+    :defines linum-format
+    :hook (after-init . global-linum-mode)
+    :init (setq linum-format "%4d ")
+    :config
+    ;; Highlight current line number
+    (use-package hlinum
+      :defines linum-highlight-in-all-buffersp
+      :custom-face (linum-highlight-face ((t (:inherit default :background nil :foreground nil))))
+      :hook (global-linum-mode . hlinum-activate)
+      :init (setq linum-highlight-in-all-buffersp t))))
 
 ;;----------------------------------------------------------------------------
 ;; title

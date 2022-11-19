@@ -83,7 +83,7 @@ With a prefix arg decrease transparency."
     				;; 		  (capitalize (invocation-name))
     				;; 		  emacs-version))
     				(tool-bar-lines . 0)
-    				;; (menu-bar-lines . 0)
+				;;(menu-bar-lines . 0)
     				(font . ,tv-default-font)
     				(cursor-color . "red")
     				(fullscreen . maximized)     ;;fullboth \fullscreen 全屏\maximized 最大化

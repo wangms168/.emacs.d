@@ -1,6 +1,6 @@
-;;; init-package.el --- Initialize package configurations.	-*- coding: utf-8 lexical-binding: t -*-
+;;; init-package.el --- Initialize package configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2019 Vincent Zhang
+;; Copyright (C) 2006-2020 Vincent Zhang
 
 ;; Author: Vincent Zhang <seagle0128@gmail.com>
 ;; URL: https://github.com/seagle0128/.emacs.d
@@ -30,133 +30,122 @@
 
 ;;; Code:
 
-;;使用网络代理
-;;(setq url-proxy-services
-;;       '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-;;         ("http" . "127.0.0.1:49998")
-;;         ("https" . "127.0.0.1:49998")))
+(require 'init-const)
+(require 'init-custom)
+(require 'init-funcs)
 
-(eval-when-compile
-  (require 'init-custom))
-;;
-;; ELPA: refer to https://github.com/melpa/melpa and https://elpa.emacs-china.org/.
-;;
-(defun set-package-archives (archives)
-  "Set specific package ARCHIVES repository."
-  (interactive
-   (list (intern (completing-read "Choose package archives: "
-                                  '(melpa melpa-mirror emacs-china netease tuna)))))
-  (setq package-archives
-        (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                            (not (gnutls-available-p))))
-               (proto (if no-ssl "http" "https")))
-          (pcase archives
-            ('melpa
-             `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
-               ,(cons "melpa" (concat proto "://melpa.org/packages/"))
-	       ))
-            ('melpa-mirror
-             `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
-               ,(cons "melpa" (concat proto "://www.mirrorservice.org/sites/melpa.org/packages/"))
-	       ))
-            ('emacs-china
-             `(,(cons "melpa-cn"   (concat proto "://elpa.emacs-china.org/melpa/"))
-               ,(cons "org-cn" (concat proto "://elpa.emacs-china.org/org/"))
-	       ,(cons "gnu-cn" (concat proto "://elpa.emacs-china.org/gnu/"))
-               ,(cons "melpa-stable-cn" (concat proto "://elpa.emacs-china.org/melpa-stable/"))
-	       ))
-            ('netease
-             `(,(cons "melpa-163" (concat proto "://mirrors.163.com/elpa/melpa/"))
-               ,(cons "gnu-163"   (concat proto "://mirrors.163.com/elpa/gnu/"))
-               ,(cons "melpa-stable-163" (concat proto "://mirrors.163.com/elpa/melpa-stable/"))
-	       ))
-            ('tuna
-             `(,(cons "melpa-tuna"   (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))
-               ,(cons "org-tuna" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/org/"))
-               ,(cons "gun-tuna" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/"))
-	       ,(cons "melpa-stable-tuna" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/"))
-	       ))
-            (archives
-             (error "Unknown archives: '%s'" archives))))
-	;;	package-archive-priorities                   ;; 它指定每个存档的优先级（数字越大，优先级越高的存档）
-	;;	'(("melpa-stable" . 10)
-	;;	  ("melpa"        . 5)
-	;;	  ("gnu"          . 0))
-	)
-  (message "Set package archives to '%s'." archives))
-(set-package-archives centaur-package-archives)
+;; Load `custom-file'
+(when (and (file-exists-p centaur-custom-example-file)
+           (not (file-exists-p custom-file)))
+  ;; At the first startup copy `custom-file' from the example
+  (copy-file centaur-custom-example-file custom-file)
 
-;; 我需要稳定版的 `ace-page-break-lines'，只从 melpa-stable 安装
-(setq package-pinned-packages                      ;; 将程序包/归档对添加到此列表，以确保仅从指定的归档文件下载指定的程序包。
-      '(
-	(page-break-lines . "melpa-stable-cn")
-	))
-
-;; Initialize packages
-(require 'package)
-(unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
-  (setq package--init-file-ensured t )          ;; t 是知道 init file 具有 package-initialize
-  (setq package-enable-at-startup nil)          ; To prevent initializing twice ;; emacs startup 会自动加载程序包。禁用它，是为了不重复下面显式(package-initialize)
-  (setq load-prefer-newer t)
-  (package-initialize))                         ;; 初始化并加载程序包
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(defun require-package (package &optional min-version no-refresh)
-  "Install given PACKAGE, optionally requiring MIN-VERSION.
-If NO-REFRESH is non-nil, the available package lists will not be
-re-downloaded in order to locate PACKAGE."
-  (if (package-installed-p package min-version)
-      t
-    (if (or (assoc package package-archive-contents) no-refresh)
-        (if (boundp 'package-selected-packages)
-            ;; Record this as a package the user installed explicitly
-            (package-install package nil)
-          (package-install package))
+  ;; Select the package archives
+  (if (or (executable-find "curl") (executable-find "wget"))
       (progn
-        (package-refresh-contents)
-        (require-package package min-version t)))))
+        ;; Get and select the fastest package archives automatically
+        (message "Testing connection... Please wait a moment.")
+        (set-package-archives
+         (centaur-test-package-archives 'no-chart)))
+    ;; Select package archives manually
+    ;; Use `ido-completing-read' for better experience since
+    ;; `ivy-mode' is not available at this moment.
+    (set-package-archives
+     (intern
+      (ido-completing-read
+       "Select package archives: "
+       (mapcar #'symbol-name
+               (mapcar #'car centaur-package-archives-alist)))))))
 
-(defun require-packages (packages)
-  (while packages
-    (require-package (car packages))
-    (setq packages (cdr packages)))
-  t)
+(and (file-readable-p custom-file) (load custom-file))
 
-
-;; 用 Emacs 25 的话，应该可以直接设置 package-selected-packages，然后 M-x package-install-selected-packages 安装。我自己没试过，一直用 use-package 的 :ensure 安装包。
-;; (defvar sanityinc/required-packages nil)
-;; (when (fboundp 'package--save-selected-packages)
-;;   (require-package 'seq)
-;;   (add-hook 'after-init-hook
-;;             (lambda () (package--save-selected-packages
-;; 			(seq-uniq (append sanityinc/required-packages package-selected-packages))))))
+;; Load custom-post file
+(defun load-custom-post-file ()
+"Load custom-post file."
+(cond ((file-exists-p centaur-custom-post-org-file)
+       (and (fboundp 'org-babel-load-file)
+            (org-babel-load-file centaur-custom-post-org-file)))
+      ((file-exists-p centaur-custom-post-file)
+       (load centaur-custom-post-file))))
+(add-hook 'after-init-hook #'load-custom-post-file)
 
 ;; HACK: DO NOT copy package-selected-packages to init/custom file forcibly.
 ;; https://github.com/jwiegley/use-package/issues/383#issuecomment-247801751
-(defun my-save-selected-packages (&optional value)            ;; 删除了customize-save-variable呼叫
+(defun my-save-selected-packages (&optional value)
   "Set `package-selected-packages' to VALUE but don't save to `custom-file'."
   (when value
     (setq package-selected-packages value)))
 (advice-add 'package--save-selected-packages :override #'my-save-selected-packages)
 
+;; Set ELPA packages
+(set-package-archives centaur-package-archives nil nil t)
+
+;; Initialize packages
+(unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
+  (setq package-enable-at-startup nil)          ; To prevent initializing twice
+  (package-initialize))
+
 ;; Setup `use-package'
-(eval-when-compile
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package)
-    (package-install 'diminish)
-    ;;(package-install 'bind-key)     ;;安装use-package时附加bind-key包
-    ))
-(setq use-package-verbose t)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 ;; Should set before loading `use-package'
 (eval-and-compile
-  (setq use-package-always-ensure t)        ;;总是安装软件包
-  ;; (setq use-package-always-defer t)
+  (setq use-package-always-ensure t)
+  ;;(setq use-package-always-defer t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))
 
+(eval-when-compile
+  (require 'use-package))
+
+;; Required by `use-package'
+(use-package diminish)
+(use-package bind-key)
+
+;; Update GPG keyring for GNU ELPA
+(use-package gnu-elpa-keyring-update)
+
+;; Initialization benchmark
+(when centaur-benchmark-init
+  (use-package benchmark-init
+    :defines swiper-font-lock-exclude
+    :commands (benchmark-init/activate)
+    :hook (after-init . benchmark-init/deactivate)
+    :init (benchmark-init/activate)
+    :config
+    (with-eval-after-load 'swiper
+      (add-to-list 'swiper-font-lock-exclude 'benchmark-init/tree-mode))))
+
+;; A modern Packages Menu
+(use-package paradox
+  :init
+  (setq paradox-execute-asynchronously t
+        paradox-github-token t
+        paradox-display-star-count nil)
+
+  ;; Replace default `list-packages'
+  (defun my-paradox-enable (&rest _)
+    "Enable paradox, overriding the default package-menu."
+    (paradox-enable))
+  (advice-add #'list-packages :before #'my-paradox-enable)
+  :config
+  (when (fboundp 'page-break-lines-mode)
+    (add-hook 'paradox-after-execute-functions
+              (lambda (&rest _)
+                (let ((buf (get-buffer-create "*Paradox Report*"))
+                      (inhibit-read-only t))
+                  (with-current-buffer buf
+                    (page-break-lines-mode 1))))
+              t)))
+
+;; Auto update packages
+(use-package auto-package-update
+  :init
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-hide-results t)
+  (defalias 'upgrade-packages #'auto-package-update-now))
 
 (provide 'init-package)
 
